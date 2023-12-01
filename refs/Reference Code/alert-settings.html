@@ -1,0 +1,277 @@
+import React, { useEffect, useState } from "react";
+import Header from "/components/Header/Header";
+import { BiChevronLeft } from "react-icons/bi";
+import Router from 'next/router';
+import AppInput from "/components/Base/AppInput";
+import AppButton from "/components/Base/AppButton";
+
+export default function AlertSetting() {
+	
+	const toggleDatas = [
+		{
+			Id: 1,
+			name: "Workbench Alerts",
+			status: "active"
+		},
+		{
+			Id: 2,
+			name: "Claimsbench Alerts",
+			status: "active"
+		},
+		{
+			Id: 3,
+			name: "Customer Access",
+			status: "active"
+		},
+		{
+			Id: 4,
+			name: "Compliance",
+			status: "active"
+		},
+		{
+			Id: 5,
+			name: "Document Library",
+			status: "active"
+		},
+		{
+			Id: 6,
+			name: "Newsroom",
+			status: "active"
+		},
+		{
+			Id: 7,
+			name: "Contact Us",
+			status: "active"
+		},
+		{
+			Id: 8,
+			name: "Broker Access",
+			status: "active"
+		},
+		{
+			Id: 9,
+			name: "Broker Rewards",
+			status: "active"
+		},
+		{
+			Id: 10,
+			name: "Tasks",
+			status: "active"
+		}
+	]
+
+	const [filter, setFilter] = useState(toggleDatas)
+	const [enableDesktop, setEnableDesktop] = useState(false);
+	const toggleSettings = (id, type) => {
+      if(type === 'active') {
+         const data = filter.map(item => {
+            if(item.Id === id) {
+               item.status = item.status === 'active' ? 'confirm' : 'active'
+               return item
+            }
+
+            return item
+         })
+
+         setFilter(data)
+
+         return
+      }
+   }
+
+	return (
+		<>
+			<Header page="Alerts " />
+			<div className="container mx-auto px-7 py-10">
+				<div>
+					<a href="#"
+						className="flex text-sm items-center justify-reverse cursor-pointer text-xs font-montserratBold text-contenta-pinky-red hover:text-contenta-tractor-red"
+						onClick={(e) => {
+							e.preventDefault();
+							Router.push(`/alerts`)
+						}}
+					>
+						<div className="">
+							<BiChevronLeft size={25} />
+						</div>
+						<div className="my-2">
+							Back to Alerts
+						</div>
+					</a>
+				</div>
+				<div className="flex flex-col">
+					<div className="text-sm text-contenta-greyish-brown font-montserratBold py-5">
+						Alert Settings
+					</div>
+					<div className="flex flex-col">
+						<form action="">
+							<div className="bg-white content-shadow rounded-xl">
+								<div className="flex flex-col px-5 py-10">
+									<div className="flex flex-row">
+										<div className="w-1/3 text-sm text-contenta-greyish-brown font-montserratBold">
+											Enable Desktop Notifications
+										</div>
+										<div className="w-1/3">
+											<label htmlFor={`${enableDesktop ? "myToggle" : ""}`} className="toggle" 
+												onClick={(e) => {
+													e.preventDefault()
+													setEnableDesktop(!enableDesktop)
+												}}>
+												<input className="toggle__input" type="checkbox" id={`${enableDesktop ? "myToggle" : ""}`} />
+												<div className={`${enableDesktop ? "toggle__fill_checked transition-transform" : "toggle__fill"}`} />
+											</label>
+										</div>
+										<div className="w-1/3 flex justify-end gap-2 text-sm text-contenta-greyish-brown font-montserratRegular">
+											<span>Last updated</span>
+											<span>25 days ago</span>
+										</div>
+									</div>
+									<div className="flex flex-row items-center py-5 border-b-1 border-contenta-gray">
+										<div className="flex flex-col w-1/3 gap-2">
+											<span className="text-sm text-contenta-greyish-brown font-montserratBold">
+												Mute Alerts
+											</span>
+											<span className="text-sm text-contenta-greyish-brown font-montserratRegular">
+												Silence alerts for a specific amount of time.
+											</span>
+										</div>
+										<div className="" style={{ width: '200px' }}>
+											<AppInput
+												name="select-time"
+												type="select"
+												required
+												items={
+													[
+														{
+															label: '30 seconds',
+															value: '',
+														},
+														{
+															label: '60 seconds',
+															value: '',
+														},
+														{
+															label: '5 minutes',
+															value: '',
+														},
+														{
+															label: '10 minutes',
+															value: '',
+														},
+														{
+															label: '15 minutes',
+															value: '',
+														},
+														{
+															label: '1 hr',
+															value: '',
+														}
+													]
+												}
+												placeholder="Select Time"
+												inputClass=""
+												classNames=" rounded-md w-full px-2 text-contenta-light-blue focus:outline-none border-2 focus:border-contenta-navy-blue"
+											/>
+										</div>
+									</div>
+
+									<div className="flex flex-col">
+										<div className="text-sm text-contenta-greyish-brown font-montserratBold pt-5">
+											Receive Alerts From:
+										</div>
+										<div className="w-full">
+											<div className="grid grid-cols-2">
+												{filter.map((item, i) => {
+													return (
+														<div key={i} className="pb-3 pt-7 border-b-1 border-contenta-gray w-full px-5">
+															<div className="flex flex-row justify-between w-full">
+																<div className="text-sm text-contenta-greyish-brown font-montserratBold">
+																	{item.name}
+																</div>
+																<div>
+																	<label htmlFor={`${item.Id}`} className="toggle" onClick={() => toggleSettings(item.Id, 'active')}>
+																		<input className="toggle__input" type="checkbox" />
+																		<div className={item.status === 'active' ? "toggle__fill" : 'toggle__fill_checked transition-transform'}/>
+																	</label>
+																</div>
+															</div>
+														</div>
+													)
+												})}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div className="py-5 gap-4">
+								<AppButton
+									label="Cancel"
+									customTheme="py-2 mr-3 rounded-md btn-width rounded-sm bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+									labelClass=""
+								/>
+								<AppButton
+									label="Save Changes"
+									customTheme="py-2 btn-width rounded-md hover:bg-transparent border-2 hover:border-contenta-light-blue border-contenta-light-blue hover:text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold bg-contenta-light-blue text-white"
+									labelClass=""
+									classNames="rounded-md w-full"
+								/>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</>
+	);
+}
+
+
+if (type === "all") {
+   const store = cart[cartIndex]
+   if (value) {
+     setSelectedItems([
+       ...selectedItems,
+       ...store.items.map((item) => {
+         return { ...item, itemId: item?.varietyId || item?.id }
+       }),
+     ])
+   } else {
+     let newSelectedItems = []
+     if (store.storeName === "eCards") {
+       newSelectedItems = selectedItems.filter(
+         (item) => item.type !== "ecards"
+       )
+     } else {
+       const idsToRemove = []
+       store.items.map((item) => idsToRemove.push(item.id))
+       newSelectedItems = selectedItems.filter(
+         (item) => !idsToRemove.includes(item.id)
+       )
+     }
+
+     setSelectedItems(newSelectedItems)
+   }
+ }
+
+
+ old
+ if (type === "all") {
+      let store = cart[cartIndex];
+
+      store = store.items.filter(item => item.quantity < 4)
+      if (value) {
+        setSelectedItems([
+          ...selectedItems,
+          ...store.map((item) => {
+            return { ...item, itemId: item?.varietyId || item?.id };
+          }),
+        ]);
+      } else {
+        setSelectedItems(
+          selectedItems.filter((item) => {
+            return !store.some((item) => {
+              return { ...item, itemId: item?.varietyId || item?.id };
+            });
+          })
+        );
+      }
+    }

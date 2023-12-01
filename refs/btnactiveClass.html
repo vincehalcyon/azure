@@ -1,0 +1,240 @@
+import Header from 'components/Header/Header';
+import React, { useEffect, useRef, useState } from 'react';
+import { Router, useRouter } from 'next/router';
+import AppInput from "components/Base/AppInput";
+import { BiChevronLeft } from 'react-icons/bi';
+import { MdFileUpload } from "react-icons/md";
+import { AiOutlineFileText } from 'react-icons/ai';
+import Modal from "components/Base/Modal";
+
+const AddCompliance = () => {
+
+   const router = useRouter();
+
+   const [modalUploadFiles, setModalUploadFiles] = useState(false)
+
+   const toggleUploadFiles = () => {
+      setModalUploadFiles(true)
+   }
+
+   const editorRef = useRef()
+   const { CKEditor, ClassicEditor } = editorRef.current || {}
+
+   const [loaded, setLoaded] = useState(false)
+
+   useEffect(() => {
+      editorRef.current = {
+         CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
+         ClassicEditor: require("@ckeditor/ckeditor5-build-classic"),
+      }
+
+      setLoaded(true)
+   }, [])
+
+   const [isActive, setActive] = useState([
+      { categoryName: "Certification", active: false, class: 'bg-opacity-50 bg-contenta-seaweed-green text-contenta-jungle-green' },
+      { categoryName: "Documentation", active: false, class: 'bg-opacity-50 bg-contenta-blue text-contenta-light-blue' },
+      { categoryName: "Policy", active: false, class: 'bg-opacity-50 bg-gray-300 text-contenta-greyish-brown' },
+      { categoryName: "Regulation", active: false, class: 'bg-opacity-50 text-contenta-darkish-red bg-contenta-pinky-red' }
+   ])
+
+   const handleclick = (e) => {
+      const newState = isActive.map(item => {
+         if(item.categoryName === e.target.value) {
+            item.active = !item.active
+            
+            return item
+         }
+
+         item.active = false
+         return item
+
+      })
+      setActive(newState)
+   }
+
+   const state = {test: ""}
+   const { test } = state
+
+   return loaded && (
+      <>
+         <Header page="Compliance " />
+         <Modal
+            isOpen={modalUploadFiles}
+            onClose={() => setModalUploadFiles(false)}
+            closable
+            titleClass="text-xl text-center w-full"
+            headerClass="w-full pl-8"
+            contentClass="max-w-2xl w-full rounded-lg"
+            modalClass="p-0"
+         >
+            <div className="w-full">
+               <AppInput
+                  name="title"
+                  type="text"
+                  size="150"
+                  placeholder="Title"
+                  inputClass="my-1 w-full"
+                  classNames="border-2 border-default rounded w-1/2 py-2 px-4 text-gray-700 focus:outline-none "
+               />
+            </div>
+            <div className="flex mt-5">
+               <label className="w-full flex flex-col items-center px-4 py-6 border-2 border-dashed border-contenta-blue text-blue rounded-lg shadow-lg tracking-wide cursor-pointer">
+                  <AiOutlineFileText className="text-contenta-blue" size={52} />
+                  <span className="mt-2 text-sm text-contenta-greyish-brown font-montserratBold pb-5">
+                     Upload New Document
+                  </span>
+                  <span className="text-sm text-contenta-greyish-brown">
+                     Drop files here or <b className="text-contenta-blue">Browse</b>
+                  </span>
+                  <input type='file' className="hidden" />
+               </label>
+            </div>
+            <div className="flex justify-center py-5">
+               <button
+                  name=""
+                  className="px-10 py-2 rounded-md bg-white border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                  type="button"
+                  onClick={(e) => {
+                     e.preventDefault();
+                     router.push(`#`)
+                  }}
+               >
+                  Save
+               </button>
+            </div>
+         </Modal>
+         <div className="flex flex-col px-7 py-10 items">
+            <div className="flex flex-row">
+               <a href="#"
+                  className="flex text-sm items-center justify-reverse cursor-pointer text-xs font-montserratBold text-contenta-pinky-red"
+                  onClick={(e) => {
+                     e.preventDefault();
+                     router.back()
+                  }}
+               >
+                  <div className="">
+                     <BiChevronLeft size={25} />
+                  </div>
+                  <div className="my-2">
+                     Back to Compliance
+                  </div>
+               </a>
+            </div>
+            <div className="flex flex-col flex-wrap py-5">
+               <div className="flex flex-row gap-5">
+                  <div className="w-full xl:w-9/12 lg:w-full content-shadow bg-white rounded-lg p-5">
+                     <div className="flex flex-col">
+                        <div className="text-sm font-montserratBold text-contenta-greyish-brown pb-5">
+                           Select Compliance Type
+                        </div>
+                        <div className="inline-flex rounded-md shadow-sm gap-5 " role="group" value={test} onClick={handleclick}>
+                           {isActive.map((item, i) => (
+                              <button key={i} 
+                                 type="button" 
+                                 value={item.categoryName}
+                                 className={item.active ? `${item.class} rounded-full px-5 font-montserratBold text-sm border-1 border-transparent` : "text-sm text-contenta-greyish-brown font-montserratBold border-1 border-default rounded-full px-5 py-1 cursor-pointer"}
+                              >
+                                 {item.categoryName}
+                              </button>
+                           ))}
+                        </div>
+                     </div>
+                     <div className="w-full py-5">
+                        <AppInput
+                           name="title"
+                           type="text"
+                           size="150"
+                           placeholder="Title"
+                           inputClass="my-1 w-full"
+                           classNames="border-2 border-default rounded w-1/2 py-2 px-4 text-gray-700 focus:outline-none "
+                        />
+                     </div>
+                     <div className="ck-editor-wrapper">
+                        <CKEditor
+                           editor={ClassicEditor}
+                           /* config={editorConfiguration} */
+                           data="<p>Hello from CKEditor 5!</p>"
+                           onInit={editor => {
+                              // You can store the "editor" and use when it is needed.
+                              console.log("Editor is ready to use!", editor);
+                           }}
+                           onChange={(event, editor) => {
+                              const data = editor.getData();
+                              console.log({ event, editor, data });
+                           }}
+                           onBlur={(event, editor) => {
+                              console.log("Blur.", editor);
+                           }}
+                           onFocus={(event, editor) => {
+                              console.log("Focus.", editor);
+                           }}
+                        />
+                     </div>
+                  </div>
+                  <div className="w-full xl:w-3/12">
+                     <div className="flex flex-col">
+                        <div className="flex flex-col content-shadow rounded-xl">
+                           <label className="w-full flex flex-col items-center px-4 py-6 bg-contenta-blue rounded-tl-xl rounded-tr-xl text-white tracking-wide cursor-pointer hover:bg-contenta-light-blue">
+                              <MdFileUpload size={32} />
+                              <span className="mt-2 text-sm leading-normal font-montserratBold">
+                                 Upload Thumbnail
+                              </span>
+                              <span className="text-sm font-montserratRegular">
+                                 Drop files here or <b>Browse</b>
+                              </span>
+                              <input type='file' className="hidden" />
+                           </label>
+                           <div
+                              className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-br-xl rounded-bl-xl tracking-wide cursor-pointer hover:bg-gray-200"
+                              onClick={
+                                 toggleUploadFiles
+                              }
+                           >
+                              <AiOutlineFileText size={32} className="text-contenta-blue" />
+                              <span className="mt-2 text-sm text-contenta-blue leading-normal font-montserratBold">
+                                 Upload Files
+                              </span>
+                              <span className="text-sm text-contenta-greyish-brown font-montserratRegular">
+                                 Drop files here or <b>Browse</b>
+                              </span>
+                           </div>
+                        </div>
+                        <div className="py-5">
+                           <div className="py-2">
+                              <button
+                                 name=""
+                                 className="w-full py-2 rounded-md bg-white border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                                 type="button"
+                                 onClick={(e) => {
+                                    e.preventDefault();
+                                    router.push(`#`)
+                                 }}
+                              >
+                                 Publish
+                              </button>
+                           </div>
+                           <div className="py-2">
+                              <button
+                                 name=""
+                                 className="w-full py-2 rounded-md bg-white border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                                 type="button"
+                                 onClick={(e) => {
+                                    e.preventDefault();
+                                    router.push(`#`)
+                                 }}
+                              >
+                                 Save as Draft
+                              </button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </>
+   )
+}
+
+export default AddCompliance;

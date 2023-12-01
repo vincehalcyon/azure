@@ -1,0 +1,325 @@
+import Select from "react-select"
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { currencyFormat } from "@/lib/custom-hooks";
+import Input from "@/components/Input/input";
+import Selection from "@/components/Selection/SelectionComponent";
+import SelectionButtonInput from "@/components/Selection/SelectionButtonInput";
+
+export default function QuotesScreenEight(props) {
+   const router = useRouter()
+   const { onChange, initialData } = props
+   const [initalDataLoaded, setInitialDataLoaded] = useState(false)
+
+   const [form, setForm] = useState({
+      taxAuditCoverage: initialData?.taxAuditCoverage || "",
+      numberEmployee: initialData?.excessAmount || "",
+      sumInsured: initialData?.sumInsured || "",
+      standardExcess: initialData?.standardExcess || "",
+      taxAudits: initialData?.taxAudits || "",
+      taxAvoidanceSchemes: initialData?.taxAvoidanceSchemes || "",
+      previousTaxAudits: initialData?.previousTaxAudits || "",
+      legalDisputesLast3Years: initialData?.legalDisputesLast3Years || "",
+      haveStatutoryRequirements: initialData?.haveStatutoryRequirements || "",
+   })
+
+   console.log('form', form)
+
+   useEffect(() => {
+      if (initialData && !initalDataLoaded) {
+         setForm({
+            taxAuditCoverage: initialData?.taxAuditCoverage || "",
+            numberEmployee: initialData?.numberEmployee || "",
+            sumInsured: initialData?.sumInsured || "",
+            standardExcess: initialData?.standardExcess || "",
+            taxAudits: initialData?.taxAudits || "",
+            taxAvoidanceSchemes: initialData?.taxAvoidanceSchemes || "",
+            previousTaxAudits: initialData?.previousTaxAudits || "",
+            legalDisputesLast3Years: initialData?.legalDisputesLast3Years || "",
+            haveStatutoryRequirements: initialData?.haveStatutoryRequirements || "",
+         })
+         setInitialDataLoaded(true)
+      }
+
+      if (onChange) {
+         onChange(form)
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [initialData, form])
+
+   return (
+      <>
+         <div className="flex flex-wrap -mx-6">
+            <div className="w-full px-6">
+               {/* <CircleProgress currentPath={router.pathname} previousState={router.query.step} /> */}
+               <div className="flex flex-col desktopXl items-start w-full ">
+                  {/* Left Container*/}
+                  <div className="flex flex-col w-full ">
+                     <div className="flex w-full border-[#162f3e] border-b-2">
+                        <span className="text-[#de4523] text-[20px] montserrat-bold mb-2 ">Tax Audit</span>
+                     </div>
+                     <div className="flex flex-row items-center mt-[20px]">
+                        <div className="border-l-4 border-[#de4523] ">
+                           <span className="flex justify-center text-[20px] montserrat-bold mb-2 ml-[10px]">Tax Audit</span>
+                        </div>
+                     </div>
+                     <div className="flex w-full items-center ">
+                        <Input
+                           type="checkbox"
+                           label={`Tax Audit Coverage`}
+                           wrapperClass="my-4 flex items-center"
+                           inputClass="flex items-center"
+                           checked={form.taxAuditCoverage}
+                           onChange={(event) => {
+                              setForm({
+                                 ...form,
+                                 taxAuditCoverage: event.target.checked ? true : false
+                              })
+                           }}
+                        />
+                     </div>
+                     <div
+                        className={`content ${form.taxAuditCoverage ? "active" : "inactive"}`}
+                     >
+                        <Input
+                           name="form"
+                           label="Number of Employees"
+                           inputClass="border-gray-500 rounded"
+                           horizontalInput
+                           wrapperClass="mb-4"
+                           labelClassName="flex flex-row-reverse justify-end"
+                           labelClass="md:mr-8"
+                           type="select"
+                           value={form.numberEmployee}
+                           items={[
+                              {
+                                 value: 100,
+                                 label: currencyFormat(100)
+                              },
+                              {
+                                 value: 250,
+                                 label: currencyFormat(250),
+                              },
+                              {
+                                 value: 500,
+                                 label: currencyFormat(500),
+                              },
+                              {
+                                 value: 750,
+                                 label: currencyFormat(750),
+                              },
+                              {
+                                 value: 1000,
+                                 label: currencyFormat(1000)
+                              },
+                              {
+                                 value: 1500,
+                                 label: currencyFormat(1500)
+                              },
+                              {
+                                 value: 2000,
+                                 label: currencyFormat(2000)
+                              },
+                              {
+                                 value: 5000,
+                                 label: currencyFormat(5000)
+                              },
+                              {
+                                 value: 7500,
+                                 label: currencyFormat(7500)
+                              },
+                           ]}
+                           onChange={(e) =>
+                              setForm({
+                                 ...form,
+                                 numberEmployee: parseFloat(e.target.value),
+                              })
+                           }
+                        />
+                        <Input
+                           name="form"
+                           label="Sum Insured"
+                           inputClass="border-gray-500 rounded"
+                           horizontalInput
+                           wrapperClass="mb-4"
+                           labelClassName="flex flex-row-reverse justify-end"
+                           labelClass="md:mr-8"
+                           type="select"
+                           value={form.sumInsured}
+                           items={[
+                              {
+                                 value: 100,
+                                 label: currencyFormat(100)
+                              },
+                              {
+                                 value: 250,
+                                 label: currencyFormat(250),
+                              },
+                              {
+                                 value: 500,
+                                 label: currencyFormat(500),
+                              },
+                              {
+                                 value: 750,
+                                 label: currencyFormat(750),
+                              },
+                              {
+                                 value: 1000,
+                                 label: currencyFormat(1000)
+                              },
+                              {
+                                 value: 1500,
+                                 label: currencyFormat(1500)
+                              },
+                              {
+                                 value: 2000,
+                                 label: currencyFormat(2000)
+                              },
+                              {
+                                 value: 5000,
+                                 label: currencyFormat(5000)
+                              },
+                              {
+                                 value: 7500,
+                                 label: currencyFormat(7500)
+                              },
+                           ]}
+                           onChange={(e) =>
+                              setForm({
+                                 ...form,
+                                 sumInsured: parseFloat(e.target.value),
+                              })
+                           }
+                        />
+                        <Input
+                           name="form"
+                           label="Standard Excesst"
+                           inputClass="border-gray-500 rounded"
+                           horizontalInput
+                           wrapperClass="mb-4"
+                           labelClassName="flex flex-row-reverse justify-end"
+                           labelClass="md:mr-8"
+                           type="select"
+                           value={form.standardExcess}
+                           items={[
+                              {
+                                 value: 100,
+                                 label: currencyFormat(100)
+                              },
+                              {
+                                 value: 250,
+                                 label: currencyFormat(250),
+                              },
+                              {
+                                 value: 500,
+                                 label: currencyFormat(500),
+                              },
+                              {
+                                 value: 750,
+                                 label: currencyFormat(750),
+                              },
+                              {
+                                 value: 1000,
+                                 label: currencyFormat(1000)
+                              },
+                              {
+                                 value: 1500,
+                                 label: currencyFormat(1500)
+                              },
+                              {
+                                 value: 2000,
+                                 label: currencyFormat(2000)
+                              },
+                              {
+                                 value: 5000,
+                                 label: currencyFormat(5000)
+                              },
+                              {
+                                 value: 7500,
+                                 label: currencyFormat(7500)
+                              },
+                           ]}
+                           onChange={(e) =>
+                              setForm({
+                                 ...form,
+                                 standardExcess: parseFloat(e.target.value),
+                              })
+                           }
+                        />
+                        <SelectionButtonInput
+                           label="Has the business or any director who will receive protection under this section had any previous tax audits?"
+                           labelClass="!w-full"
+                           inputClass="w-full pl-3"
+                           value={form.taxAudits}
+                           onChange={(value) => setForm({ ...form, taxAudits: value })}
+                        />
+
+                        {/* <Selection
+                           label="Has the business or any director who will receive protection under this section had any previous tax audits?"
+                           className="pl-14 justify-center"
+                           value={form.taxAudits ? 1 : 0}
+                           setSetter={(value) => {
+                              setForm({
+                                 ...form,
+                                 taxAudits: value === 1 ? true : false
+                              })
+                           }}
+                        /> */}
+                        <Selection
+                           label="Has or is the business been or is involved in any tax avoidance schemes?"
+                           className="pl-14 justify-center"
+                           value={form.taxAvoidanceSchemes ? 1 : 0}
+                           setSetter={(value) => {
+                              setForm({
+                                 ...form,
+                                 taxAvoidanceSchemes: value === 1 ? true : false
+                              })
+                           }}
+                        />
+                        <Selection
+                           label="Has the business had any previous TaxAudits?"
+                           className="py-3 pl-14 justify-center"
+                           value={form.previousTaxAudits ? 1 : 0}
+                           setSetter={(value) => {
+                              setForm({
+                                 ...form,
+                                 previousTaxAudits: value === 1 ? true : false
+                              })
+                           }}
+                        />
+                        <Selection
+                           label="Have you had any legal disputes in the last 3 years ?"
+                           className="py-3 pl-14 justify-center"
+                           value={form.legalDisputesLast3Years ? 1 : 0}
+                           setSetter={(value) => {
+                              setForm({
+                                 ...form,
+                                 legalDisputesLast3Years: value === 1 ? true : false
+                              })
+                           }}
+                        />
+                        <Selection
+                           label="Have you complied with your statutory requirements ?"
+                           className="pl-14 justify-center"
+                           value={form.haveStatutoryRequirements ? 1 : 0}
+                           setSetter={(value) => {
+                              setForm({
+                                 ...form,
+                                 haveStatutoryRequirements: value === 1 ? true : false
+                              })
+                           }}
+                        />
+                     </div>
+
+                     <div className="border-2 border-[#c9d9de]  my-10" />
+                  </div>
+               </div>
+            </div>
+         </div>
+      </>
+
+
+
+
+   )
+}

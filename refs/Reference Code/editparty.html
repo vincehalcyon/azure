@@ -1,0 +1,76 @@
+// const editParty = () => {
+  //   setFormErrors([]);
+
+  //   let notRequired = [
+  //     "require",
+  //     "gnaf_code",
+  //     "buildingCoverType",
+  //     "multipleBuildingLocation",
+  //     "constructionYear",
+  //     "numberOfStoreys",
+  //     "floor_construction_type",
+  //     "wall_construction_type",
+  //     "roof_construction_type",
+  //     "lowestFloorOccupied",
+  //     "fireRiskClass",
+  //     "lastYearRewired",
+  //     "isHeritage",
+  //     "epsPercentage",
+  //     "is_50_percent_vacant",
+  //     "locationType"
+  //   ];
+
+  //   let requiredKeys = Object.keys(locationBuildingDetails).filter(
+  //     (key) => !notRequired.includes(key)
+  //   );
+
+  //   let errors = [];
+
+  //   requiredKeys.map((key) => {
+  //     if (!locationBuildingDetails[key]) {
+  //       let formattedKey = snakeCaseString(key);
+  //       let keyLabel = formattedKey
+  //         .split("_")
+  //         .map((item) =>
+  //           ["of"].includes(item)
+  //             ? item
+  //             : item[0].toUpperCase() + item.substring(1, item.length)
+  //         );
+  //       let label = keyLabel.join(" ");
+  //       if (label === "Building Name") label = "Building Name";
+  //       errors.push({
+  //         field: key,
+  //         message: `${label} is required.`,
+  //       });
+  //     }
+  //   });
+
+  //   if (errors.length) {
+  //     setFormErrors(errors);
+  //     console.log('setFormErrors2',errors)
+  //     // return;
+  //   } else {
+  //     setTab([{ id: 1, label: "Building Security Details" }]);
+  //   }
+  // };
+
+
+  const { data: quotes, isValidating: quotesIsValidating } =
+    useInsuranceRequest( authUser &&
+      {
+        url: `/quotes?filter[company_id]=${authUser.companyId}&include=quoteOptions&page=${pagination.currentPage}${
+          // filterParams.length ? `&${filterParams.join("&")}` : ""
+          filterQuery ? `&${filterQuery}` : ""
+        }${sortQuery ? `&sort=${sortQuery}` : ""}`,
+      },
+      {
+        onSuccess: (res) => {
+          let metaPagination = res?.meta?.pagination;
+          setPagination({
+            ...pagination,
+            total: metaPagination.total,
+            page: metaPagination.current_page,
+          });
+        },
+      }
+    );

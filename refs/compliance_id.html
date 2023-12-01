@@ -1,0 +1,301 @@
+import Header from "components/Header/Header";
+import React, { useEffect, useState } from "react";
+import Router, { useRouter } from 'next/router';
+
+export default function Filter() {
+   const router = useRouter();
+   // const queryType = router.query.type ? router.query.type : "";
+   const status = router.query.status ? router.query.status : "";
+
+   const tabs = [
+      {
+         title: "All Categories",
+         url: "/compliance/filter?type=All",
+      },
+      {
+         title: "Certification",
+         url: "/compliance/filter?type=Certification",
+      },
+      {
+         title: "Regulation",
+         url: "/compliance/filter?type=Regulation",
+      },
+      {
+         title: "Documentation",
+         url: "/compliance/filter?type=Documentation",
+      },
+      {
+         title: "Policy Document",
+         url: "/compliance/filter?type=Policy",
+      },
+   ];
+
+   const allCompliance = [
+      {
+         id: 1,
+         title: 'Iso Certificate 1002',
+         date: '10-07-2021',
+         file: '/img/study.jpg',
+         status: "Certification"
+      },
+      {
+         id: 2,
+         title: 'Iso Certificate 1003',
+         date: '10-07-2021',
+         file: '/img/study.jpg',
+         status: "Certification"
+      },
+      {
+         id: 3,
+         title: 'Iso Certificate 1004',
+         date: '10-07-2021',
+         file: '/img/study.jpg',
+         status: "Certification"
+      },
+      {
+         id: 4,
+         title: 'New Regulation 2022',
+         date: '10-07-2021',
+         file: '/img/study.jpg',
+         status: "Regulation"
+      },
+      {
+         id: 5,
+         title: 'New Document 2022',
+         date: '10-07-2021',
+         file: '/img/study.jpg',
+         status: "Documentation"
+      },
+      {
+         id: 6,
+         title: 'Operation Policy',
+         date: '10-07-2021',
+         file: '/img/study.jpg',
+         status: "Policy"
+      },
+      {
+         id: 7,
+         title: 'Basic Tax Policy',
+         date: '10-07-2021',
+         file: '/img/study.jpg',
+         status: "Policy"
+      },
+   ]
+
+   const [filterCompliance, setFilterCompliance] = useState(allCompliance)
+
+   const type = router.query.type
+
+   useEffect(() => {
+      // console.log("type", router.asPath)
+      // console.log(router.query.status, "router.query.status")
+      if (router.asPath.includes('type')) {
+         if (type !== 'All') {
+
+            const filtered = allCompliance.filter(item => item.status === type)
+            setFilterCompliance(filtered)
+
+            return
+         }
+         
+         setFilterCompliance(allCompliance)
+         
+         router.push("/compliance/filter?type=All")
+         
+         return
+      }
+
+      router.push("/compliance/filter?type=All")
+     
+   }, [type, router.query.status])
+
+   return (
+      <>
+         <Header page="Compliance " />
+         <div className="flex flex-col px-10 pt-10 pb-20 items">
+            <div className="flex items-center overflow-x-auto whitespace-nowrap gap-4">
+               {tabs &&
+                  tabs.map((tab, index) =>
+                     tab.title === status ? (
+                        <div
+                           key={index}
+                           className="cursor-pointer w-full py-3 text-sm text-center whitespace-nowrap px-4 cursor-pointer"
+                        >
+                           {tab.title}
+                        </div>
+                     ) : (
+                        <div
+                           key={index}
+                           className={tab.title.includes(type) ? 'text-sm py-3 font-montserratBold text-contenta-greyish-brown border-b-4 border-contenta-blue cursor-pointer' : 'text-contenta-gray py-3 my-2 text-sm font-montserratBold cursor-pointer'}
+                           aria-label={tab.title}
+                           onClick={() => {
+                              router.push(tab.url)
+                              console.log('tab', tab.title)
+                              if (tab.title !== 'All Categories') {
+
+                                 const filtered = allCompliance.filter(item => item.status === tab.title)
+                                 setFilterCompliance(filtered)
+
+                                 return
+                              }
+
+                              setFilterCompliance(allCompliance)
+                              // console.log('type', filterCompliance);
+
+                           }}
+                        >
+                           {tab.title}
+                        </div>
+                     )
+                  )}
+            </div>
+            <div className="flex flex-col lg:flex-row xl:flex-row  flex-wrap m-2">
+               
+            {filterCompliance.map((item, i) =>(
+                  <div key={ i } className="items-center rounded mx-4 my-6">
+                     <div className="flex-col justify-center flex-wrap fhd:max-w-sm`` fhd:max-w-sm`` fhd:max-w-sm`` xl:max-w-sm xl:min-w-sm xl:max-h-ssm xl:min-h-ssm lg:max-w-68 lg:min-w-68 bg-white rounded-xl shadow-lg">
+                     <img 
+                        className="
+                        object-cover 
+                        fhd:h-72 
+                        fhd:w-80 
+                        xxl:h-72 
+                        xxl:w-80 
+                        xl:h-72 
+                        xl:w-80
+                        lg:h-68 
+                        lg:w-96 
+                        rounded-tl-xl 
+                        rounded-tr-xl
+                        " 
+                        src={item.file}
+                     />
+
+                     <div className="text-sm break-normal m-3 font-sansaProBold text-sodexo-dark-purple-blue">
+                     {item.title}
+                     </div>
+
+                     <div className="flex flex-row flex-wrap text-xs m-3 items-center text-gray-700">
+                        <div className="m-1">
+                           Added {item.date}
+                        </div>
+
+                        <div className="m-1">
+                           Added {item.date}
+                        </div>
+                     </div>
+
+                     {
+                        item.status === 'Certification' && 
+                        (
+                           <div className="px-4 py-1 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-seaweed-green text-contenta-jungle-green">
+                              Certification
+                           </div>
+                        )
+                     }
+                     {
+                        item.status === 'Regulation' && 
+                        (
+                           <div className="px-4 py-1 rounded-xl text-sm font-montserratBold justify-center flex text-contenta-darkish-red bg-contenta-pinky-red">
+                              Regulation
+                           </div>
+                        )
+                     }
+                     {
+                        item.status === 'Documentation' && 
+                        (
+                           <div className="px-4 py-1 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-blue text-contenta-light-blue">
+                              Documentation
+                           </div>
+                        )
+                     }
+                     {
+                        item.status === 'Policy' && 
+                        (
+                           <div className="px-4 py-1 rounded-xl text-sm font-montserratBold justify-center flex bg-gray-300 text-contenta-greyish-brown">
+                              Policy
+                           </div>
+                        )
+                     }
+                     </div>
+                  </div>
+               ))
+               }
+            </div>
+            {/* <div className="flex flex-col lg:flex-row xl:flex-row  fhd:items-start xxl:items-start xl:items-start items-center flex-wrap m-2 gap-3">
+               {filterCompliance.map((item, i) =>
+                  <div
+                     className="flex-1 items-center justify-center rounded  max-w-sm"
+                     key={i}
+                  >
+                     <div className="flex flex-col justify-center items-center flex-wrap fhd:max-w-sm`` xxl:max-w-md xl:max-w-md lg:max-w-md fhd:min-w-md xxl:min-w-md xl:min-w-md min-w-64 bg-white rounded-xl shadow-lg ">
+                        <img
+                           className="
+                              object-cover 
+                              fhd:h-72 
+                              xxl:h-60 
+                              xl:h-60 
+                              lg:h-48 
+                              w-full
+                              rounded-tl-xl 
+                              rounded-tr-xl
+                              "
+                           src={item.file}
+                        />
+                        <div className="text-sm break-normal mt-3 px-3 text-contenta-greyish-brown font-montserratBold truncate fhd:max-w-sm xxl:max-w-sm xl:max-w-xs lg:max-w-56 max-w-xs">
+                           {item.title}
+                        </div>
+                        <div className="flex flex-row fhd:text-xs xxl:text-xs xl:text-xs lg:text-xxs text-xs fhd:m-2 xxl:m-2 xl:m-2 items-center text-gray-700">
+                           <div className="text-contenta-greyish-brown font-montserratRegular">
+                              Added {item.date}
+                           </div>
+                        </div> 
++                        <!-- <span 
+                            className={`text-sm py-1 px-5 rounded-full font-montserratBold ${data?.status === "Certification" ? "bg-contenta-seaweed-green text-contenta-jungle-green " :
+                               "text-contenta-darkish-red bg-contenta-pinky-red "}`} >
+                            {data?.status}
+-                        </span> -->
+                        <div
+                           className="text-sm break-normal px-3 text-sodexo-dark-purple-blue pb-4"
+                        >
+                           {
+                              item.status === 'Certification' && 
+                              (
+                                 <div className="px-4 py-1 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-seaweed-green text-contenta-jungle-green">
+                                    Certification
+                                 </div>
+                              )
+                           }
+                           {
+                              item.status === 'Regulation' && 
+                              (
+                                 <div className="px-4 py-1 rounded-xl text-sm font-montserratBold justify-center flex text-contenta-darkish-red bg-contenta-pinky-red">
+                                    Regulation
+                                 </div>
+                              )
+                           }
+                           {
+                              item.status === 'Documentation' && 
+                              (
+                                 <div className="px-4 py-1 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-blue text-contenta-light-blue">
+                                    Documentation
+                                 </div>
+                              )
+                           }
+                           {
+                              item.status === 'Policy' && 
+                              (
+                                 <div className="px-4 py-1 rounded-xl text-sm font-montserratBold justify-center flex bg-gray-300 text-contenta-greyish-brown">
+                                    Policy
+                                 </div>
+                              )
+                           }
+                        </div>
+                     </div>
+                  </div>
+               )}
+            </div> */}
+         </div>
+      </>
+   )
+}

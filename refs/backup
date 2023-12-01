@@ -1,0 +1,230 @@
+import React, { useState, useEffect } from 'react';
+import DefaultLayout from '@/layouts/DefaultLayout';
+import AppButton from '@/components/Base/AppButton';
+import { 
+   HiOutlineArrowCircleDown,
+   HiOutlineArrowCircleRight
+  } from "react-icons/hi";
+
+const Merchants = () => {
+   const [showPeperGift, setShowPeperGift] = useState(true)
+   const [showDigitalGift, setShowDigitalGift] = useState(false)
+
+   const [branch, setBranch] = useState([
+      {
+         id: 1,
+         title: 'National Capital Region branches',
+         branches: 'BRANCH NAME'
+      },
+      {
+         id: 2,
+         title: 'North Luzon Branches',
+         branches: 'BRANCH NAME'
+      },
+      {
+         id: 3,
+         title: 'South Luzon Branches',
+         branches: 'BRANCH NAME'
+      },
+      {
+         id: 4,
+         title: 'Visayas Branches',
+         branches: 'BRANCH NAME'
+      },
+      {
+         id: 5,
+         title: 'Mindanao Branches',
+         branches: 'BRANCH NAME'
+      }
+   ])
+   const [digital, setDigital] = useState([
+      {
+         id: 6,
+         title: 'National Capital Region branchessssssssss',
+         branches: 'BRANCH NAME'
+      },
+      {
+         id: 7,
+         title: 'North Luzon Branches',
+         branches: 'BRANCH NAME'
+      },
+      {
+         id: 8,
+         title: 'South Luzon Branches',
+         branches: 'BRANCH NAME'
+      },
+      {
+         id: 9,
+         title: 'Visayas Branches',
+         branches: 'BRANCH NAME'
+      },
+      {
+         id: 10,
+         title: 'Mindanao Branches',
+         branches: 'BRANCH NAME'
+      }
+   ])
+   const DropdownBranches = ({merchantsBranches}) => {
+      return (
+         <>
+            <div className="rounded-b-xl border-default border-gray-500 shadow-md p-2 md:p-8">
+               {merchantsBranches.map((branches, i) => 
+                  <div className="shadow-md" key={i}>
+                     <div className="tab w-full overflow-hidden">
+                        <input className="absolute opacity-0 " id="tab-multi-one" type="checkbox" name="tabs"/>
+                        <label className="block p-5 cursor-pointer text-gray-600 font-sansaProBold " htmlFor="tab-multi-one">
+                           {branches.title}
+                        </label>
+                        <div className="flex flex-col sm:flex-row tab-content overflow-hidden bg-gray-100 flex items-center shadow-md justify-between">
+                           <p className="p-5 ml-3 text-sm uppercase text-sodexo-dark-purple-blue">
+                              {branches.branches}
+                           </p>
+                           <AppButton
+                              label="Get Directions"
+                              customTheme='bg-sodexo-fuschia text-white px-5 py-2 mb-2 rounded border-default text-sm ' 
+                              labelClass="flex-row-reverse"
+                           />
+                        </div>
+                     </div>
+                  </div>
+               )}
+            </div>
+         </>
+      )
+   }
+   return (
+      <DefaultLayout>
+         <>
+            <div className="flex flex-col items">
+               <div className="flex flex-col justify-center items-center py-10">
+                  <div className="flex flex-col lg:flex-row xl:flex-row w-10/12 p-2 py-5 lg:py-10">
+                     <div className="flex items-center justify-center rounded-xl border-default border-gray-500 shadow-md p-5 m-2">
+                        <img className="object-contain w-96 rounded-tl-xl rounded-tr-xl" src="/img/logos/sm-logo.jpg" />
+                     </div>
+                     <div className="w-full">
+                        <div className="my-5">
+                           <div className="text-sm md:text-3xl text-sodexo-fuschia uppercase m-4 my-10">
+                              Merchant brand name here.
+                           </div>
+                           <div className="px-5">
+                              <span className="text-sodexo-dark-purple-blue text-xs">
+                                 Accepted GC Types: 
+                              </span>
+                              <span className="text-gray-700 text-xs px-2">
+                                  Paper GC Type 1, Paper GC Type 2, Digital GC Type 1, Digital GC Type 2
+                              </span>
+                           </div>
+                           <div className="text-gray-700 text-sm my-10 m-4">
+                              <p>
+                                 Voluntas sint illo fugiat et omnis neque. Culpa facilis voluptatem aperiam. Odit asperiores deserunt. 
+                                 In quibusdam explicabo quae dignissimos et repellat. Et recusandae omnis in officiis velit recusandae. Est enim quia dolor commodi sit. Surprise your Dad with this promo. Voluptas sint illo fugiat et omnis neque. Culpa facilis volumtatem aperiam. Odit.
+                              </p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div className=" flex w-10/12 justify-center">
+                     <div className="flex flex-col w-full rounded-xl border-default border-gray-500 shadow-md">
+                        <div className="flex">
+                           <AppButton
+                              label="Accepting Paper Gift Certificates"
+                              customTheme={showPeperGift ? 'w-full bg-sodexo-dark-purple-blue text-white px-1 py-10 rounded-tl-xl border-default text-sm font-sansaProBold ' : 'w-full font-sansaProBold bg-transparent text-gray-600 hover:text-sodexo-dark-purple-blue px-1  py-3 rounded-tl-xl border-default text-sm '}
+                              labelClass="flex-row-reverse"
+                              onPress={(e) => {
+                              setShowPeperGift(true)
+                              setShowDigitalGift(false)
+                              }}
+                           />
+                           <AppButton
+                              label="Accepting Digital Gift Certificates"
+                              customTheme={showDigitalGift ? 'w-full bg-sodexo-dark-purple-blue text-white px-1 py-10 rounded-tr-xl border-default text-sm font-sansaProBold ' : 'w-full font-sansaProBold bg-transparent text-gray-600 hover:text-sodexo-dark-purple-blue px-1  py-3 rounded-tr-xl border-default text-sm '}
+                              labelClass="flex-row-reverse"
+                              onPress={(e) => {
+                              setShowPeperGift(false)
+                              setShowDigitalGift(true)
+                              }}
+                           />
+                        </div>
+                        <div> 
+                           {
+                              showPeperGift 
+                              ? 
+                              // <DropdownBranches 
+                              //    merchantsBranches={branch}
+                              // />
+                              <>
+                                 <div className="flex flex-col xl:flex-row lg:flex-row items-center justify-center p-5">
+                                    <div className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-64 flex flex-col items-center ">
+                                       <img className="object-contain w-full rounded-xl rounded-tr-xl" src="/img/logos/sm-logo.jpg" />
+                                       <div className="p-5 flex flex-col text-sodexo-dark-purple-blue items-center justify-center">
+                                          <span>STEP 1</span>
+                                          <div className="border-b-2 w-15 justify-center text-sodexo-red" />
+                                       </div>
+                                       <p className="text-sm">Voluptas sint illo fugiat et monis neque. Culpa facilis </p>
+                                    </div>
+                                    <div className="flex items-center hidden lg:block xl:block justify-center text-sodexo-fuschia m-10">
+                                       <HiOutlineArrowCircleRight size={45}/>
+                                    </div>
+                                    <div className="flex items-center block lg:hidden xl:hidden justify-center text-sodexo-fuschia m-5">
+                                       <HiOutlineArrowCircleDown size={45}/>
+                                    </div>
+                                    <div className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-64 flex flex-col items-center">
+                                       <img className="object-contain w-full rounded-xl rounded-tr-xl" src="/img/logos/sm-logo.jpg" />
+                                       <div className="p-5 flex flex-col text-sodexo-dark-purple-blue items-center justify-center">
+                                          <span>STEP 1</span>
+                                          <div className="border-b-2 w-15 justify-center text-sodexo-red" />
+                                       </div>
+                                       <p className="text-sm">Voluptas sint illo fugiat et monis neque. Culpa facilis </p>
+                                    </div>
+                                    <div className="flex items-center hidden lg:block xl:block justify-center text-sodexo-fuschia m-10">
+                                       <HiOutlineArrowCircleRight size={45}/>
+                                    </div>
+                                    <div className="flex items-center block lg:hidden xl:hidden justify-center text-sodexo-fuschia m-5">
+                                       <HiOutlineArrowCircleDown size={45}/>
+                                    </div>
+                                    <div className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-64 flex flex-col items-center">
+                                       <img className="object-contain w-full rounded-xl rounded-tr-xl" src="/img/logos/sm-logo.jpg" />
+                                       <div className="p-5 flex flex-col text-sodexo-dark-purple-blue items-center justify-center">
+                                          <span>STEP 1</span>
+                                          <div className="border-b-2 w-15 justify-center text-sodexo-red" />
+                                       </div>
+                                       <p className="text-sm">Voluptas sint illo fugiat et monis neque. Culpa facilis </p>
+                                    </div>
+                                    <div className="flex items-center hidden lg:block xl:block justify-center text-sodexo-fuschia m-10">
+                                       <HiOutlineArrowCircleRight size={45}/>
+                                    </div>
+                                    <div className="flex items-center block lg:hidden xl:hidden justify-center text-sodexo-fuschia m-5">
+                                       <HiOutlineArrowCircleDown size={45}/>
+                                    </div>
+                                    <div className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-64 flex flex-col items-center">
+                                       <img className="object-contain w-full rounded-xl rounded-tr-xl" src="/img/logos/sm-logo.jpg" />
+                                       <div className="p-5 flex flex-col text-sodexo-dark-purple-blue items-center justify-center">
+                                          <span>STEP 1</span>
+                                          <div className="border-b-2 w-15 justify-center text-sodexo-red" />
+                                       </div>
+                                       <p className="text-sm">Voluptas sint illo fugiat et monis neque. Culpa facilis </p>
+                                    </div>
+                                 </div>
+                              </>
+                              
+                              : <></>
+                           }
+                           {
+                              showDigitalGift 
+                              ? 
+                              <DropdownBranches
+                                 merchantsBranches={digital}
+                              />
+                              : <></>
+                           }
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </>
+      </DefaultLayout>
+   )
+}
+
+export default Merchants

@@ -1,0 +1,299 @@
+
+
+
+  const [uninsuredExpenses, setUninsuredExpenses] = useState(
+        {
+            workingExpenses: '',
+        }
+    )
+
+
+onClick={(e) => {
+    e.preventDefault();
+    console.log("clicked", e);
+    setUninsuredExpenses({
+        ...uninsuredExpenses,
+        workingExpenses: "No"
+    });
+    // setSetter(false);
+}}
+
+setSetter={(value) => {
+    setNumberOfEmployeesData({
+        ...numberOfEmployeesData,
+        protectTaxAudits: value === 1 ? 'Yes' : 'No'
+    })
+}}
+
+<Select
+    id="quotes"
+    instanceId="quotes"
+    options={financialProtectionDropdown}
+    value={businessInteruption.financialProtection ? businessInteruption.financialProtection : null}
+    // isMulti
+    styles={{
+        control: (controlStyles) => ({
+            ...controlStyles,
+            ":hover": { borderColor: "#de4523" },
+            borderRadius: 4,
+            borderWidth: 1,
+            // borderColor: "#de4523",
+            minWidth: 400,
+            maxWidth: 700,
+            width: "100%",
+            outlineColor: "#de4523",
+            boxShadow: "none",
+        }),
+        multiValueRemove: (styles, { data }) => ({
+            ...styles,
+            color: "#de4523",
+        }),
+        multiValue: (styles, { data }) => {
+            return {
+                ...styles,
+                // backgroundColor: "transparent",
+                border: "1px solid #ccc",
+                borderRadius: 4,
+            };
+        },
+    }}
+    menuColor="#de4523"
+    onMenuScrollToBottom={() => {
+        console.log("onMenuScrollToBottom");
+    }}
+    placeholder={"< Financial Protection >"}
+    // onChange={(e) => {
+    //     console.log("onChange", e);
+    // }}
+    onChange={(e) => {
+        console.log("onChange", e);
+        setBusinessInteruption({ ...businessInteruption, financialProtection: {value: e.value, label: e.label} })
+    }}
+/>
+
+setSetter={(value) => {
+    setLocationBuildingDetails({
+        ...locationBuildingDetails,
+        epsBuildPercentValue: value === 1 ? 'Yes' : 'No'
+    })
+}}
+
+onChange={(e) => setBusinessInteruption(prev => {
+    return {...prev, costOfWorking: e.target.value}
+})}
+
+numberStoreysValue: {
+    value: 0,
+    label: 0,
+},
+floorConstructinTypeValue: {
+    value: '',
+    label: '',
+},
+wallConstructinTypeValue: {
+    value: '',
+    label: '',
+},
+roofConstructinTypeValue: {
+    value: '',
+    label: '',
+},
+lowestFloorOccupyValue: {
+    value: '',
+    label: '',
+},
+
+
+BACKUP
+ {/* <Select
+    id="quotes"
+    instanceId="quotes"
+    options={gnafCodeDropdown}
+    value={locationData.gnafCode ? locationData.gnafCode : null}
+    isMulti
+    styles={{
+        control: (controlStyles) => ({
+            ...controlStyles,
+            ":hover": { borderColor: "#de4523" },
+            borderRadius: 4,
+            borderWidth: 1,
+            // borderColor: "#de4523",
+            minWidth: 400,
+            // maxWidth: 700,
+            width: "100%",
+            outlineColor: "#de4523",
+            boxShadow: "none",
+        }),
+        multiValueRemove: (styles, { data }) => ({
+            ...styles,
+            color: "#de4523",
+        }),
+        multiValue: (styles, { data }) => {
+            return {
+                ...styles,
+                backgroundColor: "transparent",
+                border: "1px solid #ccc",
+                borderRadius: 4,
+            };
+        },
+    }}
+    menuColor="#de4523"
+    onMenuScrollToBottom={() => {
+        console.log("onMenuScrollToBottom");
+    }}
+    placeholder={"Select Option"}
+    onChange={(e) => {
+        console.log("onChange", e);
+        setlocationData({ ...locationData, gnafCode: {value: e.value, label: e.label} })
+    }}
+    // onChange={(e) => {
+    //     console.log("onChange", e);
+    // }} 
+/> */}
+
+
+
+
+DROP DOWN CHECK LOCKING
+
+  const [selectedStatuses, setSelectedStatuses] = useState([])
+
+   selectedStatuses.map((data) => {
+        status = `&status[]=${data.value}${status}`
+      })
+
+
+
+ const ValueContainer = ({ children, ...props }) => {
+    let [values, input] = children;
+  
+    if (Array.isArray(values)) {
+      const plural = values.length === 1 ? "" : "s";
+      values = `${values.length} item${plural} selected`;
+    }
+  
+    return (
+      <components.ValueContainer {...props}>
+        {values}
+        {input}
+      </components.ValueContainer>
+    );
+  };
+
+
+<Select
+  styles={selectStyles}
+  label="Status"
+  className=""
+  classNamePrefix="select"
+  value={selectedStatuses}
+  options={[
+    { value: 'Pending', label: 'Pending' },
+    { value: 'Waiting for Payment', label: 'Waiting for Payment' },
+    { value: 'Paid', label: 'Paid' },
+    { value: 'Payment Failed', label: 'Payment Failed' },
+    { value: 'Cancelled', label: 'Cancelled' },
+    { value: 'Processing', label: 'Processing' },
+    { value: 'Out For Delivery', label: 'Out For Delivery' },
+    { value: 'Delivered', label: 'Delivered' },
+  ]}
+  onChange={selectedStatuses => setSelectedStatuses(selectedStatuses)}
+  isMulti
+  hideSelectedOptions={false}
+  components={{ ValueContainer }}
+/>
+
+setLocationBuildingDetails({ ...locationBuildingDetails, buildingSecurityDetail: {...locationBuildingDetails.buildingSecurityDetail,  fireSprinkler: { value: e.value, label: e.label } }  })
+
+buildingSecurityDetail: {...locationBuildingDetails.buildingSecurityDetail, isConnectedWaterMains: value === 1 ? 'Yes' : 'No'}
+
+disabled={addressFormData.address === '' || addressFormData.suburb === '' || addressFormData.postcode === '' || addressFormData.state === ''}
+
+onChange={(e) => setLocationBuildingDetails(prev => {
+    return { ...prev, buildingName: e.target.value }
+})}
+
+MARIEL
+<Select
+id="quotes"
+instanceId="quotes"
+options={locationOptions}
+styles={{
+    control: (controlStyles) => ({
+        ...controlStyles,
+        ":hover": { borderColor: "#de4523" },
+        borderRadius: 4,
+        borderWidth: 1,
+        // borderColor: "#de4523",
+        minWidth: 300,
+        maxWidth: 400,
+        width: "100%",
+        outlineColor: "#de4523",
+        boxShadow: "none",
+    }),
+    multiValueRemove: (styles, { data }) => ({
+        ...styles,
+        color: "#de4523",
+    }),
+    multiValue: (styles, { data }) => {
+        return {
+            ...styles,
+            backgroundColor: "transparent",
+            border: "1px solid #ccc",
+>>>>>>> f1287bd02ab67e0ab4d1866c243e9813a542ee01
+            borderRadius: 4,
+            borderWidth: 1,
+            // borderColor: "#de4523",
+            minWidth: 300,
+            maxWidth: 400,
+            width: "100%",
+            outlineColor: "#de4523",
+            boxShadow: "none",
+        }),
+        multiValueRemove: (styles, { data }) => ({
+            ...styles,
+            color: "#de4523",
+        }),
+        multiValue: (styles, { data }) => {
+            return {
+                ...styles,
+                backgroundColor: "transparent",
+                border: "1px solid #ccc",
+                borderRadius: 4,
+            };
+        },
+    }}
+    menuColor="#de4523"
+    onMenuScrollToBottom={() => {
+        console.log("onMenuScrollToBottom");
+    }}
+    placeholder={"Select Location"}
+    onChange={(e) => {
+        console.log("SELECTED LOCATION", e.value)
+        onLocationSelect(e.value)
+    }} />
+</div>
+
+
+
+
+
+
+
+
+
+value={locationBuildingDetails.multipleBuildingLocation ? muiltipleBuildingsLocationDropdown.find(item => item.value === locationBuildingDetails.multipleBuildingLocation) : null}
+
+
+onChange={(e) => {
+    console.log("onChange", locationBuildingDetails.multipleBuildingLocation, e);
+    setLocationBuildingDetails({ ...locationBuildingDetails, multipleBuildingLocation: e.value })
+}}
+
+ onChange={(e) => {
+    console.log("onChange", e);
+    setLocationBuildingDetails({...locationBuildingDetails, fireProtection: e.value })
+}}
+
+
+value={locationBuildingDetails.fireProtection ? fireProtectionLocationDropdown.find(item => item.value === locationBuildingDetails.fireProtection) : null}

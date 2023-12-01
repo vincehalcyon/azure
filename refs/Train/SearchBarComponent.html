@@ -1,0 +1,32 @@
+import React, { useState } from 'react'
+import { AiOutlineSearch } from 'react-icons/ai'
+
+export const SearchBar = ({ items, onFilter }) => {
+   const [searchQuery, setSearchQuery] = useState('');
+
+   const handleSearch = (e) => {
+      const query = e.target.value;
+      setSearchQuery(query);
+      onFilter(query);
+    };
+
+   return (
+      <div className="relative pt-2 mx-auto text-gray-600">
+         <input
+            className="h-10 px-5 pr-16 text-sm bg-white border-2 border-gray-300 rounded-lg focus:outline-none"
+            type="search"
+            name="search"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={handleSearch}
+         />
+         <button
+            type="submit"
+            className="absolute top-0 right-0 mt-5 mr-4"
+            onClick={handleSearch}
+         >
+            <AiOutlineSearch size={20} />
+         </button>
+      </div>
+   )
+}

@@ -1,0 +1,505 @@
+import React, { useState, useEffect } from 'react';
+import DefaultLayout from '@/layouts/DefaultLayout';
+import AppButton from '@/components/Base/AppButton';
+import AppInput from '@/components/Base/AppInput';
+const HomePage = () => {
+  const top = [
+    {
+      id: '1',
+      image: '/img/logos/yellow-cab-logo.jpg',
+    },
+    {
+      id: '2',
+      image: '/img/logos/miniso-logo.jpg'
+    },
+    {
+      id: '3',
+      image: '/img/logos/robinsons-logo.jpg'
+    },
+    {
+      id: '4',
+      image: '/img/logos/starbucks-logo.jpg'
+    },
+  ]
+  const merchant = [
+    {
+      image: '/img/logos/yellow-cab-logo.jpg'
+    },
+    {
+      image: '/img/logos/miniso-logo.jpg'
+    },
+    {
+      image: '/img/logos/robinsons-logo.jpg'
+    },
+    {
+      image: '/img/logos/starbucks-logo.jpg'
+    },
+  ]
+
+  const latestnews = [
+    {
+      image: '/img/logos/yellow-cab-logo.jpg',
+      title: '10 Reasons to Consider GC Regalo',
+      date: 'June 16, 2021',
+      time: '3',
+    },
+    {
+      image: '/img/logos/miniso-logo.jpg',
+      title: '10 Reasons to Consider GC Regalo',
+      date: 'June 16, 2021',
+      time: '3',
+    },
+    {
+      image: '/img/logos/starbucks-logo.jpg',
+      title: '10 Reasons to Consider GC Regalo',
+      date: 'June 16, 2021',
+      time: '3',
+    },
+  ]
+
+  const icon = [
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    {
+      icon: 'icon here',
+      title: 'Title Here'
+    },
+    
+  ]
+
+  const [shippingForm, setShippingForm] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  })
+  const [formErrors, setFormErrors] = useState([])
+  return (
+    <DefaultLayout>
+      <>
+        <div className="flex flex-col bg-gray-300">
+          <div className="flex justify-center my-4 pt-20 h-96">
+            
+          </div>
+        </div>
+        <div className="flex flex-col items-center bg-sodexo-dark-purple-blue">
+          <div className="flex flex-col justify-center items-center my-4 w-full">
+            <div className="flex flex-col items-center w-9/12">
+              <div className="text-lg sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl tracking-wide text-white py-5">
+                INTRODUCTION HERE
+              </div>
+              <div className="text-gray-300 pb-10">
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veniam alias possimus necessitatibus odio sunt, autem cumque asperiores quam iusto consequatur labore minima, maxime eaque expedita corrupti officia omnis! Pariatur, facere! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Maiores dicta dolor neque accusamus alias praesentium! Non ut cumque animi voluptatibus explicabo? Possimus vel velit provident. Corrupti similique dolore iure quia.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="flex flex-col justify-center">
+            <div className="flex justify-start mt-12 mb-8 mx-4">
+              <div className="flex flex-col justify-center lg:items-start">
+                <div className="text-xl sm:text-3xl md:text-4xl tracking-wide text-sodexo-fuschia">
+                  TOP PICKS OF THE MONTH
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col lg:flex-row xl:flex-row justify-center flex-wrap">
+              {top && top.length > 0 
+                ? top.map((item, i) =>
+                <div className="flex items-center justify-center rounded m-3" key={i}>
+                  <div className="flex-col justify-center flex-wrap max-w-md min-w-md bg-white rounded-xl shadow-lg border-default">
+                    <img className="object-contain h-48 w-72 p-3" src={item.image} />
+                    <div className="flex flex-col text-xs m-2 py-6 items-center text-gray-700">
+                      <div className="text-sm break-normal my-2 text-sodexo-dark-purple-blue cursor-pointer uppercase" >
+                        Learn More
+                      </div>
+                      <div className="border-b-2 w-15 justify-center text-sodexo-red" />
+                    </div>
+                  </div>
+                </div>
+                )
+                :<></>
+              }
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="flex flex-col justify-center">
+            <div className="flex justify-center mt-12 mb-8 mx-4">
+              <div className="flex flex-col justify-center lg:items-start">
+                <div className="text-xl lg:text-4xl xl:text-4xl tracking-wide text-sodexo-fuschia">
+                  CHOOSE FROM OVER 12,000 MERCHANTS!
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col lg:flex-row xl:flex-row justify-center flex-wrap">
+              <div className="flex flex-wrap items-center justify-center rounded w-full lg:w-9/12 xl:w-9/12">
+              {icon && icon.length > 0 
+                ? icon.map((icons, i) =>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl" key={i}>
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                )
+                :<></>
+              }
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="flex flex-col justify-center">
+            <div className="flex justify-start mt-12 mb-8 mx-4">
+              <div className="flex flex-col justify-center lg:items-start">
+                <div className="text-xl sm:text-3xl md:text-4xl tracking-wide text-sodexo-fuschia">
+                  MERCHANT SPOTLIGHT
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col lg:flex-row xl:flex-row justify-center flex-wrap m-2">
+              {merchant && merchant.length > 0 
+                ? merchant.map((item, i) =>
+                <div className="flex items-center justify-center rounded m-3" key={i}>
+                  <div className="flex-col justify-center flex-wrap max-w-md min-w-md bg-white rounded-xl shadow-lg border-default">
+                    <img className="object-contain h-72 w-72 p-3" src={item.image} />
+                    <div className="flex flex-col text-xs m-2 py-6 items-center text-gray-700">
+                      <div className="text-sm break-normal my-2 text-sodexo-dark-purple-blue cursor-pointer uppercase" >
+                        Learn More
+                      </div>
+                      <div className="border-b-2 w-15 justify-center text-sodexo-red" />
+                    </div>
+                  </div>
+                </div>
+                )
+                :<></>
+              }
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center px-2">
+          <div className="flex flex-col justify-center">
+            <div className="flex justify-center lg:justify-start mt-12 mb-8 mx-4">
+              <div className="flex flex-col items-start">
+                <div className="text-xl sm:text-3xl md:text-4xl tracking-wide text-sodexo-fuschia">
+                  LATEST NEWS
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col lg:flex-row xl:flex-row justify-center flex-wrap">
+              { latestnews && latestnews.length > 0 
+                ? latestnews.map((items, i) =>
+                  <div className="flex items-center justify-center rounded m-3" key={i}>
+                    <div className="flex-col justify-center flex-wrap max-w-md min-w-md bg-white rounded-xl shadow-lg">
+                      <img className="object-contained h-72 w-100 rounded-tl-xl rounded-tr-xl border-default" src={items.image} />
+                      <div className="p-5 pb-6">
+                        <div className="text-sm break-normal font-sansaProBold text-sodexo-dark-purple-blue">
+                          {items.title}
+                        </div>
+                        <div className="flex flex-row text-xs items-center text-gray-700">
+                          <div className="m-1">
+                            {items.date} |
+                          </div>
+                          <div className="m-1">
+                            {items.time} minute read
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+                :<></>
+              }
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col justify-center mt-20">
+          <div className="flex flex-col xl:flex-row lg:flex-row">
+            <div className="flex flex-col w-full bg-sodexo-aquamarine items-center py-10">
+              <div className="justify-start w-full sm:w-1/2 px-6 sm:px-0">
+                <div className="flex flex-col justify-start m-1">
+                  <div className="text-3xl text-sodexo-fuschia tracking-wide">
+                    BE OUR MERCHANT PARTNER!
+                  </div>
+                  <div className="text-sodexo-dark-purple-blue text-sm mt-8 mb-4 max-w-sm">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore. 
+                  </div>
+                  <div className="flex text-gray-600 text-sm mt-8 mb-4 max-w-sm">
+                    <div className="rounded-full bg-sodexo-dark-purple-blue flex p-3"/>
+                    <div className="px-5 mt-1 text-sodexo-dark-purple-blue">
+                      PHONE NUMBER
+                    </div>
+                  </div>
+                  <div className="flex text-gray-600 text-sm mt-8 mb-4 max-w-sm">
+                    <div className="rounded-full bg-sodexo-dark-purple-blue flex p-3"/>
+                    <div className="px-5 mt-1 text-sodexo-dark-purple-blue">
+                      EMAIL
+                    </div>
+                  </div>
+                  <div className="flex text-gray-600 text-sm mt-8 mb-4 max-w-sm">
+                    <div className="rounded-full bg-sodexo-dark-purple-blue flex p-3"/>
+                    <div className="px-5 mt-1 text-sodexo-dark-purple-blue">
+                      SODEXO COMPANY LOCATION
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col justify-center w-full items-center py-10">
+              <div className="justify-start w-full sm:w-1/2 md:w-1/2 lg:w-1/2 xl:w-1/2 px-6 sm:px-0 md:px-0 lg:px-0 xl:px-0">
+                <div className="flex flex-col justify-start max-w-sm m-1">
+                  <div className="text-3xl text-sodexo-fuschia tracking-wide">
+                    INQUIRE NOW
+                  </div>
+                  <div className="text-gray-600 text-sm mt-8 mb-4">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore. 
+                  </div>
+                </div>
+                <div className="flex flex-col w-full text-gray-600">
+                  <div className="mx-1">
+                    <label className="text-sm my-1">
+                      Name
+                    </label>
+                    <AppInput
+                      name="name"
+                      type="text"
+                      size={100}
+                      required
+                      value={shippingForm.name}
+                      placeholder="John Doe"
+                      error={formErrors.find(err=>err.field === 'name')}
+                      onChange={ e => setShippingForm({...shippingForm, name: e.target.value}) }
+                      classNames="bg-white p-2 text-xs sm:text-sm w-full border-1 rounded border-gray-400 focus:border-gray-800 text-gray-800"
+                    />
+                  </div>
+                  <div className="flex items-center w-full">
+                    <div className="mx-1">
+                      <label className="text-sm my-1">
+                        Email
+                      </label>
+                      <AppInput
+                        name="email"
+                        type="text"
+                        size={130}
+                        required
+                        value={shippingForm.email}
+                        placeholder="johndoe@gmail.com"
+                        error={formErrors.find(err=>err.field === 'email')}
+                        onChange={ e => setShippingForm({...shippingForm, email: e.target.value}) }
+                        classNames="bg-white p-2 text-xs sm:text-sm w-ful border-1 rounded border-gray-400 focus:border-gray-800 text-gray-800"
+                      />
+                    </div>
+                    <div className="mx-1">
+                      <label className="text-sm my-1">
+                        Subject
+                      </label>
+                      <AppInput
+                        name="subject"
+                        type="text"
+                        size={130}
+                        required
+                        value={shippingForm.subject}
+                        placeholder="0987 654 3211"
+                        error={formErrors.find(err=>err.field === 'subject')}
+                        onChange={ e => setShippingForm({...shippingForm, subject: e.target.value}) }
+                        classNames="bg-white p-2 text-xs sm:text-sm w-full border-1 rounded border-gray-400 focus:border-gray-800 text-gray-800"
+                      />
+                    </div>
+                  </div>
+                  <div className="m-1">
+                    <label className="text-sm my-1">
+                      Message
+                    </label>
+                    <div className="w-full">
+                      <AppInput
+                        name="message"
+                        type="textarea"
+                        cols={49}
+                        rows={4}
+                        required
+                        value={shippingForm.message}
+                        placeholder="Type message here"
+                        error={formErrors.find(err=>err.field === 'message')}
+                        onChange={ e => setShippingForm({...shippingForm, message: e.target.value}) }
+                        classNames="bg-gray-transparent text-xs sm:text-sm w-full border-1 rounded border-gray-400 focus:border-gray-800 p-2 text-gray-800"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-start m-1">
+                  <AppButton
+                    label="Submit"
+                    customTheme="px-12 py-2 rounded border-1 border-sodexo-dark-purple-blue hover:bg-purple-900 hover:text-white text-sodexo-dark-purple-blue text-sm"
+                    labelClass="flex-row-reverse"
+                    onPress={() => {
+                      console.log('haha')
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    </DefaultLayout>
+  )
+}
+
+export default HomePage

@@ -1,0 +1,201 @@
+import Header from "components/Header/Header";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
+import Router, { useRouter } from 'next/router';
+import { useRequest } from "lib/custom-hook";
+import Image from 'next/image';
+import axios from "axios";
+
+export default function Filter() {
+   const router = useRouter();
+   const status = router.query.status ? router.query.status : "";
+   const type = router.query.type
+
+   const [compliance, setCompliance] = useState(null)
+   const [tabs, setTabs] = useState(null)
+   const [filterCompliance, setFilterCompliance] = useState(null)
+   const [tabLength, setTabLength] = useState(null)
+   const [firstLoad, setFirstLoad] = useState(true)
+
+   const fetchCompliance = useCallback(async () => {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/node/api/compliance`)
+
+      setCompliance(response.data)
+      setFilterCompliance(response.data)
+   }, [])
+
+   const filterComplianceHandler = useCallback(async () => {
+      if(!router.pathname.includes('type') && compliance) {
+
+         setFilterCompliance(compliance)
+         router.push('filter?type=All')
+
+      } else {
+
+         const comsType = compliance && compliance.filter(item => item.category === type)
+         setFilterCompliance(type?.toLowerCase() === 'all' ? compliance : comsType)
+      }
+   }, [router, compliance, type])
+
+   const tabsDataHandler = useCallback(async () => {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/taxonomy/api/compliance`)
+
+      setTabs(response.data ? [{
+         name: "All",
+         link: "filter?type=All",
+      }, ...response.data] : null)
+
+      setTabLength(compliance ? response.data?.map((itm, index) => compliance.filter(item => item.category === itm.name).length) : null)
+      setFirstLoad(false)
+      
+   }, [compliance])
+
+   useEffect(async () => {
+      if(firstLoad) {
+
+         await fetchCompliance()
+         await filterComplianceHandler()
+         await tabsDataHandler()
+
+      }
+   }, [fetchCompliance, filterComplianceHandler, tabsDataHandler])
+
+   // const {data: allComplianceData, isValidating: compliancesValidating, mutate: updateCompliance} = useRequest({url: `${process.env.NEXT_PUBLIC_API_URL}/node/api/compliance`})
+   // const {data: tabsData, isValidating: tabsIsValidating, mutate: updateTabs} = useRequest({url: `${process.env.NEXT_PUBLIC_API_URL}/taxonomy/api/compliance`})
+
+   // const tabs = tabsData ? [{
+   //    name: "All",
+   //    link: "filter?type=All",
+   // }, ...tabsData] : null
+
+   // let allCompliance = allComplianceData || null
+   // const [filterCompliance, setFilterCompliance] = useState(allCompliance || null)
+
+   // useEffect(() => {
+   //    if(!router.asPath.includes('type') && allCompliance) {
+   //       setFilterCompliance(allCompliance)
+   //       router.push('filter?type=All')
+   //    } else {
+   //       const comType = allCompliance?.filter(item => item.category === type)
+   //       setFilterCompliance(type?.toLowerCase() === 'all' ? allCompliance : comType)
+   //    }
+   // },[router, allCompliance, type])
+   
+   // const tabLength = tabs?.map((itm, index) => allCompliance?.filter(item => item.category === itm.name).length)
+
+   return  tabLength &&
+         <Fragment>
+            <Header page="Compliance " />
+            <div className="flex flex-col px-7 py-10 items">
+               <div className="flex items-center overflow-x-auto whitespace-nowrap gap-4">
+                  {tabs.length &&
+                     tabs.map((tab, index) =>
+                        tab.title === status ? (
+                           <div
+                              key={index}
+                              className="cursor-pointer w-full py-3 text-sm text-center whitespace-nowrap px-4 cursor-pointer"
+                           >
+                              {tab.name}
+                           </div>
+                        ) : (
+                           <div
+                              key={index}
+                              className={tab.name.includes(type) ? 'text-sm py-3 font-montserratBold text-contenta-greyish-brown border-b-4 border-contenta-blue cursor-pointer' : 'text-contenta-gray py-3 my-2 text-sm font-montserratBold cursor-pointer'}
+                              aria-label={tab.name}
+                              onClick={() => {
+                                 router.push(`filter?type=${tab.name}`)
+                                 setFilterCompliance(compliance)
+                                 if (tab.name !== 'All') {
+                                    const filtered = compliance.filter(item => item.category === tab.name)
+                                    setFilterCompliance(filtered)
+                                    return
+                                 }
+                                 setFilterCompliance(compliance)
+                              }}
+                           >
+                              {console.log('compliance', compliance, tabLength)}
+                              {`${tab.name} (${index === 0 ? compliance.length : tabLength[index - 1]})`}
+                           </div>
+                        )
+                     )}
+               </div>
+               <div className="flex flex-col mt-8 mb-4 items-center">
+                  {filterCompliance?.length > 0 ?
+                     <>
+                        <div className="grid grid-flow-row lg:grid-cols-4 grid-cols-1 grid-rows-1 ">
+                           {filterCompliance?.map((item, i) =>
+                              <div
+                                 key={i}
+                                 className="flex-col justify-center flex-wrap max-w-md min-w-md bg-white rounded-xl m-3 content-shadow cursor-pointer"
+                                 onClick={(e) => {
+                                    e.preventDefault();
+                                    Router.push(`${item.view_node}`)
+                                 }}
+                              >
+                                 <div className="bg-auto bg-no-repeat bg-center">
+                                    <Image 
+                                       loader={() => item.image_raw}
+                                       src={item.image_raw} 
+                                       width='400'
+                                       height='200'
+                                       objectFit='cover'
+                                       alt="image"
+                                       className="rounded-tl-xl rounded-tr-xl"
+                                    />
+                                 </div>
+                                 <div className="text-sm break-normal flex flex-col m-3 justify-center items-center text-sm text-contenta-greyish-brown font-montserratBold">
+                                    <span>{item.title} </span>
+                                 </div>
+                                 <div className="flex flex-row justify-center text-sm m-3 items-center">
+                                    <div className="text-contenta-greyish-brown font-montserratRegular">
+                                       Added {item.created}
+                                    </div>
+                                 </div>
+                                 <div
+                                    className="break-normal flex justify-center my-2 mx-4 cursor-pointer pb-4"
+                                 >
+                                    {
+                                       item.category === 'Certification' && 
+                                       (
+                                          <div className="px-4 py-1 bg-opacity-50 rounded-lg text-sm font-montserratBold justify-center flex bg-contenta-seaweed-green text-contenta-jungle-green">
+                                             Certification
+                                          </div>
+                                       )
+                                    }
+                                    {
+                                       item.category === 'Regulation' && 
+                                       (
+                                          <div className="px-4 py-1 bg-opacity-50 rounded-lg text-sm font-montserratBold justify-center flex text-contenta-darkish-red bg-contenta-pinky-red">
+                                             Regulation
+                                          </div>
+                                       )
+                                    }
+                                    {
+                                       item.category === 'Documentation' && 
+                                       (
+                                          <div className="px-4 py-1 bg-opacity-50 rounded-lg text-sm font-montserratBold justify-center flex bg-contenta-blue text-contenta-light-blue">
+                                             Documentation
+                                          </div>
+                                       )
+                                    }
+                                    {
+                                       item.category === 'Policy' && 
+                                       (
+                                          <div className="px-4 py-1 bg-opacity-30 rounded-lg text-sm font-montserratBold justify-center flex bg-contenta-greyish-brown text-contenta-greyish-brown">
+                                             Policy
+                                          </div>
+                                       )
+                                    }
+                                 </div>
+                              </div>
+                           )}
+                        </div>
+                     </> : <>
+                        <div className="flex justify-center w-full text-sm p-10 font-montserratRegular text-contenta-greyish-brown">
+                           No Results Found
+                        </div>
+                     </>
+                  }
+               </div>
+            </div>
+         </Fragment>
+}

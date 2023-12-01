@@ -1,0 +1,337 @@
+import React, { useState } from "react";
+// reactstrap components
+import Header from 'components/Headers/AdminHeader'
+import Admin from 'layouts/Admin'
+import dynamic from 'next/dynamic'
+import { Tooltip } from 'reactstrap';
+import { Card,
+  Col,
+  Input,
+  Label,
+  Row,
+  CardBody,
+  FormGroup,
+  Table,
+  Form
+} from 'reactstrap'
+function PromoRewards(props) {
+  const { promoType } = props
+  const [tooltipOpen, setTooltipOpen] = useState({
+    rewards: false,
+    expiration: false,
+    amount: false
+  });
+  const toggleRewards = () => setTooltipOpen(prev => {
+    return {rewards: !tooltipOpen.rewards, expiration: false, amount: false}
+  })
+
+  const toggleExpiration = () => setTooltipOpen(prev => {
+    return {expiration: !tooltipOpen.expiration, rewards: false, amount: false}
+  })
+
+  const toggleAmount = () => setTooltipOpen(prev => {
+    return {amount: !tooltipOpen.amount, rewards: false, expiration: false}
+  })
+  const onSubmit = () => {
+
+  }
+
+  const voucherList = [
+    {
+      id: 1,
+      rewardCodes: 'FFFEEXXX',
+      status: 'Available'
+    },
+    {
+      id: 2,
+      rewardCodes: 'FFFEEXXX',
+      status: 'Not Available'
+    },
+    {
+      id: 3,
+      rewardCodes: 'FFFEEXXX',
+      status: 'Available'
+    },
+    {
+      id: 4,
+      rewardCodes: 'FFFEEXXX',
+      status: 'Not Available'
+    }
+  ]
+  return (
+    <>
+      <div className="pr-4 pl-3">
+        <Row>
+          <Col xl={12}>
+            <Card className="shadow">
+              <CardBody>
+                <Row>
+                  <Col xl={8} lg={12} md={12} className="mr-auto ml-auto ">
+                    <Form onSubmit={onSubmit}>
+                      <Row xl={12} className="my-6">
+                        <Col lg={12}>
+                          <div className="border-bottom mb-3">
+                            <h5 className="card-title text-black">Promo Information</h5>
+                          </div>
+                          <Row xl={12}>
+                            <Col lg={6}>
+                              <FormGroup>
+                                <Label>
+                                    <small>Promo Name</small>
+                                </Label>
+                                <Input placeholder="Enter Promo Rewards Name" name="promo_name" type="text" required/>
+                              </FormGroup>
+                            </Col>
+                            <Col lg={6}>
+                              <FormGroup>
+                                <Label>
+                                    <small>Select a promo to combine</small>
+                                </Label>
+                                <Input 
+                                    type="select"
+                                    name="participatingProducsID"
+                                    
+                                    defaultValue={'Shopee'}
+                                >
+                                    <option value="Shopee" disabled>Shopee</option>
+                                    <option>Fathers Day Promo</option>
+                                    <option>Mothers Day Promo</option>
+                                    <option>Christmas Promo</option>
+                                    <option>SodexoXShopee Promo</option>
+                                </Input>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                          <Row xl={12}>
+                            <Col lg={6}>
+                              <FormGroup>
+                                <Label>
+                                    <small>Rewards Voucher</small>
+                                </Label>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="currentColor"
+                                  id="TooltipExample"
+                                  className="bi bi-exclamation-circle mx-1 text-primary pointer"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+                                </svg>
+                                <Tooltip
+                                  placement="top"
+                                  isOpen={tooltipOpen.rewards}
+                                  target="TooltipExample"
+                                  toggle={toggleRewards}
+                                  className="custom-tooltip"
+                                >
+                                  <p className="text-xs test-2 mt-2">
+                                    This is the tab where we can configure set up for e-vouchers code of Shopee, grab, Lazada , Zalora so we can distribute and track inventory automatically. 
+                                  </p>
+                                </Tooltip>
+                                <Input 
+                                  type="select"
+                                  name="participatingProducsID"
+                                  
+                                  defaultValue={'Shopee'}
+                                >
+                                  <option value="Shopee" disabled>Shopee</option>
+                                  <option value="Lazada">Lazada</option>
+                                  <option>Grab</option>
+                                </Input>
+                              </FormGroup>
+                            </Col>
+                            <Col lg={6}>
+                              <FormGroup>
+                                <Label>
+                                    <small>Voucher Amount</small>
+                                </Label>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    id="TooltipExample"
+                                    className="bi bi-exclamation-circle mx-1 text-primary pointer"
+                                    viewBox="0 0 16 16"
+                                >
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+                                </svg>
+                                <Tooltip
+                                    placement="top"
+                                    isOpen={tooltipOpen.amount}
+                                    target="TooltipExample"
+                                    toggle={toggleAmount}
+                                    className="custom-tooltip"
+                                >
+                                    <p className="text-xs test-2 mt-2">
+                                      This refers to the value of e-voucher to be given away to users for a particular promo. 
+                                    </p>
+                                </Tooltip>
+                                <Input placeholder="Enter Voucher Amount" name="voucher_amount" type="text"  required/>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col lg={6}>
+                              <FormGroup>
+                                <Label>
+                                  <small>Voucher Expiration</small>
+                                </Label>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="currentColor"
+                                  id="TooltipExample"
+                                  className="bi bi-exclamation-circle mx-1 text-primary pointer"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
+                                </svg>
+                                <Tooltip
+                                  placement="top"
+                                  isOpen={tooltipOpen.expiration}
+                                  target="TooltipExample"
+                                  toggle={toggleExpiration}
+                                  className="custom-tooltip"
+                                >
+                                    <p className="text-xs test-2 mt-2">
+                                      Refers to the validity period of e-vouchers, which is defined by the e-commerce brands.
+                                    </p>
+                                </Tooltip>
+                                <Input name="voucher_expiration" type="date" required/>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                          <div className="border-bottom mb-3">
+                            <h5 className="card-title text-black">List Of Voucher Codes</h5>
+                          </div>
+                          <div className="d-flex justify-content-end form-inline py-2">
+                            <div className="pr-4">
+                              <button
+                                className="text-xs px-5 py-1 text-white rounded-sm"
+                                style={{ border: '.5px solid #2A295C', backgroundColor: '#2A295C' }}
+                              >
+                                Extract
+                              </button>
+                            </div>
+                            <div>
+                              <button
+                                className="text-xs px-4 py-1 text-white rounded-sm"
+                                style={{ border: '.5px solid #2A295C', backgroundColor: '#2A295C' }}
+                              >
+                                Miss Upload
+                              </button>
+                            </div>
+                          </div>
+                          <div className="rounded" style={{ overflow: 'auto', boxShadow: '#e7e7e7 5px 5px 10px' }}>
+                            <Table className="align-items-center table-flush" responsive>
+                              <tbody className="thead-light">
+                                <tr>
+                                  <td>
+                                    <span className="fs-header">ID</span>
+                                  </td>
+                                  <td>
+                                    <span className="fs-header">Reward Codes</span>
+                                  </td>
+                                  <td className="fs-header">
+                                    <span className="fs-header">Status</span>
+                                  </td>
+                                  <td className="fs-header">
+                                    <span className="fs-header">Action</span>
+                                  </td>
+                                </tr>
+                                {
+                                  voucherList   .map((data) => (
+                                    <tr className="hover-body" key={data.id}>
+                                      <td>
+                                        <span className="fs-14">{ data.id }</span>
+                                      </td>
+                                      <td>
+                                        <span className="fs-14">{ data.rewardCodes }</span>
+                                      </td>
+                                      <td>
+                                        <span className="fs-14">{ data.status }</span>
+                                      </td>
+                                      <td>
+                                        <div className="d-flex align-items-center justify-content-start">
+                                          <a>
+                                            <button className="text-xs p-0 border-0 bg-transparent text-primary mx-1">Edit</button>
+                                          </a>
+                                          <button
+                                          className="text-xs p-0 border-0 bg-transparent text-primary mx-2"
+                                          onClick={""}
+                                          >Delete</button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))
+                                }
+                              </tbody>
+                            </Table>
+                          </div>
+                        </Col>
+                      </Row>
+                      <Col>
+                        <div className=" d-flex justify-content-end mt-2">
+                          <button
+                            className="text-xs px-4 py-1 bg-transparent rounded-sm"
+                            style={{ border: '.5px solid #2A295C', color: '#2A295C', marginRight: '18px' }}
+                          >
+                              Cancel
+                          </button>
+                          <button
+                            className="text-xs px-4 py-1 text-white rounded-sm"
+                            style={{ border: '.5px solid #2A295C', backgroundColor: '#2A295C' }}
+                          >
+                            Save Changes
+                          </button>
+                        </div>
+                      </Col>
+                    </Form>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </>
+  );
+}
+
+PromoRewards.layout = Admin;
+export default PromoRewards;
+
+
+if (type === "all") {
+    const store = cart[cartIndex]
+    if (value) {
+      setSelectedItems([
+        ...selectedItems,
+        ...store.items.map((item) => {
+          return { ...item, itemId: item?.varietyId || item?.id }
+        }),
+      ])
+    } else {
+      let newSelectedItems = []
+      if (store.storeName === "eCards") {
+        newSelectedItems = selectedItems.filter(
+          (item) => item.type !== "ecards"
+        )
+      } else {
+        const idsToRemove = []
+        store.items.map((item) => idsToRemove.push(item.id))
+        newSelectedItems = selectedItems.filter(
+          (item) => !idsToRemove.includes(item.id)
+        )
+      }
+
+      setSelectedItems(newSelectedItems)
+    }
+  }

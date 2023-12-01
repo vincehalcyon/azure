@@ -1,0 +1,176 @@
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import Header from "components/Header/Header";
+import Router, { useRouter } from 'next/router';
+import { useEffect, useState } from "react";
+
+export default function Newsroom() {
+   const router = useRouter();
+   const { newsroomId } = router.query;
+   const [data, setData] = useState(null)
+
+   const latestarticle = [
+      {
+         id: 1,
+         title: 'International',
+         date: '14-10-2021',
+         body: 'Insurers face higher reunsurance cost as climate risk bites',
+      },
+      {
+         id: 2,
+         title: 'Regulatory',
+         date: '14-11-2021',
+         body: 'Unlikely ally: ESL Monitor flags doubts over NSW levy’s future',
+      },
+      {
+         id: 3,
+         title: 'Technology',
+         date: '14-10-2021',
+         body: 'ASIC sys product invention power ‘timely’',
+      },
+      {
+         id: 4,
+         title: 'Australia',
+         date: '14-10-2021',
+         body: 'How will COVID-19 change insurance in Australia',
+      }
+   ]
+
+   const oldArticles = [
+      {  
+         id: 5,
+         title: 'Australia',
+         date: '14-10-2021',
+         body: 'How will COVID-19 change insurance in Australia',
+         status: 'Australia'
+      },
+      {
+         id: 6,
+         title: 'International',
+         date: '14-10-2021',
+         body: 'Insurers face higher reunsurance cost as climate risk bites',
+         status: 'International',
+      },
+      {
+         id: 7,
+         title: 'Regulatory',
+         date: '14-10-2021',
+         body: 'Unlikely ally: ESL Monitor flags doubts over NSW levy’s future',
+         status: 'Regulatory',
+      },
+      {
+         id: 8,
+         title: 'Technology',
+         date: '14-10-2021',
+         body: 'ASIC sys product invention power ‘timely’',
+         status: 'Technology',
+      },
+      {
+         id: 9,
+         title: 'Other',
+         date: '14-11-2021',
+         body: 'ASIC sys product invention power ‘timely’',
+         status: 'Other'
+      },
+   ]
+
+   // let data
+   useEffect(() => {
+      console.log("newsroomId", newsroomId)
+
+         setData(latestarticle && oldArticles.find((item) => item.id === parseInt(newsroomId)))
+
+         console.log("id", newsroomId, "data", data, latestarticle && oldArticles)
+   }, [newsroomId])
+
+   return (
+      <>
+         <Header page="Newsroom " />
+         <div className="flex flex-col px-10 pt-10 pb-20 items">
+            <div className="pb-5 text-sm text-contenta-greyish-brown font-montserratBold">
+               <a href="#"
+                  className="flex text-sm items-center justify-reverse cursor-pointer text-xs font-montserratBold text-contenta-pinky-red"
+                  onClick={(e) => {
+                     e.preventDefault();
+                     router.push(`/compliance/`)
+                  }}
+               >
+                  <BiChevronLeft size={25} /> Back to Newsroom
+               </a>
+            </div>
+            <div className="flex flex-col flex-wrap py-5">
+               <div className="flex flex-row gap-5">
+                  <div className="w-full pr-5 xl:w-9/12 lg:w-full content-shadow rounded-lg p-5">
+                     <div className="px-6 py-4 text-contenta-greyish-brown">
+                        <div className="flex justify-between">
+                           <span className="text-xxs mb-2 font-montserratBold">
+                              {data?.title}
+                           </span>
+                           <span className="text-xxs font-montserratRegular">
+                              {data?.date}
+                           </span>
+                        </div>
+                        <div className="font-montserratBold text-xl py-5">
+                           AMP Completes sale of life insurance business for $3 billion
+                        </div>
+                        <div className="flex text-xxs gap-1">
+                           <span className="font-montserratRegular text-contenta-greyish-brown">From:</span> 
+                           <a href="#" className="text-contenta-blue">www.cnbc.com</a>
+                        </div>
+                        <div className="py-5">
+                           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam, morbi euismod in ut sed vestibulum. Purus vitae, volutpat elit accumsan arcu. Fames vitae at quis dolor massa vel. Urna mattis mauris ornare sagittis scelerisque donec et facilisi. Aliquam, bibendum ac vel tellus elementum. Consequat nibh elit leo mauris feugiat suscipit erat.</p>
+                           <p className="py-5">Faucibus sem sed fusce ut id luctus suspendisse vulputate nullam. Vitae adipiscing in in nulla ornare nunc, quis enim gravida. Velit sed amet turpis ut. Purus vulputate duis et eget quam arcu amet, vulputate. Pharetra urna habitant faucibus eget dignissim ultrices venenatis semper et.</p>
+                           <p>Diam faucibus lectus ultricies dignissim fringilla vulputate nulla. Diam ut viverra nunc praesent sed lacus, sit. Dis cras sed consequat commodo. Amet at amet vitae vestibulum diam vestibulum dolor. Dolor purus molestie purus tristique. Interdum eget integer ultricies accumsan blandit accumsan viverra. Sed ultricies eget imperdiet purus blandit senectus egestas. Cras non lorem enim viverra amet quam.</p>
+                           <p className="py-5">Feugiat eu neque eu eget. Quam enim aliquet suspendisse dui. Sapien, nisl maecenas risus vulputate at. Purus quam nisl, volutpat suspendisse. Nulla congue aliquam amet, senectus venenatis commodo est. In lorem tortor lectus auctor sit nec rutrum ultrices. Hac fringilla vestibulum nulla imperdiet tortor elementum risus.</p>
+                           <p>Faucibus sem sed fusce ut id luctus suspendisse vulputate nullam. Vitae adipiscing in in nulla ornare nunc, quis enim gravida. Velit sed amet turpis ut. Purus vulputate duis et eget quam arcu amet, vulputate. Pharetra urna habitant faucibus eget dignissim ultrices venenatis semper et.</p>
+                           <p className="py-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam, morbi euismod in ut sed vestibulum. Purus vitae, volutpat elit accumsan arcu. Fames vitae at quis dolor massa vel. Urna mattis mauris ornare sagittis scelerisque donec et facilisi. Aliquam, bibendum ac vel tellus elementum. Consequat nibh elit leo mauris feugiat suscipit erat.</p>
+                           <p>Feugiat eu neque eu eget. Quam enim aliquet suspendisse dui. Sapien, nisl maecenas risus vulputate at. Purus quam nisl, volutpat suspendisse. Nulla congue aliquam amet, senectus venenatis commodo est. In lorem tortor lectus auctor sit nec rutrum ultrices. Hac fringilla vestibulum nulla imperdiet tortor elementum risus.</p>
+                        </div>
+                     </div>
+                  </div>
+                  <div className="w-full xl:w-3/12">
+                     <div className="flex flex-col">
+                        <div className="pb-5 text-sm text-contenta-greyish-brown font-montserratBold">
+                           Latest Article
+                        </div>
+                        <div className="gap-3">
+                           {latestarticle.map((items, i) => 
+                              <div className="max-w-sm rounded-xl overflow-hidden content-shadow mb-5" key={i}>
+                                 <div className="px-6 py-4 text-contenta-greyish-brown">
+                                    <div className="flex justify-between">
+                                       <span className="text-xxs mb-2 font-montserratBold">
+                                          {items.title}
+                                       </span>
+                                       <span className="text-xxs font-montserratRegular">
+                                          {items.date}
+                                       </span>
+                                    </div>
+                                    <div className="pt-3 text-sm font-montserratBold min-h-15">
+                                       {items.body}
+                                    </div>
+                                 </div>
+                                 <div className="px-6 py-4 pb-2 text-xxs flex justify-end items-center font-montserratBold text-contenta-pinky-red hover:text-contenta-tractor-red">
+                                    <a href={`${items.id}`}>Read Article</a>
+                                    <BiChevronRight size={20}/>
+                                 </div>
+                              </div>
+                           )}
+                        </div>
+                        <div className="pb-5 flex justify-center text-sm text-contenta-greyish-brown font-montserratBold">
+                           <a href="#"
+                              className="flex text-xxs items-center justify-reverse cursor-pointer text-xs font-montserratBold text-contenta-pinky-red"
+                              onClick={(e) => {
+                                 e.preventDefault();
+                                 Router.push(`/newsroom`)
+                              }}
+                           > 
+                              See all articles
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </>
+   )
+}

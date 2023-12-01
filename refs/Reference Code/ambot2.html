@@ -1,0 +1,186 @@
+import ButtonComponent from "@/components/Button/Button";
+import Input from "@/components/Input/input";
+import Modal from "@/components/Modal/Index";
+import { currencyFormat } from "@/lib/custom-hooks";
+import insuranceAxios from "@/lib/insuranceAxios";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import PolicyForms from "./PoliciesForm";
+
+const PricingComponent = (props) => {
+  const { onNext, onBack } = props;
+  const router = useRouter();
+  const quoteId = router?.query?.id || null;
+
+
+  const [form, setForm] = useState({
+    printable: "",
+    non_printable: "",
+    includeForms: false,
+  });
+
+  // USE useInsuranceRequest or just pass the quote data to props
+  // useEffect(() => {
+  //   getQuotesPayload("1be3c7e4-7a57-4b22-9c7b-9a8a8208831a");
+  // }, []);
+
+  // const getQuotesPayload = async (id) => {
+  //   const data = await insuranceAxios.get(`/quotes/${id ? id : ""}`);
+  //   console.log("datassss", data.data.attributes);
+  // };
+
+  const [pricingData, setPricingData] = useState({})
+  
+  
+  useEffect(() => {
+    // const quote = JSON.parse(localStorage.getItem("existingQuote"))
+    if (router.isReady) {
+      getQuotesPayload(quoteId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getQuotesPayload = async (id) => {
+    const data = await insuranceAxios.get(`/quotes/${id ? id : ""}?include=quoteOptions`)
+    const pricingData = data?.included?.find((item) =>item.type === "quote-option")
+    setPricingData(pricingData)
+    // console.log('pricingData',data)
+  }
+
+  const [viewForm, setViewForm] = useState(false);
+
+  // const policyPremium = {
+  //   premiumWithoutTaxes: 5000,
+  //   taxesSurcharges: 55,
+  //   total: 5055,
+  // };
+
+  useEffect(() => {
+    let pricing = JSON.parse(localStorage.getItem("pricing") || "{}");
+    if (pricing) {
+      let intialForm = {
+        ...form,
+        ...pricing.notes,
+      };
+      setForm(intialForm);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
+
+  const onNextHandler = () => {
+    const payload = {
+      notes: {
+        printable: form.printable || "",
+        non_printable: form.non_printable || "",
+        // includeForms: form.includeForms || false
+      },
+    };
+    localStorage.setItem("pricing", JSON.stringify(payload));
+    if (onNext) {
+      onNext();
+    }
+    // router.push("/quotes/journey/under-writing");
+  };
+
+  return (
+    <div className="flex flex-col w-full">
+      <Modal
+        isOpen={viewForm}
+        title="Policy Forms"
+        closable
+        contentClass="max-w-5xl w-full rounded-md shadow-lg"
+        onClose={() => setViewForm(false)}
+        shield="!h-full !w-full"
+      >
+        <PolicyForms onClose={() => setViewForm(false)} />
+      </Modal>
+      {/* <p className="w-full border-[#162f3e] border-b-2 text-red-theme text-[20px] montserrat-bold pb-2 mb-2">
+        Pricing
+      </p> */}
+      <p className="mt-[20px] border-l-4 border-red-theme montserrat-bold mb-2 pl-2">
+        Policy Premium
+      </p>
+      <div className="grid md:grid-cols-3 gap-4 text-sm">
+        <div>
+          <p>Total Premium Without Taxes</p>
+          <p className="text-[#5B5B5B] montserrat-bold">
+            {currencyFormat(pricingData?.attributes?.base_amount.amount)}
+          </p>
+        </div>
+        <div>
+          <p>Total Taxes and Surcharges</p>
+          <p className="text-[#5B5B5B] montserrat-bold">
+            {currencyFormat(pricingData?.attributes?.tax_and_surcharges_amount.amount)}
+          </p>
+        </div>
+        <div>
+          <p>Total Policy Premium</p>
+          <p className="text-[#5B5B5B] montserrat-bold">
+            {currencyFormat(pricingData?.attributes?.total_amount.amount)}
+          </p>
+        </div>
+      </div>
+
+      <p className="mt-[20px] border-l-4 border-red-theme montserrat-bold mb-2 pl-2">
+        Notes
+      </p>
+      <Input
+        name="printable"
+        label="Printable Notes"
+        type="textarea"
+        horizontalInput
+        inputClass="border-gray-500 rounded"
+        wrapperClass="mb-4"
+        labelClass="md:mr-8"
+        rows={6}
+        value={form.printable}
+        onChange={(e) => setForm({ ...form, printable: e.target.value })}
+      />
+      <Input
+        name="non_printable"
+        label="Non Printable Notes"
+        type="textarea"
+        horizontalInput
+        inputClass="border-gray-500 rounded"
+        wrapperClass="mb-4"
+        labelClass="md:mr-8"
+        rows={6}
+        value={form.non_printable}
+        onChange={(e) => setForm({ ...form, non_printable: e.target.value })}
+      />
+
+      <div className="grid md:grid-cols-2 gap-x-8">
+        <Input
+          type="checkbox"
+          label="Include Forms"
+          wrapperClass="mt-4"
+          inputClass="flex items-center text-[#162F3E] montserrat-regular"
+          name="includeForms"
+          checked={form.includeForms}
+          onChange={(e) => setForm({ ...form, includeForms: e.target.checked })}
+        />
+        {form.includeForms && (
+          <ButtonComponent
+            name="View Form"
+            className="text-white bg-[#DE4523] montserrat-regular rounded-lg my-1 w-[200px] hover:bg-white hover:text-red-theme transition border border-red-theme"
+            onClick={() => setViewForm(true)}
+          />
+        )}
+      </div>
+      <div className="flex w-full justify-start mt-8 gap-4 border-t pt-8">
+        <ButtonComponent
+          name="Go Back"
+          className="text-[#0070b0] border border-[#0070b0] montserrat-regular my-1 w-[200px]"
+          onClick={onBack}
+        />
+        <ButtonComponent
+          name="Continue"
+          className="text-white border border-[#0070b0] bg-[#0070b0] montserrat-regular my-1 w-[200px]"
+          onClick={onNextHandler}
+        />
+      </div>
+    </div>
+  );
+};
+export default PricingComponent;
+gi

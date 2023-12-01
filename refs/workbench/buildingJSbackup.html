@@ -1,0 +1,174 @@
+import Link from "next/link";
+import BuildingComponent from "@/components/Quotes/ScreenFive/BuildingComponent";
+import { useEffect, useState } from "react";
+import QuotesLayout from "@/layouts/QuotesLayout";
+
+export default function BuildingPage(props) {
+  const { onChange, initialData } = props
+  const [initalDataLoaded, setInitialDataLoaded] = useState(false)
+  const [locationBuildingDetails, setLocationBuildingDetails] = useState({
+    properOwnerLiability: initialData?.properOwnerLiability || "",
+    buildingCoverType: initialData?.buildingCoverType || "building",
+    // gnafPid: "",
+    // risksScores: {
+    //     fire: 0.00,
+    //     store: 0.00,
+    //     cyclone: 0.00,
+    //     bush_fire: 0.00,
+    //     flood: 0.00,
+    //     earthquake: 0.00,
+    //     other_perils: 0.00
+    // },
+    multipleBuildingLocation: initialData?.multipleBuildingLocation || false,
+    buildingName: initialData?.buildingName || "",
+    constructionYear: initialData?.constructionYear || "",
+    numberOfStoreys: initialData?.constructionYear || 0,
+    floor_construction_type: initialData?.floor_construction_type || "",
+    wall_construction_type: initialData?.wall_construction_type || "",
+    roof_construction_type: initialData?.roof_construction_type || "",
+    lowestFloorOccupied: initialData?.lowestFloorOccupied || "",
+    fireRiskClass: initialData?.fireRiskClass || 0.0,
+    lastYearRewired: initialData?.fireRiskClass || "",
+    isHeritage: initialData?.isHeritage || false,
+    epsPercentage: initialData?.epsPercentage || 0,
+    is_50_percent_vacant: initialData?.is_50_percent_vacant || false,
+
+    buildingSecurityDetail: {
+      fireProtection: initialData?.fireProtection || "",
+      fireSprinkler: initialData?.fireSprinkler || "",
+      waterSupply: initialData?.waterSupply || "",
+      securityProtection: initialData?.securityProtection || "",
+      isConnectedWaterMains: initialData?.isConnectedWaterMains || true,
+      nearestFireStation: initialData?.nearestFireStation || "",
+      hasFlammableGoods: initialData?.hasFlammableGoods || false,
+      fireBrigadeType: initialData?.fireBrigadeType || "",
+      sprinklerMeetsAustralianStandards: initialData?.sprinklerMeetsAustralianStandards || false,
+      hasMonitoredAlarmSystem: initialData?.hasMonitoredAlarmSystem || false,
+      hasAtmOnPremise: initialData?.hasAtmOnPremise || false,
+    },
+
+    buildingLeaseInformation: {
+      annualRentalIncomeAmount: initialData?.annualRentalIncomeAmount || 0.0,
+    },
+
+    buildingCover: {
+      buildingSumInsuredAmount: initialData?.buildingSumInsuredAmount || 0.0,
+      contentsSumInsuredAmount: initialData?.contentsSumInsuredAmount || 0.0,
+      stockSumInsuredAmount: initialData?.stockSumInsuredAmount || 0.0,
+    },
+
+    // risk_assessments: [
+    //     {
+    //         risk_questionnaire_uuid: '',
+    //         risk_assessment_responses: []
+    //     }
+    // ]
+  });
+
+
+  console.log('testedxx', locationBuildingDetails)
+
+  useEffect(() => {
+    if (initialData && !initalDataLoaded) {
+      setLocationBuildingDetails({
+        buildingCoverType: initialData?.buildingCoverType || "building",
+        // gnafPid: "",
+        // risksScores: {
+        //     fire: 0.00,
+        //     store: 0.00,
+        //     cyclone: 0.00,
+        //     bush_fire: 0.00,
+        //     flood: 0.00,
+        //     earthquake: 0.00,
+        //     other_perils: 0.00
+        // },
+        multipleBuildingLocation: initialData?.multipleBuildingLocation || false,
+        buildingName: initialData?.buildingName || "",
+        constructionYear: initialData?.constructionYear || "",
+        numberOfStoreys: initialData?.constructionYear || 0,
+        floor_construction_type: initialData?.floor_construction_type || "",
+        wall_construction_type: initialData?.wall_construction_type || "",
+        roof_construction_type: initialData?.roof_construction_type || "",
+        lowestFloorOccupied: initialData?.lowestFloorOccupied || "",
+        fireRiskClass: initialData?.fireRiskClass || 0.0,
+        lastYearRewired: initialData?.fireRiskClass || "",
+        isHeritage: initialData?.isHeritage || false,
+        epsPercentage: initialData?.epsPercentage || 0,
+        is_50_percent_vacant: initialData?.is_50_percent_vacant || false,
+
+        buildingSecurityDetail: {
+          fireProtection: initialData?.fireProtection || "",
+          fireSprinkler: initialData?.fireSprinkler || "",
+          waterSupply: initialData?.waterSupply || "",
+          securityProtection: initialData?.securityProtection || "",
+          isConnectedWaterMains: initialData?.isConnectedWaterMains || true,
+          nearestFireStation: initialData?.nearestFireStation || "",
+          hasFlammableGoods: initialData?.hasFlammableGoods || false,
+          fireBrigadeType: initialData?.fireBrigadeType || "",
+          sprinklerMeetsAustralianStandards: initialData?.sprinklerMeetsAustralianStandards || false,
+          hasMonitoredAlarmSystem: initialData?.hasMonitoredAlarmSystem || false,
+          hasAtmOnPremise: initialData?.hasAtmOnPremise || false,
+        },
+
+        buildingLeaseInformation: {
+          annualRentalIncomeAmount: initialData?.annualRentalIncomeAmount || 0.0,
+        },
+
+        buildingCover: {
+          buildingSumInsuredAmount: initialData?.buildingSumInsuredAmount || 0.0,
+          contentsSumInsuredAmount: initialData?.contentsSumInsuredAmount || 0.0,
+          stockSumInsuredAmount: initialData?.stockSumInsuredAmount || 0.0,
+        },
+
+      })
+      setInitialDataLoaded(true)
+    }
+
+    if (onChange) {
+      onChange(locationBuildingDetails)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialData, locationBuildingDetails])
+
+  useEffect(() => {
+    const data = localStorage.getItem("building");
+
+    if (data) setLocationBuildingDetails(JSON.parse(data));
+  }, []);
+
+  return (
+    <>
+      <div className="mx-auto pl-[20px] pr-[20px] py-4">
+        <div>
+          <div className="flex items-center">
+            <Link href="/quotes" passHref>
+              <a className="text-[#de4523] montserrat-bold contents text-[14px]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="4"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                Back to Quotes
+              </a>
+            </Link>
+          </div>
+          <QuotesLayout>
+            <BuildingComponent
+              locationBuildingDetails={locationBuildingDetails}
+              setLocationBuildingDetails={setLocationBuildingDetails}
+            />
+          </QuotesLayout>
+        </div>
+      </div>
+    </>
+  );
+}

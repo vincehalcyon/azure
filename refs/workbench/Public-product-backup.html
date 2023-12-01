@@ -1,0 +1,720 @@
+import Selection from "@/components/Selection/SelectionComponent"
+import Select from "react-select"
+import { currencyFormat, nFormatter, numberFormat } from "@/lib/custom-hooks";
+import { useEffect, useState } from "react";
+import Input from "@/components/Input/input";
+import ButtonComponent from "@/components/Button/Button";
+import { useRouter } from "next/router";
+
+
+const PublicProductLiabilityComponent = (props) => {
+    const router = useRouter()
+    const { onChange, initialData } = props
+    const [initalDataLoaded, setInitialDataLoaded] = useState(false)
+
+    const [riskAssessment, setRiskAssessment]
+
+    const [form, setForm] = useState({
+        
+        properOwnerLiability: initialData?.properOwnerLiability || "",
+        haveContactsDesignated: initialData?.haveContactsDesignated || "",
+        hireEquipmentStaff: initialData?.hireEquipmentStaff || "",
+
+        handleHazardousSubstances: initialData?.hireEquipmentStaff || "",
+        hazardousMaterialEnvironment: initialData?.hazardousMaterialEnvironment || "",
+        workAbove10mHeight: initialData?.workAbove10mHeight || "",
+        workWithExplosives: initialData?.workWithExplosives || "",
+        followingConstructionWork: initialData?.followingConstructionWork || "",
+        performHotworksPremises: initialData?.performHotworksPremises || "",
+
+        sumInsuredLiability: initialData?.sumInsuredLiability || "",
+        excessAmount: initialData?.excessAmount || "",
+        annualWages: initialData?.annualWages || "",
+        contractorHirePayments: initialData?.contractorHirePayments || "",
+
+        businessImportAnyProducts: initialData?.businessImportAnyProducts || "",
+        productsImportedAreas: initialData?.productsImportedAreas || "",
+        electricalEquipmentAnyType: initialData?.electricalEquipmentAnyType || "",
+        apparelOfAnyType: initialData?.apparelOfAnyType || "",
+        foodOrSupplements: initialData?.foodOrSupplements || "",
+        machineryBuildingProducts: initialData?.machineryBuildingProducts || "",
+        vehiclesOrComponents: initialData?.vehiclesOrComponents || "",
+        healthBeautyProducts: initialData?.healthBeautyProducts || "",
+        flammablePressurisedGoods: initialData?.flammablePressurisedGoods || "",
+        noneOfTheAbove: initialData?.noneOfTheAbove || "",
+
+        propertyCustodyOrControl: initialData?.propertyCustodyOrControl || "",
+        exportToUsaCanada: initialData?.initialData || "",
+        annualTurnOver: initialData?.annualTurnOver || "",
+    })
+
+    console.log('public-product', form)
+
+    useEffect(() => {
+        if (initialData && !initalDataLoaded) {
+            setForm({
+                properOwnerLiability: initialData?.properOwnerLiability || "",
+                haveContactsDesignated: initialData?.haveContactsDesignated || "",
+                hireEquipmentStaff: initialData?.hireEquipmentStaff || "",
+
+                handleHazardousSubstances: initialData?.hireEquipmentStaff || "",
+                hazardousMaterialEnvironment: initialData?.hazardousMaterialEnvironment || "",
+                workAbove10mHeight: initialData?.workAbove10mHeight || "",
+                workWithExplosives: initialData?.workWithExplosives || "",
+                followingConstructionWork: initialData?.followingConstructionWork || "",
+                performHotworksPremises: initialData?.performHotworksPremises || "",
+
+                sumInsuredLiability: initialData?.sumInsuredLiability || "",
+                excessAmount: initialData?.excessAmount || "",
+                annualWages: initialData?.annualWages || "",
+                contractorHirePayments: initialData?.contractorHirePayments || "",
+
+                businessImportAnyProducts: initialData?.businessImportAnyProducts || "",
+                productsImportedAreas: initialData?.productsImportedAreas || "",
+                electricalEquipmentAnyType: initialData?.electricalEquipmentAnyType || "",
+                apparelOfAnyType: initialData?.apparelOfAnyType || "",
+                foodOrSupplements: initialData?.foodOrSupplements || "",
+                machineryBuildingProducts: initialData?.machineryBuildingProducts || "",
+                vehiclesOrComponents: initialData?.vehiclesOrComponents || "",
+                healthBeautyProducts: initialData?.healthBeautyProducts || "",
+                flammablePressurisedGoods: initialData?.flammablePressurisedGoods || "",
+                noneOfTheAbove: initialData?.noneOfTheAbove || "",
+
+                propertyCustodyOrControl: initialData?.propertyCustodyOrControl || "",
+                exportToUsaCanada: initialData?.initialData || "",
+                annualTurnOver: initialData?.annualTurnOver || "",
+            })
+            setInitialDataLoaded(true)
+        }
+
+        if (onChange) {
+            onChange(form)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialData, form])
+
+    // const [hotworks, setHotworks] = useState(false);
+    // const [hazardValues, setHazardValues] = useState(
+    //     {
+    //         sumInsured: {
+    //             value: 0,
+    //             label: 0
+    //         },
+    //         excessAmount: {
+    //             value: 0,
+    //             label: 0
+    //         },
+    //         custodyOrControlValues: {
+    //             value: 0,
+    //             label: 0,
+    //         }
+    //     }
+    // )
+    // const custodyOrControl = [
+    //     {
+    //         value: nFormatter(250000),
+    //         label: nFormatter(250000),
+    //     },
+    //     {
+    //         value: nFormatter(500000),
+    //         label: nFormatter(500000),
+    //     },
+    //     {
+    //         value: nFormatter(750000),
+    //         label: nFormatter(750000),
+    //     },
+    //     {
+    //         value: nFormatter(1000000),
+    //         label: nFormatter(1000000),
+    //     },
+    // ]
+    const [specifiedItems, setSpecifiedItems] = useState([
+        {
+            description: '', sumInsured: '',
+        }
+    ]);
+    const addSpecifiedItems = () => {
+        setSpecifiedItems(prev => {
+            return [...prev, { description: '', sumInsured: '' }]
+        })
+    }
+    const removeSpecifiedItems = (index) => {
+
+        let newArr = specifiedItems.filter((item, i) => i !== index)
+        setSpecifiedItems((data) => {
+            let tempKeys = [...data];
+            tempKeys = newArr
+            return [...tempKeys]
+        })
+    }
+    return (
+        <>
+            <div className="flex flex-col mb-2 w-full">
+                <div className="flex w-full border-[#162f3e] border-b-2">
+                    <span className="text-[#de4523] text-[20px] montserrat-bold ">{"Public & Product Liability"}</span>
+                </div>
+                <div className="flex flex-row items-center mt-[20px]">
+                    <div className="border-l-4 border-[#de4523] ">
+                        <span className="flex justify-center text-[20px] montserrat-bold mb-2 ml-[10px]">{"Public & Product Liability"}</span>
+                    </div>
+                </div>
+                <Selection
+                    label="Property Owner Liability Only?"
+                    className={"justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.properOwnerLiability ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            properOwnerLiability: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you have any contracts to be designated?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.haveContactsDesignated ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            haveContactsDesignated: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you hire out equipment or staff?"
+                    className={"justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.hireEquipmentStaff ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            hireEquipmentStaff: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <div className="flex flex-row items-center mb-5 mt-[20px]">
+                    <div className="border-l-4 border-[#de4523] ">
+                        <span className="flex justify-center text-[20px] montserrat-bold  ml-[10px]">{"Hazardous Activities & Substance"}</span>
+                    </div>
+                </div>
+                <Selection
+                    label="Do you, or do you intend to use or store or handle hazardous substances?"
+                    className={"justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.handleHazardousSubstances ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            handleHazardousSubstances: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you discharge waste or hazardous material into the environment or waterways or sewers?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.hazardousMaterialEnvironment ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            hazardousMaterialEnvironment: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you work above 10m in height?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.workAbove10mHeight ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            workAbove10mHeight: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you work with explosives?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.workWithExplosives ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            workWithExplosives: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you work in the following construction work on bridges, defence, mining, offshore, aviation or aircraft, gas production, power stations, petrochemical, rail, ships, marine?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.followingConstructionWork ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            followingConstructionWork: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you perform any ‘hotworks’ away from your premises at all?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.performHotworksPremises ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            performHotworksPremises: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <div className="border-[1px] border-[#c9d9de]  my-10" />
+                <Input
+                    name="form"
+                    label="Sum Insured - Limit of Liability"
+                    inputClass="border-gray-500 rounded"
+                    horizontalInput
+                    wrapperClass="mb-4"
+                    labelClassName="flex flex-row-reverse justify-end"
+                    type="select"
+                    value={form.sumInsuredLiability}
+                    items={[
+                        {
+                            value: 100,
+                            label: currencyFormat(100)
+                        },
+                        {
+                            value: 250,
+                            label: currencyFormat(250),
+                        },
+                        {
+                            value: 500,
+                            label: currencyFormat(500),
+                        },
+                        {
+                            value: 750,
+                            label: currencyFormat(750),
+                        },
+                        {
+                            value: 1000,
+                            label: currencyFormat(1000)
+                        },
+                        {
+                            value: 1500,
+                            label: currencyFormat(1500)
+                        },
+                        {
+                            value: 2000,
+                            label: currencyFormat(2000)
+                        },
+                        {
+                            value: 5000,
+                            label: currencyFormat(5000)
+                        },
+                        {
+                            value: 7500,
+                            label: currencyFormat(7500)
+                        },
+                    ]}
+                    onChange={(e) =>
+                        setForm({
+                            ...form,
+                            sumInsuredLiability: parseFloat(e.target.value),
+                        })
+                    }
+                />
+                <Input
+                    name="form"
+                    label="Excess Amount"
+                    inputClass="border-gray-500 rounded"
+                    horizontalInput
+                    wrapperClass="mb-4"
+                    labelClassName="flex flex-row-reverse justify-end"
+                    // labelClass="md:mr-8"
+                    type="select"
+                    value={form.excessAmount}
+                    items={[
+                        {
+                            value: 100,
+                            label: currencyFormat(100)
+                        },
+                        {
+                            value: 250,
+                            label: currencyFormat(250),
+                        },
+                        {
+                            value: 500,
+                            label: currencyFormat(500),
+                        },
+                        {
+                            value: 750,
+                            label: currencyFormat(750),
+                        },
+                        {
+                            value: 1000,
+                            label: currencyFormat(1000)
+                        },
+                        {
+                            value: 1500,
+                            label: currencyFormat(1500)
+                        },
+                        {
+                            value: 2000,
+                            label: currencyFormat(2000)
+                        },
+                        {
+                            value: 5000,
+                            label: currencyFormat(5000)
+                        },
+                        {
+                            value: 7500,
+                            label: currencyFormat(7500)
+                        },
+                    ]}
+                    onChange={(e) =>
+                        setForm({
+                            ...form,
+                            excessAmount: parseFloat(e.target.value),
+                        })
+                    }
+                />
+                <Input
+                    name="form"
+                    label="Annual Wages"
+                    inputClass="border-gray-500 rounded"
+                    horizontalInput
+                    wrapperClass="mb-4"
+                    labelClassName="flex flex-row-reverse justify-end"
+                    // labelClass="md:mr-8"
+                    type="text"
+                    placeholder="$"
+                    value={form.annualWages}
+                    onChange={(e) =>
+                        setForm({
+                            ...form,
+                            annualWages: e.target.value,
+                        })
+                    }
+
+                />
+                {/* <Input
+                    inputClass="border-gray-500 rounded w-[400px]"
+                    type="text"
+                    value={locationBuildingDetails.buildingName || ''}
+                    onChange={(e) => setLocationBuildingDetails(prev => {
+                        return { ...prev, buildingName: e.target.value }
+                    })}
+                /> */}
+                <Input
+                    name="form"
+                    label="Contractor / Labour Hire Payments"
+                    inputClass="border-gray-500 rounded"
+                    horizontalInput
+                    wrapperClass="mb-4"
+                    labelClassName="flex flex-row-reverse justify-end"
+                    // labelClass="md:mr-8"
+                    type="text"
+                    placeholder="$"
+                    value={form.contractorHirePayments}
+                    onChange={(e) =>
+                        setForm({
+                            ...form,
+                            contractorHirePayments: e.target.value,
+                        })
+                    }
+                />
+                <div className="flex flex-row items-center mt-[20px]">
+                    <div className="border-l-4 border-[#de4523] ">
+                        <span className="flex justify-center text-[20px] montserrat-bold ml-[10px]">Imports</span>
+                    </div>
+                </div>
+                <Selection
+                    label="Does the business import any products?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.businessImportAnyProducts ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            businessImportAnyProducts: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Are the products imported from any areas other than USA, Canada, Europe, UK or NZ?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    // setSetter={setHotworks}
+                    value={form.productsImportedAreas ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            productsImportedAreas: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <div
+                    className={`content ${form.businessImportAnyProducts ? "active" : "inactive"}`}
+                >
+                    <div className="flex flex-row items-center mt-[20px]">
+                        {/* <div className="border-l-4 border-[#de4523] "> */}
+                        <span className="flex justify-center text-[20px] montserrat-bold">Select the type of products the business imports:</span>
+                        {/* </div> */}
+                    </div>
+                    <Selection
+                        label="Electrical equipment of any type (regardless of size)?"
+                        className={"my-3 justify-center"}
+                        glassCoverageClassName={"w-[600px]"}
+                        value={form.electricalEquipmentAnyType ? 1 : 0}
+                        setSetter={(value) => {
+                            setForm({
+                                ...form,
+                                electricalEquipmentAnyType: value === 1 ? true : false
+                            })
+                        }}
+                    />
+                    <Selection
+                        label="Toys, clothing, sporting goods, footwear or apparel of any type?"
+                        className={"my-3 justify-center"}
+                        glassCoverageClassName={"w-[600px]"}
+                        value={form.apparelOfAnyType ? 1 : 0}
+                        setSetter={(value) => {
+                            setForm({
+                                ...form,
+                                apparelOfAnyType: value === 1 ? true : false
+                            })
+                        }}
+                    />
+                    <Selection
+                        label="Food (including ingredients) or supplements?"
+                        className={"my-3 justify-center"}
+                        glassCoverageClassName={"w-[600px]"}
+                        value={form.foodOrSupplements ? 1 : 0}
+                        setSetter={(value) => {
+                            setForm({
+                                ...form,
+                                foodOrSupplements: value === 1 ? true : false
+                            })
+                        }}
+                    />
+                    <Selection
+                        label="Machinery, tools or building products?"
+                        className={"my-3 justify-center"}
+                        glassCoverageClassName={"w-[600px]"}
+                        value={form.machineryBuildingProducts ? 1 : 0}
+                        setSetter={(value) => {
+                            setForm({
+                                ...form,
+                                machineryBuildingProducts: value === 1 ? true : false
+                            })
+                        }}
+                    />
+                    <Selection
+                        label="Vehicles or their components?"
+                        className={"my-3 justify-center"}
+                        glassCoverageClassName={"w-[600px]"}
+                        value={form.vehiclesOrComponents ? 1 : 0}
+                        setSetter={(value) => {
+                            setForm({
+                                ...form,
+                                vehiclesOrComponents: value === 1 ? true : false
+                            })
+                        }}
+                    />
+                    <Selection
+                        label="Health or beauty related products?"
+                        className={"my-3 justify-center"}
+                        glassCoverageClassName={"w-[600px]"}
+                        value={form.healthBeautyProducts ? 1 : 0}
+                        setSetter={(value) => {
+                            setForm({
+                                ...form,
+                                healthBeautyProducts: value === 1 ? true : false
+                            })
+                        }}
+                    />
+                    <Selection
+                        label="Flammable, hazardous or pressurised goods?"
+                        className={"my-3 justify-center"}
+                        glassCoverageClassName={"w-[600px]"}
+                        value={form.flammablePressurisedGoods ? 1 : 0}
+                        setSetter={(value) => {
+                            setForm({
+                                ...form,
+                                flammablePressurisedGoods: value === 1 ? true : false
+                            })
+                        }}
+                    />
+                    <Selection
+                        label="None of the above?"
+                        className={"my-3 justify-center"}
+                        glassCoverageClassName={"w-[600px]"}
+                        value={form.noneOfTheAbove ? 1 : 0}
+                        setSetter={(value) => {
+                            setForm({
+                                ...form,
+                                noneOfTheAbove: value === 1 ? true : false
+                            })
+                        }}
+                    />
+                </div>
+                <div className="flex flex-row items-center mt-[20px]">
+                    <div className="border-l-4 border-[#de4523] ">
+                        <span className="flex justify-center text-[20px] montserrat-bold ml-[10px]">Additional Cover</span>
+                    </div>
+                </div>
+                <Input
+                    name="form"
+                    label="Property in your physical or legal care, custody or control"
+                    inputClass="border-gray-500 rounded"
+                    horizontalInput
+                    wrapperClass="mb-4"
+                    labelClassName="flex flex-row-reverse justify-end"
+                    // labelClass="md:mr-8"
+                    type="select"
+                    value={form.propertyCustodyOrControl}
+                    placeholder={" 250k, 500k, 750k, 1M or Other "}
+                    items={[
+                        {
+                            value: nFormatter(250000),
+                            label: nFormatter(250000),
+                        },
+                        {
+                            value: nFormatter(500000),
+                            label: nFormatter(500000),
+                        },
+                        {
+                            value: nFormatter(750000),
+                            label: nFormatter(750000),
+                        },
+                        {
+                            value: nFormatter(1000000),
+                            label: nFormatter(1000000),
+                        },
+                    ]}
+                    onChange={(e) =>
+                        setForm({
+                            ...form,
+                            propertyCustodyOrControl: e.target.value,
+                        })
+                    }
+                />
+                <Selection
+                    label="Exports to USA/Canada"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.exportToUsaCanada ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            exportToUsaCanada: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <div className="border-[1px] border-[#c9d9de]  my-10" />
+                <div className="flex flex-col mb-5">
+                    <div className="grid grid-cols-1 grid-rows-1 xl:grid-cols-2 gap-4 w-full">
+                        <div className="flex items-center w-full montserrat-regular text-[#162F3E]">
+                            Classisfication
+                        </div>
+                        <div className="flex items-center w-full montserrat-regular text-[#162F3E]">
+                            Description
+                        </div>
+                    </div>
+                    {specifiedItems.map((item, index) => {
+                        return (
+                            <div key={index} className="grid grid-cols-1 grid-rows-1 xl:grid-cols-2 gap-4 w-full my-2">
+                                <div className="flex items-center w-full">
+                                    <Input
+                                        inputClass="border-gray-500 rounded w-[400px]"
+                                        type="text"
+
+                                    />
+                                    {/* <Input
+                                        name="form"
+                                        label="Annual Wages"
+                                        inputClass="border-gray-500 rounded"
+                                        horizontalInput
+                                        wrapperClass="mb-4"
+                                        labelClassName="flex flex-row-reverse justify-end"
+                                        // labelClass="md:mr-8"
+                                        type="text"
+                                        placeholder="$"
+                                        value={form.annualWages}
+                                        onChange={(e) =>
+                                            setForm({
+                                                ...form,
+                                                annualWages: e.target.value,
+                                            })
+                                        }
+
+                                    /> */}
+                                </div>
+                                <div className="flex items-center w-full">
+                                    <Input
+                                        inputClass="border-gray-500 rounded w-[400px]"
+                                        type="text"
+                                    />
+                                    <button
+                                        className="ml-2"
+                                        onClick={() => removeSpecifiedItems(index)}
+                                        aria-label="Close Modal"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="15"
+                                            height="15"
+                                            viewBox="0 0 24 24"
+                                            className={`fill-current text-red-theme`}
+                                        >
+                                            <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                            </div>
+                        );
+                    })}
+                    <div className="flex justify-center w-full">
+                        <ButtonComponent
+                            name="Add Item"
+                            className="text-[#DE4523] border-[1px] border-[#DE4523] montserrat-regular rounded-md my-5 w-[400px]"
+                            onClick={() => {
+                                // setOpenCreateModal(false);
+                                addSpecifiedItems();
+                            }}
+                        />
+                    </div>
+                </div>
+                <div className="flex mb-5">
+                    <div className="flex items-center w-full">
+                        <label className="text-[#5b5b5b] montserrat-regular text-[14px]">
+                            Annual Wages
+                        </label>
+                    </div>
+                    <div className="flex w-full justify-start">
+                        <p className="text-[#5B5B5B] montserrat-bold">{"< Annual Turnover >"}</p>
+                    </div>
+                </div>
+                <Selection
+                    label={"We will exclude any liability arising from medical treatment or the make up or dispensing of any drug . Is this acceptable ?"}
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    // value={form.annualTurnOver ? 1 : 0}
+                    // setSetter={(value) => {
+                    //     setForm({
+                    //         ...form,
+                    //         annualTurnOver: value === 1 ? true : false
+                    //     })
+                    // }}
+                />
+
+            </div>
+        </>
+    )
+}
+
+export default PublicProductLiabilityComponent

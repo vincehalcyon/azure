@@ -1,0 +1,253 @@
+import React, { useEffect, useState } from "react";
+import { AiFillSetting } from "react-icons/ai";
+import Header from "../../components/Header/Header";
+import { BsBoxArrowUpRight, BsFillCircleFill } from "react-icons/bs";
+import AppButton from "../../components/Base/AppButton";
+// import axios from "axios";
+import Router from 'next/router';
+import axios from '/lib/axios'
+
+export default function ShowMore() {
+
+	const onSubmitHandler = async (e) => {
+		e.preventDefault()
+		try {
+
+			const s = await axios.post('https://s3.staging.halcyondigitalhost.com/api/node/test_content_type', {
+				data: {
+					type: "node--test_content_type",
+					attributes: {
+						title: "Custom Axios",
+						body: {
+							value: "This is a third test"
+						}
+					}
+				}
+			})
+
+			console.log('post', s);
+		} catch (error) {
+			console.log(error.response)
+		}
+	}
+
+	const alertList = [
+		{
+			id: 1,
+			date: '10/12/21',
+			time: 3,
+			body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.',
+		},
+		{
+			id: 2,
+			date: '10/12/21',
+			time: 3,
+			body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.',
+		},
+		{
+			id: 3,
+			date: '10/12/21',
+			time: 3,
+			body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.',
+		},
+		{
+			id: 4,
+			date: '10/12/21',
+			time: 3,
+			body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.',
+		},
+		{
+			id: 5,
+			date: '10/12/21',
+			time: 3,
+			body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.',
+		},
+		{
+			id: 6,
+			date: '10/12/21',
+			time: 3,
+			body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.',
+		},
+		{
+			id: 7,
+			date: '10/12/21',
+			time: 3,
+			body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.',
+		},
+	]
+
+	return (
+		<>
+			<Header page="Welcome " />
+			<div className="container mx-auto px-10 py-10">
+				<div className="flex flex-row justify-between">
+					<div className="text-sm text-contenta-greyish-brown font-montserratBold">
+						Alerts
+					</div>
+					<div
+						className="text-contenta-gray cursor-pointer"
+						onClick={(e) => {
+							e.preventDefault();
+							Router.push(`/alert-settings`)
+						}}
+					>
+						<AiFillSetting />
+					</div>
+				</div>
+				<div className="flex flex-col">
+					<form onSubmit={onSubmitHandler}>
+						<input type="text" className="border" />
+						<button>submit</button>
+					</form>
+				</div>
+				<div className="w-full flex flex-col gap-4 items-center">
+					{alertList.map((item, i) =>
+						<div className="flex flex-row bg-white content-shadow rounded-xl p-5" key={i}>
+							<div className="flex flex-row items-center ">
+								<div className="text-contenta-pinky-red p-5">
+									<BsFillCircleFill size={20} />
+								</div>
+								<div className="flex flex-col w-64 text-contenta-greyish-brown font-MontserratRegular">
+									<div className="flex justify-center text-sm">
+										{item.date}
+									</div>
+									<div className="flex justify-center text-xs">
+										{item.time} mins ago
+									</div>
+								</div>
+								<div className="px-5 text-sm text-contenta-greyish-brown font-MontserratRegular">
+									{item.body}
+								</div>
+							</div>
+							<div className="flex flex-row items-center justify-end gap-2">
+								<button 
+									className="py-2 btn-width rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+									onClick={(e) => {
+										e.preventDefault();
+										Router.push(`#`)
+									}}
+								>
+									<div className="flex items-center justify-center">
+										<BsBoxArrowUpRight size={16} />
+										<span className="pl-2">Go</span>
+									</div>
+								</button>
+								<AppButton
+									label="Mark as Read"
+									customTheme="py-2 btn-width rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+									labelClass="flex-row-reverse"
+									onClick={(e) => {
+										e.preventDefault();
+										Router.push(`#`)
+									}}
+								/>
+							</div>
+						</div>
+					)}
+				</div>
+			</div>
+		</>
+	);
+}
+
+<div className="w-2/5 wrapper">
+
+  <input
+     type="file"
+     id="file-image"
+     className="img-upload"
+     onChange={uploadImage}
+  />
+  {/* <Image
+     loader={() =>
+        items.image || "../img/default-img.jpg"
+     }
+     src={
+        items.image || "../img/default-img.jpg"
+     }
+     width="400"
+     height="450"
+     objectFit="cover"
+     alt="image"
+     className="rounded-t-xl cursor-pointer shadow-xl hover:shadow-2xl"
+  /> */}
+  <div className="flex items-center justify-center h-full">
+     {messageError || messageError !== '' ?
+        <span className="text-center text-red-600">{messageError}</span> : <span>{successThumbnail}</span>
+     }
+  </div>
+</div>
+
+
+// const uploadImage = () => {
+   //    const input = document.getElementById("file-image")
+   //    if (input.files.length) {
+   //       const imageType = ["image/png", "image/jpg"]
+
+   //       if (imageType.includes(input.files[0].type)) {
+   //          // for (let index = 0; index < input.files.length; index++) {
+   //          setFile(input.files.item(0))
+   //          setSuccessThumbnail(input.files.item(0).name)
+   //          setMessageError("")
+   //          // }
+   //       } else {
+   //          setMessageError("Error, file type nor supported.")
+   //          setSuccessThumbnail('')
+   //       }
+   //    }
+   // }
+
+
+
+   VIEW PROFILE
+   /* .avatarBox img {
+	   width: 10rem;
+	   height: 10rem;
+	   border-radius: 100%;
+	   border: 3px solid #2a295c;
+
+	   object-fit: cover;
+	   object-position: center center;
+	}
+
+	.inputBox {
+	   position: relative;
+	   bottom: 51px;
+	   left: 76px;
+
+	}
+
+	.inputBox>input {
+	   display: none;
+	}
+
+	.inputBox svg {
+	   cursor: pointer;
+	} */
+
+<div className="relative">
+	 <div className="avatarBox">
+	    {successThumbnail ?
+	       <img src={successThumbnail} alt="" /> : <img src="../img/default-img.jpg" alt="" />
+	    }
+	 </div>
+     <div className="inputBox">
+        <input
+           type="file"
+           id="file"
+           accept="image/*"
+           className="img-upload relative"
+           onChange={uploadImage}
+        />
+        <label htmlFor="file">
+           <div className="absolute top-0 flex items-center justify-center text-white font-semibold text-xs min-w-8 min-h-8 rounded-full bg-sodexo-dark-purple-blue px-1 mt-3 ml-10">
+              <AiOutlineCamera size={20} />
+           </div>
+        </label>
+     </div>
+     <div className="flex items-center absolute">
+        {messageError || messageError !== '' ?
+           <span className="text-center text-red-600">{messageError}</span> : null
+        }
+     </div>
+</div> 

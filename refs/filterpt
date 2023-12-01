@@ -1,0 +1,534 @@
+{/* <Row className="d-flex justify-content-start align-items-start mb-2">
+          <Col className="col-12 col-md-12 col-lg-6 col-xl-auto">
+            <Label className="fs-14">
+              Selected Transaction Status
+            </Label>
+            <Select
+              styles={selectStyles}
+              label="Status"
+              className=""
+              classNamePrefix="select"
+              value={selectedStatuses}
+              options={[
+                { value: 'Pending', label: 'Pending' },
+                { value: 'Paid', label: 'Paid' },
+                { value: 'Payment Failed', label: 'Payment Failed' },
+                { value: 'Cancelled', label: 'Cancelled' },
+                { value: 'Processing', label: 'Processing' },
+                { value: 'Out For Delivery', label: 'Out For Delivery' },
+                { value: 'Delivered', label: 'Delivered' },
+              ]}
+              onChange={selectedStatuses => setSelectedStatuses(selectedStatuses)}
+              isMulti
+            />
+          </Col>
+          <Col className="col-12 col-md-12 col-lg-6 col-xl-auto">
+            <Label className="fs-14">
+              Selected Filtered Products
+            </Label>
+            <Select
+              styles={selectStyles}
+              label="Status"
+              className=""
+              classNamePrefix="select"
+              value={selectedProducts}
+              options={
+                productFilterLists
+                  ? productFilterLists.map(data => ({ label: data.product_name, value: data.sku }))
+                  : []
+              }
+              onChange={selectedProducts => {
+                setSelectedProducts(selectedProducts)
+                setProductIds(selectedProducts.map(data => data.value))
+              }}
+              isMulti
+            />
+          </Col>
+          <Col className="col-12 col-md-12 col-lg-7 col-xl-auto">
+            <Row>
+              <Col className="col-12 col-md-6 col-lg-6 col-xl-auto">
+                <Label className="fs-14">
+                  Start Date (<i>Paid Date</i>)
+                </Label> 
+                <Input 
+                  style={{ width: '225px' }}
+                  type="datetime-local" 
+                  aria-label="start date"
+                  className="align-bottom"
+                  value={startDate} 
+                  onChange={(e) => { 
+                    setStartDate(e.target.value);
+                    setSelectedTransactionIds([])
+                    setInitialLoad(true); 
+                  }}
+                />
+              </Col>
+              <Col className="col-12 col-md-6 col-lg-6 col-xl-auto">
+                <Label className="fs-14">
+                  End Date (<i>Paid Date</i>)
+                </Label> 
+                <Input 
+                  style={{ width: '225px' }}
+                  type="datetime-local" 
+                  aria-label="end date"
+                  className="align-bottom"
+                  value={endDate} 
+                  onChange={(e) => { 
+                    setEndDate(e.target.value); 
+                    setSelectedTransactionIds([])
+                    setInitialLoad(true); 
+                  }}
+                />
+              </Col>
+            </Row>
+          </Col>
+          <Col className="col-12 col-md-12 col-lg-5 col-xl-auto ml-auto align-self-end">
+            <Row className="flex-nowrap align-items-end pt-2 px-3">
+              <Input
+                placeholder="Search"
+                type="text"
+                aria-label="Search input"
+                className="align-bottom"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => { ['Enter', 'NumpadEnter'].includes(e.code) ? setSubmitSearch(search) : null }}
+              />
+              <Button
+                color="default"
+                className="float-right ml-2"
+                onClick={() => {
+                  setCurrentPage(1)
+                  setSubmitSearch(search)
+                }}
+              >
+                Search
+              </Button>
+            </Row>
+          </Col>
+        </Row> */}
+
+
+
+    -----GENERATOR REPORT------
+    {/* <Col className="col-12 col-md-12 col-lg-5 col-xl-auto">
+              <Label className="fs-14">
+                Selected Transaction Status
+              </Label>
+              <Select
+                styles={selectStyles}
+                label="Status"
+                className=""
+                classNamePrefix="select"
+                value={selectedStatuses}
+                options={[
+                  { value: 'Paid', label: 'Paid' },
+                  { value: 'Processing', label: 'Processing' },
+                ]}
+                onChange={selectedStatuses => {
+                  setSelectedStatuses(selectedStatuses)
+                  setIsAll(false)
+                }}
+                isMulti
+              />
+            </Col>
+            <Col className="col-12 col-md-12 col-lg-5 col-xl-auto">
+              <Label className="fs-14">
+                Selected Filtered Products
+              </Label>
+              <Select
+                styles={selectStyles}
+                label="Status"
+                className=""
+                classNamePrefix="select"
+                value={selectedProducts}
+                options={
+                  productFilterLists
+                    ? productFilterLists.map(data => ({ label: data.product_name, value: data.sku }))
+                    : []
+                }
+                onChange={selectedProducts => {
+                  setSelectedProducts(selectedProducts)
+                  setProductIds(selectedProducts.map(data => data.value))
+                  setIsAll(false)
+                }}
+                isMulti
+              />
+            </Col>
+            <Col className="col-12 col-md-12 col-lg-7 col-xl-auto">
+              <Row>
+                <Col className="col-12 col-md-6 col-lg-6 col-xl-auto">
+                  <Label className="fs-14">
+                    Start Date (<i>Paid Date</i>)
+                  </Label> 
+                  <Input
+                    style={{ width: '225px' }}
+                    type="datetime-local" 
+                    aria-label="start date"
+                    className="align-bottom"
+                    value={startDate} 
+                    onChange={(e) => { 
+                      setIsAll(false)
+                      setStartDate(e.target.value);
+                      setSelectedTransactionIds([])
+                      setInitialLoad(true); 
+                    }}
+                  />
+                </Col>
+                <Col className="col-12 col-md-6 col-lg-6 col-xl-auto">
+                  <Label className="fs-14">
+                    End Date (<i>Paid Date</i>)
+                  </Label> 
+                  <Input
+                    style={{ width: '225px' }}
+                    type="datetime-local" 
+                    aria-label="end date"
+                    className="align-bottom"
+                    value={endDate} 
+                    onChange={(e) => { 
+                      setIsAll(false)
+                      setEndDate(e.target.value); 
+                      setSelectedTransactionIds([])
+                      setInitialLoad(true); 
+                    }}
+                  />
+                </Col>
+              </Row>
+            </Col>
+            <Col className="col-12 col-md-12 col-lg-5 col-xl-auto ml-auto align-self-end">
+              <Row className="flex-nowrap justify-content-end align-items-end pt-2 px-3">
+                <Button
+                  color="default"
+                  className="float-right ml-2"
+                  onClick={() => {
+                    resetFilter(1)
+                  }}
+                >
+                  Reset Filter
+                </Button>
+              </Row>
+            </Col> */}
+
+
+
+            ---ROWS LIMIT0--
+            <CardHeader>
+              <Row>
+                <Col lg={2}>
+                  <Label><small>Rows Limit</small></Label>
+                  <Input 
+                    type="select" 
+                    id="exampleSelect"
+                    name="productTypeId"
+                    bsSize="sm"
+                    defaultValue={limit}
+                    onChange={e => {
+                    setLimit(e.target.value)
+                    setPage(1)
+                    setInitialLoad(true)
+                  }}>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </Input>
+                </Col>
+              </Row>
+            </CardHeader>
+
+
+
+  ------REFERRAL DASHBOARD -------
+   {/* <Row>
+          <Col lg="2" xl="2" className="mb-2">
+            <Label>
+              <small>Rows Limit</small>
+            </Label>
+
+            <Input 
+              type="select" 
+              id="limitSelect"
+              name="limit"
+              defaultValue={limit}
+              onChange={e => {
+                setLimit(e.target.value)
+                setPage(1)
+              }}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </Input>
+          </Col>
+
+          <Col lg="3" xl="2" className="mb-2">
+            <Label>
+              <small>Status</small>
+            </Label>
+
+            <Input 
+              type="select" 
+              id="statusSelect"
+              name="status"
+              value={status}
+              onChange={e => setStatus(e.target.value)}
+            >
+              <option value={ '' }>All</option>
+              <option value={ 'Activated' }>Activated</option>
+              <option value={ 'Deactivated' }>Deactivated</option>
+            </Input>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col lg="4" xl="3" className="mb-2">
+            <Input 
+              type="select" 
+              id="exampleSelect"
+              name="orderBy"
+              value={orderBy}
+              onChange={e => setOrderBy(e.target.value)}
+            >
+              {
+                orderByOptions.map(orderByOption => (
+                  <option key={ orderByOption.value } value={ orderByOption.value }>{ orderByOption.label }</option>
+                ))
+              }
+            </Input>
+          </Col>
+
+          <Col lg={{ size: 5, offset: 3 }} xl={{ size: 4, offset: 5 }} className="mb-2">
+            <Row className="flex flex-nowrap px-3">
+              <Input
+                placeholder="Search"
+                type="text"
+                aria-label="Search input"
+                className="align-bottom"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => { ['Enter', 'NumpadEnter'].includes(e.code) ? submitSearch(search) : null }}
+              />
+
+              <Button
+                color="default"
+                className="float-right ml-2"
+                disabled={gettingReferralProfiles}
+                onClick={() => submitSearch(search)}
+              >
+                Search
+              </Button>
+
+              <Button
+                color="default"
+                className="float-right ml-2"
+                disabled={gettingReferralProfiles}
+                onClick={() => exportReferralProfiles()}
+              >
+                Export
+              </Button>
+            </Row>
+          </Col>
+        </Row> */}
+
+
+
+        -------Transaction
+
+         <div className="d-flex pb-3 flex-wrap">
+          <div className="d-flex">
+            <div className="pr-3">
+              <Label className="fs-14">
+                Selected Transaction Status
+              </Label>
+              <Select
+                styles={selectStyles}
+                label="Status"
+                className=""
+                classNamePrefix="select"
+                value={selectedStatuses}
+                options={[
+                  { value: 'Pending', label: 'Pending' },
+                  { value: 'Paid', label: 'Paid' },
+                  { value: 'Payment Failed', label: 'Payment Failed' },
+                  { value: 'Cancelled', label: 'Cancelled' },
+                  { value: 'Processing', label: 'Processing' },
+                  { value: 'Out For Delivery', label: 'Out For Delivery' },
+                  { value: 'Delivered', label: 'Delivered' },
+                ]}
+                onChange={selectedStatuses => setSelectedStatuses(selectedStatuses)}
+                isMulti
+                hideSelectedOptions={false}
+                components={{ ValueContainer }}
+              />
+            </div>
+            <div className="pr-3">
+              <Label className="fs-14">
+                Selected Filtered Products
+              </Label>
+              <Select
+                styles={selectStyles}
+                label="Status"
+                className=""
+                classNamePrefix="select"
+                value={selectedProducts}
+                options={
+                  productFilterLists
+                    ? productFilterLists.map(data => ({ label: data.product_name, value: data.sku }))
+                    : []
+                }
+                onChange={selectedProducts => {
+                  setSelectedProducts(selectedProducts)
+                  setProductIds(selectedProducts.map(data => data.value))
+                }}
+                isMulti
+                hideSelectedOptions={false}
+                components={{ ValueContainer }}
+              />
+            </div>
+            <div className="pr-3">
+              <Label className="fs-14">
+                  Start Date (<i>Paid Date</i>)
+                </Label> 
+                <Input 
+                  style={{ width: '195px' }}
+                  type="datetime-local" 
+                  aria-label="start date"
+                  className="align-bottom"
+                  value={startDate} 
+                  onChange={(e) => { 
+                    setStartDate(e.target.value);
+                    setSelectedTransactionIds([])
+                    setInitialLoad(true); 
+                  }}
+                />
+            </div>
+            <div className="mr-auto">
+              <Label className="fs-14">
+                  End Date (<i>Paid Date</i>)
+                </Label> 
+                <Input 
+                  style={{ width: '195px' }}
+                  type="datetime-local" 
+                  aria-label="end date"
+                  className="align-bottom"
+                  value={endDate} 
+                  onChange={(e) => { 
+                    setEndDate(e.target.value); 
+                    setSelectedTransactionIds([])
+                    setInitialLoad(true); 
+                  }}
+                />
+            </div>
+          </div>
+          <div className="d-flex align-items-end">
+            <Input
+              placeholder="Search"
+              type="text"
+              aria-label="Search input"
+              className="align-bottom"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => { ['Enter', 'NumpadEnter'].includes(e.code) ? setSubmitSearch(search) : null }}
+            />
+            <Button
+              color="default"
+              className="float-right ml-2"
+              onClick={() => {
+                setCurrentPage(1)
+                setSubmitSearch(search)
+              }}
+            >
+              Search
+            </Button>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+        /* .stepper-item.incompleted .step-counter {
+  background-color: #007bff;
+} */
+
+.stepper-item.completed::after {
+  position: absolute;
+  content: "";
+  border-bottom: 2px solid #007bff;
+  width: 100%;
+  top: 10px;
+  left: 50%;
+  z-index: 3;
+}
+
+/* .stepper-item.incompleted::after {
+  position: absolute;
+  content: "";
+  border-bottom: 2px solid #ccc;
+  width: 100%;
+  top: 10px;
+  left: 50%;
+  z-index: 3;
+} */
+
+
+<div className={`${order.picked_up_at && order.delivered_at ? 'completed active' : 'incompleted active'} stepper-item`}>
+
+
+
+
+SWEET ALERT FOR DELETE
+
+      swal.fire({
+        title: 'Are you sure?',
+        text: `Are you sure to End this Promo ${name}.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: "#df4759",
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, keep it'
+      }).then(async(result) => {
+        if (result.isConfirmed) {
+          swal.fire(
+            'Deleted!',
+            `Successfully Deleted ${name}.`,
+            'success'
+          )
+          await API.delete(`outside/promoreward/${id}`)
+          setInitialLoad(true)
+        } else if (result.dismiss === swal.DismissReason.cancel) {
+          swal.fire(
+            'Cancelled',
+            'No product has been deleted',
+            'error'
+          )
+        }
+      })
+
+
+  SOLO BUTTON
+  <Row className="d-flex justify-content-start align-items-end mb-2">
+    <Col className="col-12 align-self-end">
+      <Row className="flex-nowrap justify-content-end align-items-end pt-2 pb-3 px-3">
+        <Link href="/product/create">
+          <Button color="default" className="float-right">
+            Add Product
+          </Button>
+        </Link>
+      </Row>
+    </Col>
+  </Row>
+
+
+
+FAQ WIDTH %
+
+td style={{ width: '20%' }}>{ faqList.title }</td>
+<td style={{ width: '15%' }}>{ faqList.created_by_user ? faqList.created_by_user.name : '' }</td>
+<td style={{ width: '15%' }}>{ faqList.is_publish ? 'Published' : 'Unpublished' }</td>
+<td style={{ width: '15%' }}>
+      

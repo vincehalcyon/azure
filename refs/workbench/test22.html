@@ -1,0 +1,98 @@
+<div className="flex justify-center w-full border-2 border-black">
+                            <div className="flex flex-col w-1/2 border-2 border-black justify-center items-center">
+                                <div className="flex flex-col w-full sm:flex-row text-center border-2 border-red-600 w-full">
+                                    <Button
+                                        classes="mr-[50px] w-full"
+                                        variant="gradient-green"
+                                        label="Back"
+                                        onClick={() => {
+                                            router.push('/claims')
+                                        }}
+                                    />
+                                    <Button
+                                        classes="w-full mt-5 sm:mt-0"
+                                        variant="gradient-orange"
+                                        label="Claim Progress"
+                                        onClick={() => {
+                                            setContent(progressStatus())
+                                        }}
+                                    />
+                                </div>
+                                <div className="flex flex-col w-full md:flex-row text-center border-2 border-red-600 w-full mt-5 md:mt-20">
+                                    <Button
+                                        classes="mr-[50px] w-full"
+                                        variant="gradient-neon"
+                                        label="Order Progress"
+                                        onClick={() => {
+                                            setContent(progressStatus('Order'))
+                                        }}
+                                    />
+                                    <Button
+                                        classes="w-full mt-5 md:mt-0"
+                                        variant="gradient-yellow"
+                                        label="Delivery Progress"
+                                        onClick={() => {
+                                            setContent(progressStatus('Delivery'))
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+                        <div className="flex justify-center">
+                            <div className="max-w-[350px] sm:min-w-[350px]">
+                                <div className="flex flex-col items-center justify-center w-full border-2 border-black">
+                                    <div className="flex flex-col w-full md:flex-row text-center border-2 border-red-600">
+                                        <div className="w-full">
+                                            <Button
+                                                classes="w-full"
+                                                variant="gradient-green"
+                                                label="Back"
+                                                onClick={() => {
+                                                    router.push('/claims')
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="w-full">
+                                            <Button
+                                                classes="w-full mt-5 md:mt-0"
+                                                variant="gradient-orange"
+                                                label="Claim Progress"
+                                                onClick={() => {
+                                                    setContent(progressStatus())
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col w-full md:flex-row text-center border-2 border-red-600 mt-5 md:mt-20">
+                                        <div className="w-full mr-0 md:mr-[50px]">
+                                            <Button
+                                                classes="w-full"
+                                                variant="gradient-neon"
+                                                label="Order Progress"
+                                                onClick={() => {
+                                                    setContent(progressStatus('Order'))
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="w-full">
+                                            <Button
+                                                classes="w-full mt-5 md:mt-0"
+                                                variant="gradient-yellow"
+                                                label="Delivery Progress"
+                                                onClick={() => {
+                                                    setContent(progressStatus('Delivery'))
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>

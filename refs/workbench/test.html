@@ -1,0 +1,99 @@
+import { useState } from "react"
+
+const Selection = (props) => {
+  const {
+    value,
+    label,
+    selectionLabel,
+    className,
+    justify = "justify-center",
+    glassCoverageClassName,
+    margin,
+    setSetter,
+    hoverClass = "",
+  } = props
+  const [activeButton, setActiveButton] = useState()
+  return (
+    <>
+      <div
+        className={`flex flex-col xl:flex-row w-full items-center ${margin} ${
+          label ? (className ? "" : "mb-10 ") : "w-full mb-5"
+        }`}
+      >
+        {label && (
+          <divglassCoverageClassName
+            className={`flex items-center ${
+              glassCoverageClassName
+                ? glassCoverageClassName
+                : "w-full justify-center xl:justify-start xl:w-1/2"
+            }`}
+          >
+            <label className="text-[#5b5b5b] montserrat-regular text-[14px]">
+              {label}
+            </label>
+          </div>
+        )}
+        <div
+          className={`flex  ${
+            label ? (className ? className : className) : justify
+          } items-center w-1/2`}
+        >
+          <ul
+            className="flex mb-0 list-none flex-wrap flex-row  w-full"
+            role="tablist"
+          >
+            <li className={`-mb-px last:mr-0 flex-auto text-center w-[200px]`}>
+              <a
+                className={`w-auto text-xs px-5 shadow-lg rounded-l-md block montserrat-bold text-[14px] ${hoverClass} ${
+                  activeButton === "Yes" || value === 1
+                    ? "text-white border-[1px] border-[#DE4523] bg-[#DE4523]"
+                    : "text-black border-[1px] border-[#c4c4c4]"
+                } py-[6px]`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setActiveButton("Yes")
+                  setSetter(1)
+                  // setMarketingConsent(1)
+                  // setFormData({
+                  //   ...formData,
+                  //   type: marketingConsent,
+                  // })
+                }}
+                data-toggle="tab"
+                href=""
+                role="tablist"
+              >
+                <i className="fas fa-space-shuttle text-base mr-1"></i>{" "}
+                {selectionLabel ? selectionLabel.yes : "Yes"}
+              </a>
+            </li>
+            <li
+              className={`-mb-px mr-2 last:mr-0 flex-auto text-center w-[200px]`}
+            >
+              <a
+                className={`w-auto text-xs px-5 shadow-lg rounded-r-md block montserrat-bold text-[14px]  ${hoverClass} ${
+                  activeButton === "No" || value === 0
+                    ? "text-white border-[1px] border-[#DE4523] bg-[#DE4523]"
+                    : "text-black border-[1px] border-[#c4c4c4]"
+                } py-[6px]`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setActiveButton("No")
+                  setSetter(0)
+                }}
+                data-toggle="tab"
+                href=""
+                role="tablist"
+              >
+                <i className="fas fa-cog text-base mr-1"></i>{" "}
+                {selectionLabel ? selectionLabel.no : "No"}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default Selection

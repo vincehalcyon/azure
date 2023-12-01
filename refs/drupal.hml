@@ -1,0 +1,183 @@
+vincecontenta_drupal_db
+
+user: vincecontenta_drupal_user
+pass:[lE].}_4dCsY
+
+
+<div class="row">
+    <div class="col-sm-6 mb-3">
+       <div class="form-floating">
+          <input type="text" class="form-control" id="floatingPassword" placeholder="Name">
+          <label for="floatingName">Name</label>
+        </div>
+    </div>
+    <div class="col-sm-6 mb-3">
+        <div class="form-floating">
+            <input type="email" class="form-control" id="floatingEmail" placeholder="Email">
+            <label for="floatingemail">Email</label>
+        </div>
+    </div>
+     <div class="col-sm-6 mb-3">
+        <div class="form-floating">
+            <input type="text" class="form-control" id="floatingCountry" placeholder="Contry/State" aria-describedby="">
+            <label for="floatingCountry">Contry/State</label>
+        </div>
+    </div>
+    <div class="col-sm-6 mb-3">
+        <div class="form-floating">
+            <input type="number" class="form-control" id="floatingNumber" placeholder="Phone Number" aria-describedby="">
+            <label for="floatingNumber">Phone Number</label>
+        </div>
+    </div>
+    <div class="col-sm-6 mb-3">
+        <span class="chk-label">Preferred Call Time</span>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+                Morning
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+                Afternoon
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+                Evening
+            </label>
+        </div>
+    </div>
+    <div class="col-sm-6 mb-3">
+        <span class="chk-label">Preferred Language</span>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+                English
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+                Tagalog
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+                Either
+            </label>
+        </div>
+    </div>
+    <div class="mb-3">
+      <textarea class="form-control resize-none" id="exampleFormControlTextarea1" placeholder="Message/Requirements" rows="5"></textarea>
+    </div>
+    <div class="mb-3">
+        <input class="form-control" type="file" id="formFileMultiple" multiple>
+    </div>
+ </div>
+
+
+
+
+    <div class="block-job">
+         <div class="page-header">
+            <div class="container page-title">
+                <h1>{{ node.title.0.value }}</h1>
+            </div>
+        </div> 
+        <div class="container">
+            <div class="job-category-filter">
+                
+            </div>
+        </div>
+    </div>
+
+
+
+     <div class="block-privacy">
+        <div class="page-header field-title">
+            <div>{{ node.title.0.value }}</div>
+        </div>
+        <div class="container">
+            <div class="field-body">
+                {{ node.body.0.value|raw }}
+            </div>
+        </div>
+    </div>
+
+
+
+     <div class="block-websites-listing">
+        <div class="page-header-wrapper">
+            <div class="page-header">
+                <h2 class="page-header-title container">{{ node.title.0.value }}</h2>
+            </div>
+            <div class="item-description">
+                <div class="container">
+                    {{ node.body.0.value|raw }}
+                </div>
+            </div>
+        </div>
+        <div class="website-listing">
+            <div class="">
+                {% for images in node.field_image_portfolio %}
+                    {{ dd(images.entity.field_images) }}
+                    <div class="item">
+                        <img src="{{ bamboo_render_image_style(images.entity.field_images.0.entity.uri.0.value, 'medium') }}"> 
+                        {#<div class="item__name text-center">{{ image.title }}</div>#}
+                    </div> 
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
+     <!-- <tr style="border-top: 3px solid #34303d;">
+        <td align="center" style="background:#34303d;padding:15px 35px;font-weight:bold;font-family:'Inter',sans-serif;font-size:25px;color:#FFFDFB;text-transform:capitalize;">
+            <img src="images/vip promo.png" alt="Promo" width="146">
+        </td>
+    </tr> -->
+
+
+
+    hard code
+    <tr style="border-top: 4px solid #34303d;">
+        <td align="center" style="padding:10px 60px 25px; background-color: #34303d;">
+            <table bgcolor="#34303d" border="0" cellpadding="0" cellspacing="0"
+                   style="background:#fffdfb;text-align: center; border-radius: 10px;" width="152">
+                <tr>
+                    <td align="right" width="40" style="padding: 10px 0px 10px 5px;">
+                        <img src="images/star.png" alt="VIP Icon" width="30">
+                    </td>
+                    <td
+                        class="copytext-15"
+                        style="padding: 0 0 0 8px;font-family:'Inter',sans-serif;font-size:15px;mso-line-height-rule:exactly;color:#34303D;padding: 5px 10px 5px 5px; text-align: left;">
+                        <span style="font-family:'Inter',sans-serif;font-size:15px;color:#00D1D2;">
+                            IQOS CLUB
+                        </span>
+                        </br> VIP PROMO!
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+
+
+    <!--<td align="right" style="padding:0 8px 0 0;" valign="middle" width="25%">-->
+    <!--    <div>-->
+            <!--[if mso]>
+    <!--          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://www.iqos.com/" style="font-weight: bold !important; font-family: IQOS Sans, Inter, Arial, sans-serif !important; height:37px;v-text-anchor:middle;width:140px;" arcsize="100%" strokecolor="#c29868" fillcolor="#c29868">-->
+    <!--            <w:anchorlock/>-->
+    <!--            <center style="font-weight: bold !important; font-family: IQOS Sans, Inter, Arial, sans-serif !important; color:#ffffff !important; font-size:14px;">Gold 800pts.</center>-->
+    <!--          </v:roundrect>-->
+    <!--        <![endif]-->-->
+    <!--        <a class="font-default color-white" href="#" style="font-family: IQOS Sans, Inter, Arial, sans-serif !important; width: 110px; display: inline-block; background: #c29868; border: 10px solid #c29868; font-size: 14px; mso-height-rule: exactly; line-height: 10px; text-align: center; display: block; border-radius: 20px; color:#ffffff !important; mso-hide:all;">-->
+    <!--            Gold 800pts.-->
+    <!--        </a>-->
+    <!--    </div>-->
+    <!--</td>-->

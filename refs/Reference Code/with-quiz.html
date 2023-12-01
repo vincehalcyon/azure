@@ -1,0 +1,500 @@
+import Header from "components/Header/Header"
+import React, { useEffect, useState } from "react"
+import Router, { useRouter } from "next/router"
+import { useCustomRequest, useRequest } from "lib/custom-hook"
+import { AiOutlineDownload, AiOutlinePlus } from "react-icons/ai"
+import Image from "next/image"
+import Link from "next/link"
+import moment from "moment"
+import { Fragment } from "react"
+
+export default function TrainingEducation({ authUser }) {
+   const router = useRouter()
+   const status = router.query.status ? router.query.status : ""
+   const type = router.query.type
+
+   const userFirstRole = authUser?.roles[0]?.slug;
+   console.log("userRole", userFirstRole)
+
+   const {
+      data: quizzesData,
+      isValidating: quizessValidating,
+      mutate: quizessTraining,
+   } = useCustomRequest({
+      url: `${process.env.NEXT_PUBLIC_CRM_API_URL}/v1/quizzes?includes=image`,
+   })
+
+   const quizzes = quizzesData?.data || []
+   const [initialLoad, setInitialLoad] = useState(true)
+
+   const {
+      data: trainingEducationDraft,
+      isValidating: isValidationTrainingEducation,
+      mutate: refetch,
+   } = useRequest(
+      `${process.env.NEXT_PUBLIC_API_URL}/node/api/training-education/all/draft`
+   )
+
+   const {
+      data: allTraining,
+      isValidating: isValidationTraining,
+      mutate: refetchAll,
+   } = useRequest(
+      `${process.env.NEXT_PUBLIC_API_URL}/node/api/training-education/all`
+   )
+
+   const {
+      data: tabsData,
+      isValidating: tabsIsValidating,
+      mutate: updateTabs,
+   } = useRequest({
+      url: `${process.env.NEXT_PUBLIC_API_URL}/taxonomy/api/training-education`,
+   })
+
+   const {
+      data: allTrainingEducation,
+      isValidating: trainingValidating,
+      mutate: updateTraining,
+   } = useRequest({
+      url: `${process.env.NEXT_PUBLIC_API_URL}/node/api/training-education`,
+   })
+
+   const tabs = tabsData
+      ? [
+         {
+            name: "All",
+            link: "training-education?type=All",
+         },
+         ...tabsData, { name: 'All Quizzes', link: 'training-education?type=quiz' }
+      ]
+      : null
+
+   // const combine = allTrainingEducation ? allTrainingEducation.push(...quizzesData) : []
+
+   let allTrainings = allTrainingEducation || null
+   const [filterTraining, setFilterTraining] = useState(allTrainings || null)
+   const [filterTrainingVideo, setFilterTrainingVideo] = useState(
+      allTrainings || null
+   )
+
+   const [itemLimitTrainingVideos, setItemLimitTrainingVideos] = useState(4)
+   const [itemLimit, setItemLimit] = useState(4)
+   const [loadingTrainingVideos, setLoadingTrainingVideos] = useState(false)
+   const [loading, setLoading] = useState(false)
+
+   const tabLength = tabs?.map(
+      (itm, index) => {
+         if (index !== tabs?.length - 1) {
+
+            return allTrainings?.filter((item) => item.category_name === itm.name).length
+         }
+         return quizzes?.length
+      }
+   )
+   console.log('tabLength', tabLength)
+
+   const tabNavigationHandler = (event, tabName) => {
+      event.preventDefault()
+      router.push(`training-education?type=${tabName.split(" ").join("-")}`)
+      // setFilterTraining(allTrainings)
+      if (tabName !== "All") {
+         const filtered = allTrainings.filter(
+            (item) => item.category_name === tabName
+         )
+         setFilterTraining(filtered)
+         return
+      }
+      setFilterTraining(allTrainings)
+   }
+   console.log('quizzesData', quizzesData)
+
+   return (
+      <>
+         <Header page="Training Education " />
+         <div className="flex flex-col px-7 py-10">
+            {/* Owner */}
+            <div className="flex flex-col">
+               {userFirstRole == 'owner' && (
+                  <div className="grid grid-flow-row xl:grid-cols-3 lg:grid-cols-3 grid-cols-1 grid-rows-1 pb-5 gap-4">
+                     <div className="flex items-center justify-center content-shadow rounded-lg py-7 bg-white px-5 gap-5">
+                        <div className="text-3xl text-contenta-greyish-brown font-montserratBold">
+                           {filterTrainingVideo?.length}
+                        </div>
+                        <div className="text-sm text-contenta-greyish-brown font-montserratBold">
+                           All Trainings & Education
+                        </div>
+                     </div>
+                     <div className="flex items-center justify-center content-shadow rounded-lg py-7 bg-white px-5 gap-5">
+                        <div className="text-3xl text-contenta-greyish-brown font-montserratBold">
+                           23
+                        </div>
+                        <div className="text-sm text-contenta-greyish-brown font-montserratBold">
+                           Published Lessons
+                        </div>
+                     </div>
+
+                     <div
+                        className="flex items-center justify-center content-shadow rounded-lg py-8 px-5 gap-2 rounded-lg text-white font-montserratBold text-sm bg-contenta-blue cursor-pointer"
+                        onClick={(e) => {
+                           e.preventDefault()
+                           router.push(`training-education/quizzes-overview`)
+                        }}
+                     >
+                        <span className="text-3xl text-white font-montserratBold">
+                           7
+                        </span>
+                        <span>All Quizzes</span>
+                     </div>
+                  </div>
+               )}
+
+               {/* Super Admin */}
+               {userFirstRole == 'administrator' && ( // to be updated
+                  <div className="grid grid-flow-row xl:grid-cols-5 lg:grid-cols-3 grid-cols-1 grid-rows-1 gap-4">
+                     <div className="flex items-center justify-center content-shadow rounded-lg py-7 bg-white px-5 gap-5">
+                        <div className="text-3xl text-contenta-greyish-brown font-montserratBold">
+                           {filterTrainingVideo?.length}
+                        </div>
+                        <div className="text-sm text-contenta-greyish-brown font-montserratBold">
+                           All Trainings & Education
+                        </div>
+                     </div>
+                     <div className="flex items-center justify-center content-shadow rounded-lg py-7 bg-white px-5 gap-5">
+                        <div className="text-3xl text-contenta-greyish-brown font-montserratBold">
+                           23
+                        </div>
+                        <div className="text-sm text-contenta-greyish-brown font-montserratBold">
+                           Published Lessons
+                        </div>
+                     </div>
+                     <div
+                        className="flex items-center justify-center content-shadow rounded-lg py-7 bg-white px-5 gap-5 cursor-pointer"
+                        onClick={() => router.push("/training-education/draft")}
+                     >
+                        <div className="text-3xl text-contenta-greyish-brown font-montserratBold">
+                           3
+                        </div>
+                        <div className="text-sm text-contenta-greyish-brown font-montserratBold">
+                           Drafts
+                        </div>
+                     </div>
+                     <div
+                        className="flex items-center justify-center content-shadow rounded-lg py-8 px-5 gap-2 rounded-lg text-white font-montserratBold text-sm bg-contenta-blue cursor-pointer"
+                        onClick={(e) => {
+                           e.preventDefault()
+                           router.push(`training-education/add-training`)
+                        }}
+                     >
+                        <AiOutlinePlus className="text-white" /> Upload New Document
+                     </div>
+                     <div
+                        className="flex items-center justify-center content-shadow rounded-lg py-8 px-5 gap-2 rounded-lg text-white font-montserratBold text-sm bg-contenta-blue cursor-pointer"
+                        onClick={(e) => {
+                           e.preventDefault()
+                           router.push(`training-education/quizzes-overview`)
+                        }}
+                     >
+                        <AiOutlinePlus className="text-white" /> Open Quizzes
+                     </div>
+                  </div>
+               )}
+               <div className="flex flex-col py-5">
+                  {filterTrainingVideo?.length ? (
+                     <>
+                        <div className="text-sm text-contenta-greyish-brown font-montserratBold pb-5">
+                           Training Videos ({filterTrainingVideo.length})
+                        </div>
+                        <div className="flex justify-center">
+                           <div className="grid grid-flow-row xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 grid-rows-1 ">
+                              {filterTrainingVideo?.map((item, i) => {
+                                 if (i < itemLimitTrainingVideos) {
+                                    return (
+                                       <div className="flex flex-col flex-wrap max-w-md min-w-md bg-white rounded-xl m-3 content-shadow cursor-pointer">
+                                          <div
+                                             className=""
+                                             onClick={(e) => {
+                                                e.preventDefault()
+
+                                                // if (item?.crm && item.completed) {
+                                                //   return
+                                                // }
+                                                router.push(`/training-education/${item.nid}`)
+                                             }}
+                                          >
+                                             <Image
+                                                loader={() =>
+                                                   item?.image_raw ||
+                                                   `https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&w=1000&q=80`
+                                                }
+                                                src={
+                                                   item?.image_raw ||
+                                                   `https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&w=1000&q=80`
+                                                }
+                                                width="400"
+                                                height="200"
+                                                objectFit="cover"
+                                                alt="image"
+                                                className="rounded-t-xl"
+                                             />
+                                          </div>
+                                          <div className="text-sm text-center break-normal flex flex-col mt-1 justify-center items-center text-sm text-contenta-greyish-brown font-montserratBold">
+                                             {item.title}
+                                          </div>
+                                          <div className="flex flex-row xl:flex-row lg:flex-col flex-row justify-center text-sm py-3 items-center gap-3">
+                                             <div className="m-1 bg-contenta-blue bg-opacity-50 text-contenta-light-blue px-3 rounded-lg">
+                                                {item.duration_hours !== ""
+                                                   ? `${item.duration_hours} hr ${item.duration_minutes !== ""
+                                                      ? `and ${item.duration_minutes} min/s`
+                                                      : ""
+                                                   }`
+                                                   : item.duration_minutes !== ""
+                                                      ? `${item.duration_minutes} min/s`
+                                                      : "00"}
+                                             </div>
+                                             <div className="text-contenta-greyish-brown font-montserratRegular">
+                                                Added {item.created}
+                                             </div>
+                                          </div>
+                                          <div className="flex items-center gap=2">
+                                             {item.file !== "" && (
+                                                <button className="flex w-full justify-center bg-contenta-blue p-3 rounded-bl-xl rounded-br-xl text-white font-montserratBold text-sm cursor-pointer hover:bg-contenta-blue-hover">
+                                                   <AiOutlineDownload size={24} /> Training Notes (PDF)
+                                                   {item.completed ? ' (Completed)' : ''}
+                                                </button>
+                                             )}
+                                          </div>
+                                       </div>
+                                    )
+                                 }
+                              })}
+                           </div>
+                        </div>
+                     </>
+                  ) : (
+                     <>
+                        <div className="flex justify-center w-full text-sm p-10 text-contenta-greyish-brown">
+                           No Results Found
+                        </div>
+                     </>
+                  )}
+               </div>
+               {itemLimitTrainingVideos < filterTrainingVideo?.length && (
+                  <div className="flex justify-center py-5">
+                     <button
+                        className="py-2 px-5 rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                        onClick={(e) => {
+                           e.preventDefault()
+                           setLoadingTrainingVideos(true)
+                           setTimeout(() => {
+                              setItemLimitTrainingVideos(itemLimit + 4)
+                              setLoadingTrainingVideos(false)
+                           }, 500)
+                        }}
+                     >
+                        {loadingTrainingVideos
+                           ? "loading..."
+                           : "Load more training videos"}
+                     </button>
+                  </div>
+               )}
+            </div>
+
+            {/* BROKER USER */}
+            {userFirstRole == 'employee' && (
+               <Fragment>
+                  <div className="flex items-center overflow-x-auto whitespace-nowrap gap-4">
+                     {tabs &&
+                        tabs.map((tab, index) =>
+                           tab.title === status ? (
+                              <div
+                                 key={index}
+                                 className="cursor-pointer w-full py-3  text-sm text-center whitespace-nowrap px-4 cursor-pointer"
+                              >
+                                 {tab.name}
+                              </div>
+                           ) : (
+                              <div
+                                 key={index}
+                                 className={
+                                    tab.name.split(" ").join("-").includes(type)
+                                       ? "text-sm py-3 mx-5 font-montserratBold text-contenta-greyish-brown border-b-4 border-contenta-blue cursor-pointer"
+                                       : "text-contenta-gray mx-5 py-3 my-2 text-sm font-montserratBold cursor-pointer"
+                                 }
+                                 aria-label={tab.name}
+                                 onClick={(e) => tabNavigationHandler(e, tab.name)}
+                              >
+                                 {`${tab.name} (${tabLength[0] === index
+                                       ? allTrainings.length
+                                       : tabLength[index]
+                                    })`}
+                              </div>
+                           )
+                        )}
+                  </div>
+                  <div className="flex flex-col py-5">
+                     {filterTraining?.length && type !== 'All-Quizzes' ? (
+                        <>
+                           <div className="flex justify-center">
+                              <div className="grid grid-flow-row lg:grid-cols-4 md:grid-cols-2 grid-cols-1 grid-rows-1 ">
+                                 {filterTraining?.map((item, i) => {
+                                    if (i < itemLimit) {
+                                       return (
+                                          <div className="flex flex-col flex-wrap max-w-md min-w-md bg-white rounded-xl m-3 content-shadow cursor-pointer">
+                                             <div
+                                                className=""
+                                                onClick={(e) => {
+                                                   e.preventDefault()
+                                                   // if (item?.crm && item.completed) {
+                                                   //   return
+                                                   // }
+                                                   router.push(`/training-education/${item.nid}`)
+                                                }}
+                                             >
+                                                <Image
+                                                   loader={() =>
+                                                      item.image_raw ||
+                                                      `https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&w=1000&q=80`
+                                                   }
+                                                   src={
+                                                      item.image_raw ||
+                                                      `https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&w=1000&q=80`
+                                                   }
+                                                   width="400"
+                                                   height="200"
+                                                   objectFit="cover"
+                                                   alt="image"
+                                                   className="rounded-t-xl"
+                                                />
+                                             </div>
+                                             <div className="text-sm break-normal flex flex-col mt-1 justify-center items-center text-sm text-contenta-greyish-brown font-montserratBold">
+                                                {item.title}
+                                             </div>
+                                             <div className="flex flex-row xl:flex-row lg:flex-col flex-row justify-center text-sm py-3 items-center gap-3">
+                                                {item.duration_hours !== "" ||
+                                                   item.duration_minutes !== "" ||
+                                                   (item.duration_minutes !== "" && (
+                                                      <div className="m-1 bg-contenta-blue bg-opacity-50 text-contenta-light-blue px-3 rounded-lg">
+                                                         {item.duration_hours !== ""
+                                                            ? `${item.duration_hours} hr ${item.duration_minutes !== ""
+                                                               ? `and ${item.duration_minutes} min/s`
+                                                               : ""
+                                                            }`
+                                                            : item.duration_minutes !== ""
+                                                               ? `${item.duration_minutes} min/s`
+                                                               : "00"}
+                                                      </div>
+                                                   ))}
+                                                <div className="text-contenta-greyish-brown font-montserratRegular">
+                                                   Added{" "}
+                                                   {moment(item.createdAt).format("DD-MM-YYYY")}
+                                                </div>
+                                             </div>
+                                             <div className="flex items-center gap=2">
+                                                {item.file !== "" && (
+                                                   <button className="flex w-full justify-center bg-contenta-blue p-3 rounded-bl-xl rounded-br-xl text-white font-montserratBold text-sm cursor-pointer hover:bg-contenta-blue-hover">
+                                                      <AiOutlineDownload size={24} /> Training Notes (PDF)
+                                                      {item.completed ? ' (Completed)' : ''}
+                                                   </button>
+                                                )}
+                                             </div>
+                                          </div>
+                                       )
+                                    }
+                                 })}
+                              </div>
+                           </div>
+                        </>
+                     ) :
+                        <>
+                           {quizzes?.length ? <div className="flex justify-center">
+                              <div className="grid grid-flow-row lg:grid-cols-4 md:grid-cols-2 grid-cols-1 grid-rows-1 ">
+                                 {quizzes?.map((item, i) => {
+                                    {console.log('quiz',quizzes)}
+                                    if (i < itemLimit) {
+                                       return (
+                                          <div className="flex flex-col flex-wrap max-w-md min-w-md bg-white rounded-xl m-3 content-shadow cursor-pointer">
+                                             <div
+                                                className=""
+                                                onClick={(e) => {
+                                                   e.preventDefault()
+                                                   // if (item?.crm && item.completed) {
+                                                   //   return
+                                                   // }
+                                                   router.push(`/training-education/${item.id}`)
+                                                }}
+                                             >
+                                                <Image
+                                                   loader={() =>
+                                                      item.image.url ||
+                                                      `https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&w=1000&q=80`
+                                                   }
+                                                   src={
+                                                      item.image.url ||
+                                                      `https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8c2FtcGxlfGVufDB8fDB8fA%3D%3D&w=1000&q=80`
+                                                   }
+                                                   width="400"
+                                                   height="200"
+                                                   objectFit="cover"
+                                                   alt="image"
+                                                   className="rounded-t-xl"
+                                                />
+                                             </div>
+                                             <div className="text-sm break-normal flex flex-col mt-1 justify-center items-center text-sm text-contenta-greyish-brown font-montserratBold">
+                                                {item.title}
+                                             </div>
+                                             <div className="flex flex-row xl:flex-row lg:flex-col flex-row justify-center text-sm py-3 items-center gap-3">
+                                                <div className="text-contenta-greyish-brown font-montserratRegular">
+                                                   Added{" "}
+                                                   {moment(item.createdAt).format("DD-MM-YYYY")}
+                                                </div>
+                                             </div>
+                                             <div className="flex items-center gap=2">
+                                                {item.file !== "" && (
+                                                   <button className="flex w-full justify-center bg-contenta-blue p-3 rounded-bl-xl rounded-br-xl text-white font-montserratBold text-sm cursor-pointer hover:bg-contenta-blue-hover">
+                                                      <AiOutlineDownload size={24} /> Take the Quiz
+                                                      {item.completed ? ' (Completed)' : ''}
+                                                   </button>
+                                                )}
+                                                {/* {item.file !== "" && (
+                                                   <button className="flex w-full justify-center bg-contenta-blue p-3 rounded-bl-xl rounded-br-xl text-white font-montserratBold text-sm cursor-pointer hover:bg-contenta-blue-hover">
+                                                      <AiOutlineDownload size={24} /> Quiz Taken
+                                                      {item.completed ? ' (Completed)' : ''}
+                                                   </button>
+                                                )} */}
+                                             </div>
+                                          </div>
+                                       )
+                                    }
+                                 })}
+                              </div>
+                           </div> :
+                              <div className="flex justify-center w-full text-sm p-10 text-contenta-greyish-brown">
+                                 No Results Found
+                              </div>
+                           }
+                        </>
+                     }
+                  </div>
+                  {itemLimit < filterTraining?.length && (
+                     <div className="flex justify-center py-5">
+                        <button
+                           className="py-2 px-5 rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                           onClick={(e) => {
+                              e.preventDefault()
+                              setLoading(true)
+                              setTimeout(() => {
+                                 setItemLimit(itemLimit + 4)
+                                 setLoading(false)
+                              }, 500)
+                           }}
+                        >
+                           {loading ? "loading..." : "Load more training videos"}
+                        </button>
+                     </div>
+                  )}
+               </Fragment>
+            )}
+         </div>
+      </>
+   )
+}

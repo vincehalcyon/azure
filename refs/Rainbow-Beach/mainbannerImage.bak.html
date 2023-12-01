@@ -1,0 +1,67 @@
+import Image from "next/image";
+import LogoRainbow from "@/components/partials/LogoRainbow";
+export default function Block({ block }) {
+  return (
+    <div className="w-full h-full min-h-[500px] 2sm:min-h-[200px] sm:min-h-[500px]">
+      <div className="relative w-full m-auto h-[101vh] bg-no-repeat bg-cover bg-center bg-[#959595]">
+        <picture>
+          <source media="(max-width: 414px)" srcSet="/default-image1.webp" />
+          <source media="(min-width: 415px)" srcSet="/default-image0.webp" />
+          <img
+            style={{ filter: "brightness(.85)" }}
+            className="absolute w-full h-full object-cover object-center "
+            src="/default-image1.webp"
+            alt="Rainbow Beach"
+            blurDataURL="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+            loading="eager"
+            priority
+          />
+        </picture>
+
+        {/* 520 - small logo(w-[200px]), hide bigger text */}
+        {/* 600 - big logo, show bigger text */}
+
+        <div className="flex flex-col">
+          <div className="absolute mt-8 top-[25%] 1sm:top-[10%] 1.5sm:top-[25%] md:top-[25%] right-0 left-0 m-auto text-center flex justify-center text-stone-50">
+            <div className="flex flex-col items-center justify-center ">
+              <div className="w-auto h-[349px] 1sm:w-[200px] 0sm:w-[366px] xl:w-[400px] ">
+                {/* SVG LOGO */}
+                {/* <LogoRainbow /> */}
+
+                {/* TEST IMAGE DISPLAY FOR OPTI */}
+                <div className="w-full h-[87%] 1sm:h-[55%] 0sm:h-full flex items-end justify-center">
+                  <Image
+                    className="absolute object-cover object-center w-[250px] 2sm:w-[285px] 1sm:w-[179px] h-auto 0sm:w-[355px] bottom-none xl:bottom-[69px] mr-1 0sm:mr-2"
+                    src="/Logo-arch.webp"
+                    alt="Rainbow Beach"
+                    width={300}
+                    height={300}
+                    blurDataURL="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                    loading="eager"
+                    priority
+                  />
+                  {/* <div className="text-[red] ">RELAX AND ENJOY</div> */}
+                </div>
+                <div className="block 0sm:hidden  text-[22px] 1sm:text-[17px]">
+                  RELAX AND ENJOY
+                </div>
+              </div>
+              <div className="hidden 0sm:block text-[18px] 2sm:text-[28px] leading-[23px] xl:leading-[70px] py-4">
+                RELAX AND ENJOY
+              </div>
+            </div>
+          </div>
+
+          {/* <div
+            className="absolute top-[75%] sm:top-[80%] md:top-[80%] lg:top-[80%] xl:top-[80%] 2xl:top-[70%] left-[50%] text-[25px] md:text-[28px] font-normal text-center text-stone-50"
+            style={{ transform: "translate(-50%)" }}
+          >
+            <h1 className="w-[300px] sm:w-[450px] leading-[35px] m-auto">
+              {description}
+            </h1>
+          </div> */}
+        </div>
+      </div>
+    </div>
+  );
+}

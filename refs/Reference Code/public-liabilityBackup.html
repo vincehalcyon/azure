@@ -1,0 +1,546 @@
+import Selection from "@/components/Selection/SelectionComponent"
+import Select from "react-select"
+import { currencyFormat, nFormatter, numberFormat } from "@/lib/custom-hooks";
+import { useEffect, useState } from "react";
+import Input from "@/components/Input/input";
+import ButtonComponent from "@/components/Button/Button";
+import { useRouter } from "next/router";
+
+
+const PublicProductLiabilityComponent = (props) => {
+    const router = useRouter()
+    const { onChange, initialData } = props
+    const [initalDataLoaded, setInitialDataLoaded] = useState(false)
+
+    const [form, setForm] = useState({
+        properOwnerLiability: initialData?.properOwnerLiability || "",
+        haveContactsDesignated: initialData?.haveContactsDesignated || "",
+        hireEquipmentStaff: initialData?.hireEquipmentStaff || "",
+
+        // This is Hazardous Activities & Substance
+        handleHazardousSubstances: initialData?.hireEquipmentStaff || "",
+        hazardousMaterialEnvironment: initialData?.hazardousMaterialEnvironment || "",
+        workAbove10mHeight: initialData?.workAbove10mHeight || "",
+        workWithExplosives: initialData?.workWithExplosives || "",
+        followingConstructionWork: initialData?.followingConstructionWork || "",
+        performHotworksPremises: initialData?.performHotworksPremises || "",
+    })
+
+    console.log('public-product', form)
+
+    useEffect(() => {
+        if (initialData && !initalDataLoaded) {
+            setForm({
+                properOwnerLiability: initialData?.properOwnerLiability || "",
+                haveContactsDesignated: initialData?.haveContactsDesignated || "",
+                hireEquipmentStaff: initialData?.hireEquipmentStaff || "",
+
+                // This is Hazardous Activities & Substance
+                handleHazardousSubstances: initialData?.hireEquipmentStaff || "",
+                hazardousMaterialEnvironment: initialData?.hazardousMaterialEnvironment || "",
+                workAbove10mHeight: initialData?.workAbove10mHeight || "",
+                workWithExplosives: initialData?.workWithExplosives || "",
+                followingConstructionWork: initialData?.followingConstructionWork || "",
+                performHotworksPremises: initialData?.performHotworksPremises || "",
+            })
+            setInitialDataLoaded(true)
+        }
+
+        if (onChange) {
+            onChange(form)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialData, form])
+
+    const [hotworks, setHotworks] = useState(false);
+    const [hazardValues, setHazardValues] = useState(
+        {
+            sumInsured: {
+                value: 0,
+                label: 0
+            },
+            excessAmount: {
+                value: 0,
+                label: 0
+            },
+            custodyOrControlValues: {
+                value: 0,
+                label: 0,
+            }
+        }
+    )
+    const custodyOrControl = [
+        {
+            value: nFormatter(250000),
+            label: nFormatter(250000),
+        },
+        {
+            value: nFormatter(500000),
+            label: nFormatter(500000),
+        },
+        {
+            value: nFormatter(750000),
+            label: nFormatter(750000),
+        },
+        {
+            value: nFormatter(1000000),
+            label: nFormatter(1000000),
+        },
+    ]
+    console.log("custodyOrControl", custodyOrControl);
+    const numberOfEmployees = [
+        {
+            value: 100,
+            label: currencyFormat(100)
+        },
+        {
+            value: 250,
+            label: currencyFormat(250),
+        },
+        {
+            value: 500,
+            label: currencyFormat(500),
+        },
+        {
+            value: 750,
+            label: currencyFormat(750),
+        },
+        {
+            value: 1000,
+            label: currencyFormat(1000)
+        },
+        {
+            value: 1500,
+            label: currencyFormat(1500)
+        },
+        {
+            value: 2000,
+            label: currencyFormat(2000)
+        },
+        {
+            value: 5000,
+            label: currencyFormat(5000)
+        },
+        {
+            value: 7500,
+            label: currencyFormat(7500)
+        },
+    ]
+    const [specifiedItems, setSpecifiedItems] = useState([
+        {
+            description: '', sumInsured: '',
+        }
+    ]);
+    const addSpecifiedItems = () => {
+        setSpecifiedItems(prev => {
+            return [...prev, { description: '', sumInsured: '' }]
+        })
+    }
+    const removeSpecifiedItems = (index) => {
+
+        let newArr = specifiedItems.filter((item, i) => i !== index)
+        setSpecifiedItems((data) => {
+            let tempKeys = [...data];
+            tempKeys = newArr
+            return [...tempKeys]
+        })
+    }
+    return (
+        <>
+            <div className="flex flex-col mb-2 w-full">
+                <div className="flex w-full border-[#162f3e] border-b-2">
+                    <span className="text-[#de4523] text-[20px] montserrat-bold ">{"Public & Product Liability"}</span>
+                </div>
+                <div className="flex flex-row items-center mt-[20px]">
+                    <div className="border-l-4 border-[#de4523] ">
+                        <span className="flex justify-center text-[20px] montserrat-bold mb-2 ml-[10px]">{"Public & Product Liability"}</span>
+                    </div>
+                </div>
+                <Selection
+                    label="Property Owner Liability Only?"
+                    className={"justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.properOwnerLiability ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            properOwnerLiability: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you have any contracts to be designated?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.haveContactsDesignated ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            haveContactsDesignated: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you hire out equipment or staff?"
+                    className={"justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.hireEquipmentStaff ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            hireEquipmentStaff: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <div className="flex flex-row items-center mb-5 mt-[20px]">
+                    <div className="border-l-4 border-[#de4523] ">
+                        <span className="flex justify-center text-[20px] montserrat-bold  ml-[10px]">{"Hazardous Activities & Substance"}</span>
+                    </div>
+                </div>
+                <Selection
+                    label="Do you, or do you intend to use or store or handle hazardous substances?"
+                    className={"justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.handleHazardousSubstances ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            handleHazardousSubstances: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you discharge waste or hazardous material into the environment or waterways or sewers?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.hazardousMaterialEnvironment ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            hazardousMaterialEnvironment: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you work above 10m in height?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.workAbove10mHeight ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            workAbove10mHeight: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you work with explosives?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.workWithExplosives ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            workWithExplosives: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you work in the following construction work on bridges, defence, mining, offshore, aviation or aircraft, gas production, power stations, petrochemical, rail, ships, marine?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.followingConstructionWork ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            followingConstructionWork: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <Selection
+                    label="Do you perform any ‘hotworks’ away from your premises at all?"
+                    className={"my-3 justify-center"}
+                    glassCoverageClassName={"w-[600px]"}
+                    value={form.taxAudits ? 1 : 0}
+                    setSetter={(value) => {
+                        setForm({
+                            ...form,
+                            taxAudits: value === 1 ? true : false
+                        })
+                    }}
+                />
+                <div className="border-[1px] border-[#c9d9de]  my-10" />
+                <div className="flex mb-3">
+                    <div className="flex items-center w-full">
+                        <label className="text-[#5b5b5b] montserrat-regular text-[14px]">
+                            Sum Insured - Limit of Liability
+                        </label>
+                    </div>
+                    <div className="flex w-full">
+                        <Select
+                            id="quotes"
+                            instanceId="quotes"
+                            options={numberOfEmployees}
+                            value={hazardValues.sumInsured.value ? hazardValues.sumInsured : numberOfEmployees[2]}
+                            // isMulti
+                            styles={{
+                                control: (controlStyles) => ({
+                                    ...controlStyles,
+                                    ":hover": { borderColor: "#de4523" },
+                                    borderRadius: 4,
+                                    borderWidth: 1,
+                                    // borderColor: "#de4523",
+                                    minWidth: 400,
+                                    maxWidth: 700,
+                                    width: "100%",
+                                    outlineColor: "#de4523",
+                                    boxShadow: "none",
+                                }),
+                                multiValueRemove: (styles, { data }) => ({
+                                    ...styles,
+                                    color: "#de4523",
+                                }),
+                                multiValue: (styles, { data }) => {
+                                    return {
+                                        ...styles,
+                                        // backgroundColor: "transparent",
+                                        border: "1px solid #ccc",
+                                        borderRadius: 4,
+                                    };
+                                },
+                            }}
+                            menuColor="#de4523"
+                            onMenuScrollToBottom={() => {
+                                console.log("onMenuScrollToBottom");
+                            }}
+                            // placeholder={"<  >"}
+                            onChange={(e) => {
+                                setHazardValues({ ...hazardValues, sumInsured: { value: e.value, label: e.label } })
+                            }} />
+                    </div>
+                </div>
+                <div className="flex mb-3">
+                    <div className="flex items-center w-full">
+                        <label className="text-[#5b5b5b] montserrat-regular text-[14px]">
+                            Excess Amount<span className="text-[#de4523]">*</span>
+                        </label>
+                    </div>
+                    <div className="flex w-full">
+                        <Select
+                            id="quotes"
+                            instanceId="quotes"
+                            options={numberOfEmployees}
+                            value={hazardValues.excessAmount.value ? hazardValues.excessAmount : numberOfEmployees[2]}
+                            // isMulti
+                            styles={{
+                                control: (controlStyles) => ({
+                                    ...controlStyles,
+                                    ":hover": { borderColor: "#de4523" },
+                                    borderRadius: 4,
+                                    borderWidth: 1,
+                                    // borderColor: "#de4523",
+                                    minWidth: 400,
+                                    maxWidth: 700,
+                                    width: "100%",
+                                    outlineColor: "#de4523",
+                                    boxShadow: "none",
+                                }),
+                                multiValueRemove: (styles, { data }) => ({
+                                    ...styles,
+                                    color: "#de4523",
+                                }),
+                                multiValue: (styles, { data }) => {
+                                    return {
+                                        ...styles,
+                                        // backgroundColor: "transparent",
+                                        border: "1px solid #ccc",
+                                        borderRadius: 4,
+                                    };
+                                },
+                            }}
+                            menuColor="#de4523"
+                            onMenuScrollToBottom={() => {
+                                console.log("onMenuScrollToBottom");
+                            }}
+                            // placeholder={"<  >"}
+                            onChange={(e) => {
+                                setHazardValues({ ...hazardValues, excessAmount: { value: e.value, label: e.label } })
+                            }} />
+                    </div>
+                </div>
+                <div className="flex mb-5">
+                    <div className="flex items-center w-full">
+                        <label className="text-[#5b5b5b] montserrat-regular text-[14px]">
+                            Annual Wages
+                        </label>
+                    </div>
+                    <div className="flex w-full justify-start">
+                        <Input
+                            inputClass="border-gray-500 rounded w-[400px]"
+                            type="text" />
+                    </div>
+                </div>
+                <div className="flex mb-5">
+                    <div className="flex items-center w-full">
+                        <label className="text-[#5b5b5b] montserrat-regular text-[14px]">
+                            Contractor / Labour Hire Payments
+                        </label>
+                    </div>
+                    <div className="flex w-full justify-start">
+                        <Input
+                            inputClass="border-gray-500 rounded w-[400px]"
+                            type="text" />
+                    </div>
+                </div>
+                <div className="flex flex-row items-center mt-[20px]">
+                    <div className="border-l-4 border-[#de4523] ">
+                        <span className="flex justify-center text-[20px] montserrat-bold ml-[10px]">Imports</span>
+                    </div>
+                </div>
+                <Selection label="Does the business import any products?" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+                <Selection label="Are the products imported from any areas other than USA, Canada, Europe, UK or NZ?" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} setSetter={setHotworks} />
+                {hotworks ? (
+                    <>
+                        <div className="flex flex-row items-center mt-[20px]">
+                            {/* <div className="border-l-4 border-[#de4523] "> */}
+                            <span className="flex justify-center text-[20px] montserrat-bold">Select the type of products the business imports:</span>
+                            {/* </div> */}
+                        </div>
+                        <Selection label="Electrical equipment of any type (regardless of size)?" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+                        <Selection label="Toys, clothing, sporting goods, footwear or apparel of any type?" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+                        <Selection label="Food (including ingredients) or supplements?" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+                        <Selection label="Machinery, tools or building products?" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+                        <Selection label="Vehicles or their components?" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+                        <Selection label="Health or beauty related products?" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+                        <Selection label="Flammable, hazardous or pressurised goods?" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+                        <Selection label="None of the above?" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+                    </>
+                ) : null}
+                <div className="flex flex-row items-center mt-[20px]">
+                    <div className="border-l-4 border-[#de4523] ">
+                        <span className="flex justify-center text-[20px] montserrat-bold ml-[10px]">Additional Cover</span>
+                    </div>
+                </div>
+                <div className="flex mb-3">
+                    <div className="flex items-center w-full">
+                        <label className="text-[#5b5b5b] montserrat-regular text-[14px]">
+                            Property in your physical or legal care, custody or control
+                        </label>
+                    </div>
+                    <div className="flex w-full">
+                        <Select
+                            id="quotes"
+                            instanceId="quotes"
+                            options={custodyOrControl}
+                            value={hazardValues.custodyOrControlValues.value ? hazardValues.custodyOrControlValues : null}
+                            // isMulti
+                            styles={{
+                                control: (controlStyles) => ({
+                                    ...controlStyles,
+                                    ":hover": { borderColor: "#de4523" },
+                                    borderRadius: 4,
+                                    borderWidth: 1,
+                                    // borderColor: "#de4523",
+                                    minWidth: 400,
+                                    maxWidth: 700,
+                                    width: "100%",
+                                    outlineColor: "#de4523",
+                                    boxShadow: "none",
+                                }),
+                                multiValueRemove: (styles, { data }) => ({
+                                    ...styles,
+                                    color: "#de4523",
+                                }),
+                                multiValue: (styles, { data }) => {
+                                    return {
+                                        ...styles,
+                                        // backgroundColor: "transparent",
+                                        border: "1px solid #ccc",
+                                        borderRadius: 4,
+                                    };
+                                },
+                            }}
+                            menuColor="#de4523"
+                            onMenuScrollToBottom={() => {
+                                console.log("onMenuScrollToBottom");
+                            }}
+                            placeholder={"< 250k, 500k, 750k, 1M or Other >"}
+                            onChange={(e) => {
+                                setHazardValues({ ...hazardValues, custodyOrControlValues: { value: e.value, label: e.label } })
+                            }} />
+                    </div>
+                </div>
+                <Selection label="Exports to USA/Canada" className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+                <div className="border-[1px] border-[#c9d9de]  my-10" />
+                <div className="flex flex-col mb-5">
+                    <div className="grid grid-cols-1 grid-rows-1 xl:grid-cols-2 gap-4 w-full">
+                        <div className="flex items-center w-full montserrat-regular text-[#162F3E]">
+                            Classisfication
+                        </div>
+                        <div className="flex items-center w-full montserrat-regular text-[#162F3E]">
+                            Description
+                        </div>
+
+                    </div>
+                    {specifiedItems.map((item, index) => {
+                        return (
+                            <div key={index} className="grid grid-cols-1 grid-rows-1 xl:grid-cols-2 gap-4 w-full my-2">
+                                <div className="flex items-center w-full">
+                                    <Input
+                                        inputClass="border-gray-500 rounded w-[400px]"
+                                        type="text" />
+                                </div>
+                                <div className="flex items-center w-full">
+                                    <Input
+                                        inputClass="border-gray-500 rounded w-[400px]"
+                                        type="text"
+                                    />
+                                    <button
+                                        className="ml-2"
+                                        onClick={() => removeSpecifiedItems(index)}
+                                        aria-label="Close Modal"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="15"
+                                            height="15"
+                                            viewBox="0 0 24 24"
+                                            className={`fill-current text-red-theme`}
+                                        >
+                                            <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                            </div>
+                        );
+                    })}
+                    <div className="flex justify-center w-full">
+                        <ButtonComponent
+                            name="Add Item"
+                            className="text-[#DE4523] border-[1px] border-[#DE4523] montserrat-regular rounded-md my-5 w-[400px]"
+                            onClick={() => {
+                                // setOpenCreateModal(false);
+                                addSpecifiedItems();
+                            }}
+                        />
+                    </div>
+                </div>
+                <div className="flex mb-5">
+                    <div className="flex items-center w-full">
+                        <label className="text-[#5b5b5b] montserrat-regular text-[14px]">
+                            Annual Wages
+                        </label>
+                    </div>
+                    <div className="flex w-full justify-start">
+                        <p className="text-[#5B5B5B] montserrat-bold">{"< Annual Turnover >"}</p>
+                    </div>
+                </div>
+                <Selection label={"We will exclude any liability arising from medical treatment or the make up or dispensing of any drug . Is this acceptable ?"} className={"my-3 justify-center"} glassCoverageClassName={"w-[600px]"} />
+
+            </div>
+        </>
+    )
+}
+
+export default PublicProductLiabilityComponent

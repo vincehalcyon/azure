@@ -1,0 +1,138 @@
+import globalState from "@/lib/store/globalState";
+import globalData from "@/lib/preBuildScripts/static/globalData.json";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { useContext } from "react";
+import { GlobalContext } from "@/lib/context/GlobalContext";
+import { useEffect } from "react";
+import CustomIcon from "@/components/svg-custom/CustomIcon";
+
+export default function Menu() {
+  const { menus, tenantDetails } = useContext(GlobalContext);
+  const [showNav, setShowNav] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  console.log("tenantDetails", tenantDetails);
+
+  useEffect(() => {
+    if (showNav && window.innerWidth < 768) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [showNav]);
+
+  const logo = "/images/header-logo.png";
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Check if the user has scrolled down at least a certain amount (e.g., 100px)
+      if (window.scrollY > 100) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  return (
+    <>
+      <nav
+        className={`fixed top-0 z-10 w-full bg-[#000000]/20 text-white ${
+          isScrolled ? "bg-black transition-all duration-300" : ""
+        }`}
+      >
+        {/* <div className="sticky top-0 z-10 w-full bg-[#000000]/50 text-white "> */}
+        <div className="flex flex-col container-primary w-full lg:mx-auto py-5 items-center px-5 xl:px-0">
+          <div className="flex justify-between w-full items-center">
+            <div className="hidden md:block">
+              <div className="flex items-center gap-2 ">
+                <CustomIcon iconType="note" />
+                <span className="uppercase text-[14px]">music playlist</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between md:justify-normal w-full md:w-auto">
+              <div className="-z-10">
+                <Image
+                  src={tenantDetails.data.main.logo}
+                  height={45}
+                  width={210}
+                  alt="azure logo"
+                />
+              </div>
+              <div className="flex items-center md:hidden ">
+                <button
+                  className=" rounded-md outline-none text-2xl text-secondary"
+                  onClick={() => setShowNav(!showNav)}
+                >
+                  {showNav ? (
+                    <CustomIcon iconType="close" />
+                  ) : (
+                    <CustomIcon iconType="burger" />
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <div className="flex items-center gap-x-5">
+                <div className="flex gap-3">
+                  <Link href="#">
+                    <CustomIcon iconType="phone" />
+                  </Link>
+                  <Link href={tenantDetails.data.social_media.facebook_link}>
+                    <CustomIcon iconType="facebook" />
+                  </Link>
+                  <Link href={tenantDetails.data.social_media.twitter_link}>
+                    <CustomIcon iconType="twitter" />
+                  </Link>
+                  <Link href={tenantDetails.data.social_media.instagram_link}>
+                    <CustomIcon iconType="instagram" />
+                  </Link>
+                </div>
+                <div>
+                  <button className="border border-[#FFFFFF] text-[14px] w-[121px] uppercase py-2">
+                    book now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr className="border-opacity-50" />
+        <div className="w-full flex justify-center">
+          <div
+            className={`left-0 top-[0px] md:static fixed container-primary w-full -z-10 md:z-0 flex justify-center bg-black/50 md:bg-transparent py-5 items-center px-5 xl:px-0 transition-all duration-300 overflow-hidden ${
+              showNav ? "left-[0px] w-full h-auto" : "left-[100%] lg:h-auto"
+            }`}
+          >
+            <div className="flex w-full h-full justify-between">
+              <div className="h-screen md:h-auto flex flex-col md:flex-row items-center justify-center w-full">
+                <div className="flex flex-col md:flex-row justify-between w-full gap-y-6 md:gap-y-0">
+                  {menus?.parentNodes.map((item, i) => {
+                    return (
+                      <div
+                        key={i}
+                        className={`flex gap-y-6text-[25px] md:text-[14px] `}
+                      >
+                        <Link className="uppercase" href={item.url}>
+                          {item.label}
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </>
+  );
+}

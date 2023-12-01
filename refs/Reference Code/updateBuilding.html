@@ -1,0 +1,2537 @@
+import ButtonComponent from "@/components/Button/Button";
+import Select from "react-select";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import Input from "@/components/Input/input";
+import Modal from "@/components/Modal/Index";
+import Selection from "@/components/Selection/SelectionComponent";
+import CalendarIcon from "@/components/Icons/Calendar";
+import moment from "moment";
+import DatePicker from "react-date-picker/dist/entry.nostyle";
+import { locationTypes } from "@/lib/options";
+import { getOptionLabel } from "@/lib/custom-hooks";
+
+// For building Lists (Displaying Only)😸
+const buildingDisplay = [
+  {
+    column: "Address:",
+    col1key: "address",
+    secondCol: "Building Name:",
+    col2key: "buildingName",
+  },
+  {
+    // column: "Business Type:",
+    // col1key: "businessType",
+    // column: "Location Description:",
+    // col1key: "description",
+    secondCol: "Location Type: ",
+    col2key: "locationType",
+  },
+  {
+    // column: "GNAF Code",
+    // col1key: "gnafPid",
+    // column: "Business Type:",
+    // col1key: "BusinessType",
+  },
+
+  //Add relevant fields here...
+];
+
+const BuildingComponent = (props) => {
+  const router = useRouter();
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [editAdd, setEditAdd] = useState();
+  const [locationDatas, setLocationDatas] = useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState([]);
+  const [newBuilding, setNewBuilding] = useState([]);
+  const [tab, setTab] = useState([{ id: 0, label: "Building Details" }]);
+  const [isLocationExist, setIsLocationExist] = useState(false);
+
+  const [editIndex, setEditIndex] = useState(null);
+
+  const [activeButton, setActiveButton] = useState();
+
+  const { locationBuildingDetails, setLocationBuildingDetails } = props;
+
+  const filteredLocation = newBuilding.find(
+    (item, index) => item?.address === selectedLocation?.address
+  );
+
+  // console.log("filteredLocation?.address", newBuilding, locationOptions);
+
+  useEffect(() => {
+    const storedDatas = JSON.parse(localStorage.getItem("locations") || "[]");
+    let options = [];
+    storedDatas.map((item, index) => {
+      options.push({
+        label: item.address || item.description,
+        value: index, // used index since its for selection only 😼
+        disabled: newBuilding?.find((itm) => itm.address === item.address)
+          ?.address
+          ? true
+          : false,
+      });
+    });
+    // console.log("sad", storedDatas);
+    setLocationOptions(options);
+    setLocationDatas(storedDatas);
+  }, [newBuilding]);
+
+  /* Check storage */
+  useEffect(() => {
+    const buildingDatas = JSON.parse(localStorage.getItem("building") || "[]");
+    if (buildingDatas) {
+      setNewBuilding(buildingDatas);
+    }
+  }, []);
+
+  // console.log('asaaa', filteredLocation)
+
+  // useEffect(() => {
+  //    const data = localStorage.getItem("building")
+
+  //    if (data) setLocationBuildingDetails(JSON.parse(data))
+  // }, [setLocationBuildingDetails])
+
+  /* Listen to newLocation Changes */
+  useEffect(() => {
+    //used clear for now.. looking for a better way 🤔
+    // localStorage.removeItem("building")
+    localStorage.setItem("building", JSON.stringify(newBuilding));
+  }, [newBuilding]);
+
+  // console.log('locationOptions', locationOptions)
+
+  const tabsLabel = [
+    {
+      label: "Building Details",
+    },
+    {
+      label: "Building Security Details",
+    },
+    {
+      label: "Lease Information",
+    },
+    {
+      label: "Building Cover",
+    },
+  ];
+  const buildingDetailsDisplay = [
+    {
+      label: "Fire:",
+      value: selectedLocation ? selectedLocation.perils?.fire : 0.0,
+    },
+    {
+      label: "Storm:",
+      value: selectedLocation ? selectedLocation.perils?.storm : 0.0,
+    },
+    {
+      label: "Cyclone:",
+      value: selectedLocation ? selectedLocation.perils?.cyclone : 0.0,
+    },
+    {
+      label: "Bushfire:",
+      value: 0.0,
+    },
+    {
+      label: "Flood:",
+      value: 0.0,
+    },
+    {
+      label: "Earthquake:",
+      value: 0.0,
+    },
+    {
+      label: "Other Perils:",
+      value: 0.0,
+    },
+    {
+      label: "Nearest Fire Station:",
+      value: 0.0,
+    },
+  ];
+
+  const numberStoreysDropdown = [
+    {
+      value: 1,
+      label: 1,
+    },
+    {
+      value: 2,
+      label: 2,
+    },
+    {
+      value: 3,
+      label: 3,
+    },
+    {
+      value: 4,
+      label: 4,
+    },
+  ];
+
+  const floorConstructionTypeDropdown = [
+    {
+      value: "mixed",
+      label: "Mixed",
+    },
+    {
+      value: "stone",
+      label: "Stone",
+    },
+    {
+      value: "tile",
+      label: "Tile",
+    },
+    {
+      value: "concrete",
+      label: "Concrete",
+    },
+    {
+      value: "wood",
+      label: "Wood",
+    },
+  ];
+
+  const wallConstructionTypeDropdown = [
+    {
+      value: "brick",
+      label: "Brick",
+    },
+    {
+      value: "concrete",
+      label: "Concrete",
+    },
+    {
+      value: "fibro_no_eps",
+      label: "Fibro No Eps",
+    },
+    {
+      value: "epso_15_percent",
+      label: "Epso-15%",
+    },
+    {
+      value: "epps_15_30_percent",
+      label: "EPS15-30%",
+    },
+    {
+      value: "metal",
+      label: "Metal",
+    },
+    {
+      value: "timber",
+      label: "Timber",
+    },
+    {
+      value: "other",
+      label: "Other",
+    },
+  ];
+
+  const roofConstructionTypeDropdown = [
+    {
+      value: "alluminium",
+      label: "Alluminium",
+    },
+    {
+      value: "colourbond",
+      label: "Colourbond",
+    },
+    {
+      value: "concrete",
+      label: "Concrete",
+    },
+    {
+      value: "fibro",
+      label: "Fibro",
+    },
+    {
+      value: "iron",
+      label: "Iron",
+    },
+    {
+      value: "wood",
+      label: "Wood",
+    },
+    {
+      value: "glass",
+      label: "Glass",
+    },
+    {
+      value: "slate",
+      label: "Slate",
+    },
+    {
+      value: "other",
+      label: "Other",
+    },
+  ];
+
+  const lowestFloorOccupyDropdown = [
+    {
+      value: "ground_floor",
+      label: "Ground Floor",
+    },
+    {
+      value: "second_floor",
+      label: "Second Floor",
+    },
+    {
+      value: "second_floor_or_Above",
+      label: "Second Floor or Above",
+    },
+  ];
+
+  const epsBuildingPercentDropdown = [
+    {
+      value: 10,
+      label: 10,
+    },
+    {
+      value: 20,
+      label: 20,
+    },
+    {
+      value: 50,
+      label: 50,
+    },
+    {
+      value: 70,
+      label: 70,
+    },
+    {
+      value: 100,
+      label: 100,
+    },
+  ];
+
+  const fireProtectionLocationDropdown = [
+    {
+      value: "none",
+      label: "None",
+    },
+    {
+      value: "sprinklers",
+      label: "Sprinklers",
+    },
+    {
+      value: "heat_detector",
+      label: "Heat Detector",
+    },
+    {
+      value: "fire_extinguisher",
+      label: "Fire Extinguisher",
+    },
+    {
+      value: "smoke_detector_monitored",
+      label: "Smoke Detector - Monitored",
+    },
+    {
+      value: "fire_alarm",
+      label: "Fire Alarm",
+    },
+    {
+      value: "hose_reel",
+      label: "Hose Reel",
+    },
+    {
+      value: "smoke_detector_non_monitored",
+      label: "Smoke Detector - Non Monitored",
+    },
+    {
+      value: "monitored_back_to_base_alarm",
+      label: "Monitored Back to Base Alarm",
+    },
+    {
+      value: "fire_blanket",
+      label: "Fire Blanket",
+    },
+  ];
+
+  const fireSprinklerLocationDropdown = [
+    {
+      value: "100_percent_coverage",
+      label: "100% Coverage",
+    },
+  ];
+
+  const waterSupplyDropdown = [
+    {
+      value: "single",
+      label: "Single",
+    },
+    {
+      value: "dual",
+      label: "Dual",
+    },
+  ];
+
+  const securityProtectionDropdown = [
+    {
+      value: "deadlocks",
+      label: "Deadlocks",
+    },
+    {
+      value: "electronic_key_or_pad_or_wipe_access",
+      label: "Electronic Key/Pad/Swipe Access",
+    },
+    {
+      value: "lockon_external_window",
+      label: "Lock on External Window",
+    },
+    {
+      value: "bollards",
+      label: "Bollards",
+    },
+    {
+      value: "local_alarm",
+      label: "Local Alarm",
+    },
+    {
+      value: "security_patrol",
+      label: "Security Patrol",
+    },
+    {
+      value: "barson_windows",
+      label: "Bars on Windows",
+    },
+    {
+      value: "cctv_installed",
+      label: "CCTV installed",
+    },
+    {
+      value: "monitored_back_to_base_alarm",
+      label: "Monitored Back to Base Alarm",
+    },
+    {
+      value: "shutters",
+      label: "Shutters",
+    },
+    {
+      value: "window_display_protection",
+      label: "Window Display Protection",
+    },
+    {
+      value: "external_lighting_system",
+      label: "External Lighting System",
+    },
+    {
+      value: "monitored_alarm",
+      label: "Monitored Alarm",
+    },
+    {
+      value: "none",
+      label: "None",
+    },
+  ];
+
+  const fireStationDropdown = [
+    {
+      value: "0-5",
+      label: "0-5",
+    },
+    {
+      value: "5-10",
+      label: "5-10",
+    },
+    {
+      value: "+10_km",
+      label: "+10 km",
+    },
+  ];
+
+  const typeFireBrigadeDropdown = [
+    {
+      value: "professional_manned_24_hours",
+      label: "Professional Manned 24hrs",
+    },
+    {
+      value: "professional_manned_part_time",
+      label: "Professional Manned Part Time",
+    },
+    {
+      value: "own_onsite_staff_fire_brigade_24_hours",
+      label: "Own onsite staff fire brigade 24hr",
+    },
+    {
+      value: "own_onsite_staff_fire_brigade_part_time",
+      label: "Own onsite staff fire brigade part time",
+    },
+    {
+      value: "rural_or_volunteer_brigade",
+      label: "Rural/volunteer Brigade",
+    },
+    {
+      value: "none",
+      label: "none",
+    },
+  ];
+
+  const onLocationSelect = (selectedIndex) => {
+    const objIndex = locationDatas.findIndex(
+      (obj, index) => index === selectedIndex
+    );
+    setSelectedLocation(locationDatas[objIndex]);
+  };
+
+  // Cleanup Inputs and States...
+  const clearStates = () => {
+    setSelectedLocation([]);
+    setActiveButton("");
+    setLocationBuildingDetails([]);
+  };
+
+  //Add Building
+  const addNewBuilding = async () => {
+    setOpenCreateModal(!openCreateModal);
+    let building = [];
+
+    if (editAdd.toLowerCase() === "add") {
+      if (newBuilding) {
+        building = [...newBuilding];
+      }
+      building.push({
+        ...selectedLocation?.building,
+        ...locationBuildingDetails,
+        buildingName: locationBuildingDetails.buildingName,
+        constructionYear: locationBuildingDetails.constructionYear,
+        address: selectedLocation.address,
+        gnaf_code:
+          selectedLocation?.building?.gnaf_code ||
+          locationBuildingDetails.gnaf_code,
+        locationType: locationBuildingDetails.buildingCoverType,
+        description: selectedLocation.description,
+        buildingCoverType: locationBuildingDetails.buildingCoverType,
+        multipleBuildingLocation:
+          locationBuildingDetails.multipleBuildingLocation,
+        // numberOfStoreys: 
+        //   locationBuildingDetails.numberOfStoreys,
+        // floor_construction_type: 
+        //   locationBuildingDetails.floor_construction_type,
+        // wall_construction_type: 
+        //   locationBuildingDetails.wall_construction_type,
+        // roof_construction_type: 
+        //   locationBuildingDetails.roof_construction_type,
+        // lowestFloorOccupied: 
+        //   locationBuildingDetails.lowestFloorOccupied,
+        // fireRiskClass: 
+        //   locationBuildingDetails.fireRiskClass,
+        // lastYearRewired: 
+        //   locationBuildingDetails.lastYearRewired,
+        // isHeritage: 
+        //   locationBuildingDetails.isHeritage,
+        // epsPercentage: 
+        //   locationBuildingDetails.epsPercentage,
+        // is_50_percent_vacant: 
+        //   locationBuildingDetails.is_50_percent_vacant,
+
+        // fireProtection: 
+        //   locationBuildingDetails.buildingSecurityDetail.fireProtection,
+        // fireSprinkler: 
+        //   locationBuildingDetails.buildingSecurityDetail.fireSprinkler,
+        // waterSupply: 
+        //   locationBuildingDetails.buildingSecurityDetail.waterSupply,
+        // securityProtection: 
+        //   locationBuildingDetails.buildingSecurityDetail.securityProtection,
+        // isConnectedWaterMains: 
+        //   locationBuildingDetails.buildingSecurityDetail.isConnectedWaterMains,
+        // nearestFireStation: 
+        //   locationBuildingDetails.buildingSecurityDetail.nearestFireStation,
+        // hasFlammableGoods: 
+        //   locationBuildingDetails.buildingSecurityDetail.hasFlammableGoods,
+        // fireBrigadeType: 
+        //   locationBuildingDetails.buildingSecurityDetail.fireBrigadeType,
+        // sprinklerMeetsAustralianStandards: 
+        //   locationBuildingDetails.buildingSecurityDetail.sprinklerMeetsAustralianStandards,
+        // hasMonitoredAlarmSystem: 
+        //   locationBuildingDetails.buildingSecurityDetail.hasMonitoredAlarmSystem,
+        // hasAtmOnPremise: 
+        //   locationBuildingDetails.buildingSecurityDetail.hasAtmOnPremise,
+
+        // annualRentalIncomeAmount: 
+        //   locationBuildingDetails.buildingLeaseInformation.annualRentalIncomeAmount,
+
+        // buildingSumInsuredAmount: 
+        //   locationBuildingDetails.buildingCover.buildingSumInsuredAmount,
+        // contentsSumInsuredAmount: 
+        //   locationBuildingDetails.buildingCover.contentsSumInsuredAmount,
+        // stockSumInsuredAmount: 
+        //   locationBuildingDetails.buildingCover.stockSumInsuredAmount,
+
+        // businessType: selectedLocation.anzic_code,
+        // occupationDescription: occupationDescription,
+      });
+
+      const locationData = JSON.parse(localStorage.getItem("locations"));
+
+      const findLocation = locationData.find(
+        (item) => item.address === selectedLocation.address
+      );
+      // console.log('findLocation', findLocation)
+
+      findLocation.building = {
+        ...locationBuildingDetails,
+        buildingName: locationBuildingDetails.buildingName,
+        constructionYear: locationBuildingDetails.constructionYear,
+        address: selectedLocation.address,
+        gnaf_code:
+          selectedLocation?.gnafPid || selectedLocation?.building?.gnaf_code,
+        locationType: locationBuildingDetails.buildingCoverType,
+        description: selectedLocation.description,
+        buildingCoverType: locationBuildingDetails.buildingCoverType,
+        multipleBuildingLocation:
+          locationBuildingDetails.multipleBuildingLocation,
+        numberOfStoreys: 
+          locationBuildingDetails.numberOfStoreys,
+        // floor_construction_type: 
+        //   locationBuildingDetails.floor_construction_type,
+        // wall_construction_type: 
+        //   locationBuildingDetails.wall_construction_type,
+        // roof_construction_type: 
+        //   locationBuildingDetails.roof_construction_type,
+        // lowestFloorOccupied: 
+        //   locationBuildingDetails.lowestFloorOccupied,
+        // fireRiskClass: 
+        //   locationBuildingDetails.fireRiskClass,
+        // lastYearRewired: 
+        //   locationBuildingDetails.lastYearRewired,
+        // isHeritage: 
+        //   locationBuildingDetails.isHeritage,
+        // epsPercentage: 
+        //   locationBuildingDetails.epsPercentage,
+        // is_50_percent_vacant: 
+        //   locationBuildingDetails.is_50_percent_vacant,
+
+        // fireProtection: 
+        //   locationBuildingDetails.buildingSecurityDetail.fireProtection,
+        // fireSprinkler: 
+        //   locationBuildingDetails.buildingSecurityDetail.fireSprinkler,
+        // waterSupply: 
+        //   locationBuildingDetails.buildingSecurityDetail.waterSupply,
+        // securityProtection: 
+        //   locationBuildingDetails.buildingSecurityDetail.securityProtection,
+        // isConnectedWaterMains: 
+        //   locationBuildingDetails.buildingSecurityDetail.isConnectedWaterMains,
+        // nearestFireStation: 
+        //   locationBuildingDetails.buildingSecurityDetail.nearestFireStation,
+        // hasFlammableGoods: 
+        //   locationBuildingDetails.buildingSecurityDetail.hasFlammableGoods,
+        // fireBrigadeType: 
+        //   locationBuildingDetails.buildingSecurityDetail.fireBrigadeType,
+        // sprinklerMeetsAustralianStandards: 
+        //   locationBuildingDetails.buildingSecurityDetail.sprinklerMeetsAustralianStandards,
+        // hasMonitoredAlarmSystem: 
+        //   locationBuildingDetails.buildingSecurityDetail.hasMonitoredAlarmSystem,
+        // hasAtmOnPremise: 
+        //   locationBuildingDetails.buildingSecurityDetail.hasAtmOnPremise,
+
+        // annualRentalIncomeAmount: 
+        //   locationBuildingDetails.buildingLeaseInformation.annualRentalIncomeAmount,
+
+        // buildingSumInsuredAmount: 
+        //   locationBuildingDetails.buildingCover.buildingSumInsuredAmount,
+        // contentsSumInsuredAmount: 
+        //   locationBuildingDetails.buildingCover.contentsSumInsuredAmount,
+        // stockSumInsuredAmount: 
+        //   locationBuildingDetails.buildingCover.stockSumInsuredAmount,
+        // businessType: selectedLocation.anzic_code,
+        // occupationDescription: occupationDescription,
+      };
+
+      const newLocation = locationData.map((item) => {
+        if (item.address === selectedLocation.address) {
+          item = findLocation;
+          return item;
+        }
+
+        return item;
+      });
+
+      // locationData.push(building)
+
+      // console.log('locationData', newLocation)
+
+      localStorage.setItem("locations", JSON.stringify(newLocation));
+
+      setNewBuilding(building);
+
+      // window.location.reload();
+    }
+
+    if (editAdd.toLowerCase() === "edit") {
+      // console.log("newBuilding", newBuilding);
+      const locationData = JSON.parse(localStorage.getItem("locations"));
+      const findLocation = locationData.find((_, index) => index === editIndex);
+
+      // console.log('findLocationxxx', locationBuildingDetails)
+      // return
+
+      const updatedBuilding = newBuilding.map((item, index) => {
+        if (index === editIndex) {
+          // console.log('itemsz', item)
+          // return
+          item = {
+            ...item,
+            buildingName:
+              locationBuildingDetails.buildingName ||
+              findLocation?.buildingName,
+            constructionYear:
+              locationBuildingDetails.constructionYear ||
+              findLocation?.constructionYear ||
+              "",
+            address:
+              selectedLocation?.address ||
+              findLocation?.address ||
+              locationBuildingDetails.address,
+            gnaf_code:
+              selectedLocation?.gnafPid ||
+              selectedLocation?.building?.gnaf_code ||
+              findLocation?.building?.gnaf_code ||
+              findLocation?.gnafPid ||
+              locationBuildingDetails.gnaf_code,
+            locationType:
+              locationBuildingDetails.buildingCoverType ||
+              findLocation?.buildingCoverType,
+            description:
+              selectedLocation?.description ||
+              findLocation?.description ||
+              locationBuildingDetails?.description,
+
+            numberOfStoreys: 
+              selectedLocation?.numberOfStoreys || 
+              findLocation?.numberOfStoreys || 
+              locationBuildingDetails?.numberOfStoreys,
+            floor_construction_type: 
+              locationBuildingDetails?.floor_construction_type,
+            wall_construction_type: 
+              locationBuildingDetails?.wall_construction_type,
+            roof_construction_type: 
+              locationBuildingDetails?.roof_construction_type,
+            lowestFloorOccupied: 
+              locationBuildingDetails?.lowestFloorOccupied,
+            fireRiskClass: 
+              locationBuildingDetails?.fireRiskClass,
+            lastYearRewired: 
+              locationBuildingDetails?.lastYearRewired,
+            isHeritage: 
+              locationBuildingDetails?.isHeritage,
+            epsPercentage: 
+              locationBuildingDetails?.epsPercentage,
+            is_50_percent_vacant: 
+              locationBuildingDetails?.is_50_percent_vacant,
+
+            fireProtection: 
+              locationBuildingDetails?.buildingSecurityDetail?.fireProtection,
+            fireSprinkler: 
+              locationBuildingDetails?.buildingSecurityDetail?.fireSprinkler,
+            waterSupply: 
+              locationBuildingDetails?.buildingSecurityDetail?.waterSupply,
+            securityProtection: 
+              locationBuildingDetails?.buildingSecurityDetail?.securityProtection,
+            isConnectedWaterMains: 
+              locationBuildingDetails?.buildingSecurityDetail?.isConnectedWaterMains,
+            nearestFireStation: 
+              locationBuildingDetails?.buildingSecurityDetail?.nearestFireStation,
+            hasFlammableGoods: 
+              locationBuildingDetails?.buildingSecurityDetail?.hasFlammableGoods,
+            fireBrigadeType: 
+              locationBuildingDetails?.buildingSecurityDetail?.fireBrigadeType,
+            sprinklerMeetsAustralianStandards: 
+              locationBuildingDetails?.buildingSecurityDetail?.sprinklerMeetsAustralianStandards,
+            hasMonitoredAlarmSystem: 
+              locationBuildingDetails?.buildingSecurityDetail?.hasMonitoredAlarmSystem,
+            hasAtmOnPremise: 
+              locationBuildingDetails?.buildingSecurityDetail?.hasAtmOnPremise,
+
+            annualRentalIncomeAmount: 
+              locationBuildingDetails?.buildingLeaseInformation?.annualRentalIncomeAmount,
+
+            buildingSumInsuredAmount: 
+              locationBuildingDetails?.buildingCover?.buildingSumInsuredAmount,
+            contentsSumInsuredAmount: 
+              locationBuildingDetails?.buildingCover?.contentsSumInsuredAmount,
+            stockSumInsuredAmount: 
+              locationBuildingDetails?.buildingCover?.stockSumInsuredAmount,
+
+            // businessType: selectedLocation.anzic_code,
+            // occupationDescription: occupationDescription,
+          };
+          return item;
+        }
+        return item;
+      });
+
+      // console.log('xss', findLocation.buildingName)
+      findLocation.building = {
+        ...findLocation.building,
+        buildingName:
+          locationBuildingDetails.buildingName || findLocation.buildingName,
+        constructionYear:
+          locationBuildingDetails?.constructionYear ||
+          findLocation?.constructionYear,
+        address:
+          selectedLocation?.address ||
+          findLocation?.address ||
+          locationBuildingDetails?.address,
+        gnaf_code:
+          selectedLocation?.gnafPid ||
+          selectedLocation?.building?.gnaf_code ||
+          findLocation?.building?.gnaf_code ||
+          findLocation?.gnafPid ||
+          locationBuildingDetails?.gnaf_code,
+        locationType:
+          locationBuildingDetails?.buildingCoverType ||
+          findLocation?.buildingCoverType,
+        description:
+          selectedLocation?.description ||
+          findLocation?.description ||
+          locationBuildingDetails?.description,
+        numberOfStoreys: 
+          selectedLocation?.numberOfStoreys || 
+          findLocation?.numberOfStoreys || 
+          locationBuildingDetails?.numberOfStoreys,
+        floor_construction_type: 
+          locationBuildingDetails?.floor_construction_type,
+        wall_construction_type: 
+          locationBuildingDetails?.wall_construction_type,
+        roof_construction_type: 
+          locationBuildingDetails?.roof_construction_type,
+        lowestFloorOccupied: 
+          locationBuildingDetails?.lowestFloorOccupied,
+        fireRiskClass: 
+          locationBuildingDetails?.fireRiskClass,
+        lastYearRewired: 
+          locationBuildingDetails?.lastYearRewired,
+        isHeritage: 
+          locationBuildingDetails?.isHeritage,
+        epsPercentage: 
+          locationBuildingDetails?.epsPercentage,
+        is_50_percent_vacant: 
+          locationBuildingDetails?.is_50_percent_vacant,
+
+        fireProtection: 
+          locationBuildingDetails?.buildingSecurityDetail?.fireProtection,
+        fireSprinkler: 
+          locationBuildingDetails?.buildingSecurityDetail?.fireSprinkler,
+        waterSupply: 
+          locationBuildingDetails?.buildingSecurityDetail?.waterSupply,
+        securityProtection: 
+          locationBuildingDetails?.buildingSecurityDetail?.securityProtection,
+        isConnectedWaterMains: 
+          locationBuildingDetails?.buildingSecurityDetail?.isConnectedWaterMains,
+        nearestFireStation: 
+          locationBuildingDetails?.buildingSecurityDetail?.nearestFireStation,
+        hasFlammableGoods: 
+          locationBuildingDetails?.buildingSecurityDetail?.hasFlammableGoods,
+        fireBrigadeType: 
+          locationBuildingDetails?.buildingSecurityDetail?.fireBrigadeType,
+        sprinklerMeetsAustralianStandards: 
+          locationBuildingDetails?.buildingSecurityDetail?.sprinklerMeetsAustralianStandards,
+        hasMonitoredAlarmSystem: 
+          locationBuildingDetails?.buildingSecurityDetail?.hasMonitoredAlarmSystem,
+        hasAtmOnPremise: 
+          locationBuildingDetails?.buildingSecurityDetail?.hasAtmOnPremise,
+
+        annualRentalIncomeAmount: 
+          locationBuildingDetails?.buildingLeaseInformation?.annualRentalIncomeAmount,
+
+        buildingSumInsuredAmount: 
+          locationBuildingDetails?.buildingCover?.buildingSumInsuredAmount,
+        contentsSumInsuredAmount: 
+          locationBuildingDetails?.buildingCover?.contentsSumInsuredAmount,
+        stockSumInsuredAmount: 
+          locationBuildingDetails?.buildingCover?.stockSumInsuredAmount,
+        // businessType: selectedLocation.anzic_code,
+        // occupationDescription: occupationDescription,
+      };
+
+      const newLocation = locationData.map((item) => {
+        if (item.address === selectedLocation.address) {
+          item = findLocation;
+          return item;
+        }
+
+        return item;
+      });
+
+      // locationData.push(building)
+
+      // console.log('locationData', newLocation)
+
+      localStorage.setItem("locations", JSON.stringify(newLocation));
+
+      setNewBuilding([...updatedBuilding]);
+    }
+
+    setEditIndex(null);
+    clearStates();
+  };
+
+  const onDeleteBuilding = (selected, locindex) => {
+    const updated = newBuilding.filter((item, idx) => idx !== locindex);
+
+    const filteredLocation = locationDatas.map((item, index) => {
+      if (index === locindex) {
+        let defaultPerils = {
+          fire: 1.123456789,
+          store: 0.0,
+          cyclone: 0.0,
+          bush_fire: 0.0,
+          flood: 0.0,
+          earthquake: 0.0,
+          other_perils: 0.0,
+          nearest_fire_stations: 0.0,
+        };
+        item.building = {
+          require: false,
+          gnaf_code: selected?.gnaf_code || "",
+          perils: {
+            ...defaultPerils,
+            ...selected?.perils,
+          },
+        };
+
+        return item;
+      }
+
+      return item;
+    });
+
+    localStorage.setItem("locations", JSON.stringify(filteredLocation));
+    setNewBuilding(updated);
+  };
+
+  const onEditLocation = (item, i) => {
+    setLocationBuildingDetails(item);
+    setActiveButton(item.buildingCoverType);
+  };
+
+  return (
+    <>
+      <Modal
+        isOpen={openCreateModal}
+        onClose={() => {
+          clearStates();
+          setOpenCreateModal(false);
+        }}
+        closable
+        title={`${editAdd} Building`}
+        titleClass="text-xl text-left w-full montserrat-bold text-[#162F3E]"
+        headerClass="w-full"
+        contentClass="max-w-4xl w-[90%] lg:w-full rounded-lg"
+      >
+        <div className="overflow-x-auto scrollbar ">
+          <nav className="flex justify-between ">
+            {tabsLabel.map((item, index) => (
+              <button
+                key={index}
+                className={`px-3 block focus:outline-none text-[18px] whitespace-nowrap cursor-pointer transition border-b w-full  ${index === tab[0].id
+                    ? "text-[#de4523] font-extrabold border-b-[3px] border-[#de4523] montserrat-bold"
+                    : "hover:text-blue-500 text-[#676767] montserrat-regular border-[#949494]"
+                  }`}
+                onClick={() => setTab([{ id: index, label: item.label }])}
+                aria-label={item.label}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+        {tab[0].label === tabsLabel[0].label && (
+          <>
+            <div className="grid grid-cols-3 md:grid-cols-2 my-4">
+              <p className="text-[#162F3E] montserrat-regular">
+                Location Description:
+              </p>
+              <p className="col-span-2 md:col-span-1 text-[#5B5B5B] montserrat-bold">
+                {selectedLocation?.description ||
+                  locationBuildingDetails.description}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex w-full items-center">
+                <p className="text-[#162F3E] montserrat-regular">
+                  Building Cover Type:
+                </p>
+              </div>
+              <div className="flex w-full">
+                <ul
+                  className="flex mb-0 list-none flex-wrap flex-row w-full sm:w-[400px]"
+                  role="tablist"
+                >
+                  <li className="-mb-px last:mr-0 flex-auto text-center">
+                    <a
+                      className={`w-auto text-xs px-5 shadow-lg rounded-l-md block montserrat-bold text-[14px] ${activeButton === "building" ||
+                          locationBuildingDetails.buildingCoverType === "building"
+                          ? "text-white border-[1px] border-[#DE4523] bg-[#DE4523]"
+                          : "text-black border-[1px] border-[#c4c4c4]"
+                        } py-[6px]`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveButton("building");
+                        setLocationBuildingDetails({
+                          ...locationBuildingDetails,
+                          buildingCoverType: "building",
+                        });
+                        // setSetter(false);
+                      }}
+                      data-toggle="tab"
+                      href=""
+                      role="tablist"
+                    >
+                      <i className="fas fa-space-shuttle text-base mr-1"></i>{" "}
+                      {"Building"}
+                    </a>
+                  </li>
+                  <li className="-mb-px last:mr-0 flex-auto text-center">
+                    <a
+                      className={`w-auto text-xs px-5 shadow-lg block montserrat-bold text-[14px]  ${activeButton === "content" ||
+                          locationBuildingDetails.buildingCoverType === "content"
+                          ? "text-white border-[1px] border-[#DE4523] bg-[#DE4523]"
+                          : "text-black border-[1px] border-[#c4c4c4]"
+                        } py-[6px]`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveButton("content");
+                        setLocationBuildingDetails({
+                          ...locationBuildingDetails,
+                          buildingCoverType: "content",
+                        });
+                        // setSetter(false);
+                      }}
+                      data-toggle="tab"
+                      href=""
+                      role="tablist"
+                    >
+                      <i className="fas fa-cog text-base mr-1"></i> {"Content"}
+                    </a>
+                  </li>
+                  <li className="-mb-px mr-2 last:mr-0 flex-auto text-center">
+                    <a
+                      className={`w-auto text-xs px-5 shadow-lg rounded-r-md block montserrat-bold text-[14px]  ${activeButton === "both" ||
+                          locationBuildingDetails.buildingCoverType === "both"
+                          ? "text-white border-[1px] border-[#DE4523] bg-[#DE4523]"
+                          : "text-black border-[1px] border-[#c4c4c4]"
+                        } py-[6px]`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveButton("both");
+                        setLocationBuildingDetails({
+                          ...locationBuildingDetails,
+                          buildingCoverType: "both",
+                        });
+                        // setSetter(false);
+                      }}
+                      data-toggle="tab"
+                      href=""
+                      role="tablist"
+                    >
+                      <i className="fas fa-cog text-base mr-1"></i> {"Both"}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            {/* <div className="flex flex-row w-full my-4">
+              <div className="flex items-center w-full">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  GNAF Code
+                </label>
+              </div>
+              <div className="flex w-full">
+                <Input
+                  inputClass="border-gray-500 rounded w-[400px]"
+                  type="text"
+                  value={
+                    selectedLocation?.building?.gnaf_code ||
+                    locationBuildingDetails?.gnaf_code
+                  }
+                  disabled
+                />
+              </div>
+            </div> */}
+            <div className="grid grid-cols-1 grid-rows-1 xl:grid-cols-4 gap-4 w-full  rounded-lg border-2 mt-5 p-5 hidden">
+              {buildingDetailsDisplay.map((item, index) => (
+                <div key={index} className="flex flex-col w-full">
+                  <p className="text-[#5B5B5B] montserrat-regular">
+                    {item.label}
+                  </p>
+                  <p className="text-[#5B5B5B] montserrat-bold pl-1">
+                    {item.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="pt-4">
+              <Selection
+                label={"Multiple Buildings at Location"}
+                className={"w-full sm:max-w-[400px] items-center"}
+                glassCoverageClassName={"flex w-full sm:w-1/2 items-center"}
+                value={locationBuildingDetails.multipleBuildingLocation ? 1 : 0}
+                setSetter={(value) => {
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    multipleBuildingLocation: value === 1 ? true : false,
+                  });
+                }}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Building Name
+                </label>
+              </div>
+              <Input
+                wrapperClass="w-full sm:max-w-[400px]"
+                inputClass="border-gray-500 rounded w-full"
+                type="text"
+                value={locationBuildingDetails.buildingName || ""}
+                onChange={(e) =>
+                  setLocationBuildingDetails((prev) => {
+                    return {
+                      ...prev,
+                      buildingName: e.target.value,
+                      require: true,
+                    };
+                  })
+                }
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row mb-5 mt-5">
+              <div className="flex items-center w-1/2">
+                <label className="flex flex-row-reverse justify-end text-[#162F3E] montserrat-regular item-center text-[14px] md:w-1/2  md:self-center">
+                  Construction Year
+                </label>
+              </div>
+              <DatePicker
+                className="border-gray-500 w-full rounded sm:max-w-[400px]"
+                value={
+                  locationBuildingDetails.constructionYear?.length
+                    ? new Date(locationBuildingDetails.constructionYear)
+                    : ""
+                } // For display only
+                onChange={(e) => {
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    constructionYear: moment(e).format("YYYY-MM-DD"),
+                  });
+                }}
+                calendarIcon={<CalendarIcon size={24} />}
+                dayPlaceholder="DD"
+                monthPlaceholder="MM"
+                yearPlaceholder="YYYY"
+                clearIcon={null}
+                format={"dd/MM/y"}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Number of Storeys
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={numberStoreysDropdown}
+                // value={locationBuildingDetails.numberOfStoreys ? locationBuildingDetails.numberOfStoreys : null}
+                // value={focusedBuilding ? focusedBuilding.numberOfStoreys.value : locationBuildingDetails.numberOfStoreys ? locationBuildingDetails.numberOfStoreys : null}
+                value={
+                  locationBuildingDetails.numberOfStoreys
+                    ? numberStoreysDropdown.find(
+                      (item) =>
+                        item.value === locationBuildingDetails.numberOfStoreys
+                    )
+                    : null
+                }
+                // isMulti
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    numberOfStoreys: parseFloat(e.value),
+                  });
+                }}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Floor Construction Type
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={floorConstructionTypeDropdown}
+                value={
+                  locationBuildingDetails.floor_construction_type
+                    ? floorConstructionTypeDropdown.find(
+                      (item) =>
+                        item.value ===
+                        locationBuildingDetails.floor_construction_type
+                    )
+                    : null
+                }
+                // value={locationBuildingDetails.floorConstructionType ? locationBuildingDetails.floorConstructionType : null}
+                // isMulti
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    floor_construction_type: e.value,
+                  });
+                }}
+              // onChange={(e) => {
+              //     console.log("onChange", e);
+              // }}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Wall Construction Type
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={wallConstructionTypeDropdown}
+                value={
+                  locationBuildingDetails.wall_construction_type
+                    ? wallConstructionTypeDropdown.find(
+                      (item) =>
+                        item.value ===
+                        locationBuildingDetails.wall_construction_type
+                    )
+                    : null
+                }
+                // value={locationBuildingDetails.wallConstructionType ? locationBuildingDetails.wallConstructionType : null}
+                // isMulti
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    wall_construction_type: e.value,
+                  });
+                }}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Roof Construction Type
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={roofConstructionTypeDropdown}
+                value={
+                  locationBuildingDetails.roof_construction_type
+                    ? roofConstructionTypeDropdown.find(
+                      (item) =>
+                        item.value ===
+                        locationBuildingDetails.roof_construction_type
+                    )
+                    : null
+                }
+                // value={locationBuildingDetails.roofConstructionType ? locationBuildingDetails.roofConstructionType : null}
+                // isMulti
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    //fire_protection: {value: "Sps borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    roof_construction_type: e.value,
+                  });
+                }}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Lowest floor you occupy
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={lowestFloorOccupyDropdown}
+                value={
+                  locationBuildingDetails.lowestFloorOccupied
+                    ? lowestFloorOccupyDropdown.find(
+                      (item) =>
+                        item.value ===
+                        locationBuildingDetails.lowestFloorOccupied
+                    )
+                    : null
+                }
+                // value={locationBuildingDetails.lowestFloorOccupied ? locationBuildingDetails.lowestFloorOccupied : null}
+                // isMulti
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    lowestFloorOccupied: e.value,
+                  });
+                }}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Risk Class (for Fire)
+                </label>
+              </div>
+              <Input
+                type="text"
+                wrapperClass="w-full sm:max-w-[400px]"
+                inputClass="border-gray-500 rounded w-full"
+                value={
+                  locationBuildingDetails.fireRiskClass
+                    ? locationBuildingDetails.fireRiskClass
+                    : ""
+                }
+                placeholder={" 0 "}
+                onChange={(e) =>
+                  setLocationBuildingDetails((prev) => {
+                    return {
+                      ...prev,
+                      fireRiskClass: parseFloat(e.target.value),
+                    };
+                  })
+                }
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-5">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Year Last Rewired
+                </label>
+              </div>
+              <Input
+                type="text"
+                wrapperClass="w-full sm:max-w-[400px]"
+                inputClass="border-gray-500 rounded w-full"
+                value={
+                  locationBuildingDetails.lastYearRewired
+                    ? locationBuildingDetails.lastYearRewired
+                    : ""
+                }
+                placeholder={" Year Last Rewired "}
+                onChange={(e) =>
+                  setLocationBuildingDetails((prev) => {
+                    return { ...prev, lastYearRewired: e.target.value };
+                  })
+                }
+              />
+            </div>
+            <Selection
+              label={
+                "Is the Building heritage protected or national trust listed? "
+              }
+              className={" w-full sm:max-w-[400px]"}
+              glassCoverageClassName={"w-full sm:w-1/2 "}
+              value={locationBuildingDetails.isHeritage ? 1 : 0}
+              setSetter={(value) => {
+                setLocationBuildingDetails({
+                  ...locationBuildingDetails,
+                  isHeritage: value === 1 ? true : false,
+                });
+              }}
+            />
+
+            <div className="flex flex-col sm:flex-row w-full py-5">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  EPS % at Building
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={epsBuildingPercentDropdown}
+                value={
+                  locationBuildingDetails.epsPercentage
+                    ? epsBuildingPercentDropdown.find(
+                      (item) =>
+                        item.value === locationBuildingDetails.epsPercentage
+                    )
+                    : null
+                }
+                // value={locationBuildingDetails.epsPercentage ? locationBuildingDetails.epsPercentage : null}
+                // isMulti
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    epsPercentage: e.value,
+                  });
+                }}
+              />
+            </div>
+            <Selection
+              label={"Is the premises more than 50% vacant?"}
+              className={" w-full sm:max-w-[400px]"}
+              glassCoverageClassName={"w-full sm:w-1/2 "}
+              value={locationBuildingDetails.is_50_percent_vacant ? 1 : 0}
+              setSetter={(value) => {
+                setLocationBuildingDetails({
+                  ...locationBuildingDetails,
+                  is_50_percent_vacant: value === 1 ? true : false,
+                });
+              }}
+            />
+            <div className="flex w-full gap-2 mt-5">
+              <ButtonComponent
+                name="Cancel"
+                className="text-[#0070B0] border-[1px] border-[#0070B0] montserrat-regular rounded-md my-1 w-[200px]"
+                onClick={() => setOpenCreateModal(false)}
+              />
+              <ButtonComponent
+                name="Continue"
+                className="text-white border-[1px] bg-[#0070b0] montserrat-regular my-1  w-[200px]"
+                onClick={() => {
+                  setTab([{ id: 1, label: "Building Security Details" }]);
+                  // setOpenCreateModal(!openCreateModal);
+
+                  // setSetter("Building Security Details")
+                }}
+              />
+            </div>
+          </>
+        )}
+        {tab[0].label === tabsLabel[1].label && (
+          <>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Fire Protection at Location
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={fireProtectionLocationDropdown}
+                value={
+                  locationBuildingDetails?.buildingSecurityDetail
+                    ?.fireProtection
+                    ? fireProtectionLocationDropdown.find(
+                      (item) =>
+                        item.value ===
+                        locationBuildingDetails?.buildingSecurityDetail
+                          ?.fireProtection
+                    )
+                    : null
+                }
+                // value={locationBuildingDetails?.buildingSecurityDetail?.fireProtection ? locationBuildingDetails?.buildingSecurityDetail?.fireProtection : null}
+                // isMulti
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    buildingSecurityDetail: {
+                      ...locationBuildingDetails.buildingSecurityDetail,
+                      fireProtection: e.value,
+                    },
+                  });
+                }}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Fire Sprinkler at Location
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={fireSprinklerLocationDropdown}
+                value={
+                  locationBuildingDetails?.buildingSecurityDetail?.fireSprinkler
+                    ? fireSprinklerLocationDropdown.find(
+                      (item) =>
+                        item.value ===
+                        locationBuildingDetails?.buildingSecurityDetail
+                          ?.fireSprinkler
+                    )
+                    : null
+                }
+                // value={locationBuildingDetails?.buildingSecurityDetail?.fireSprinkler ? locationBuildingDetails?.buildingSecurityDetail?.fireSprinkler : null}
+                // isMulti
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    buildingSecurityDetail: {
+                      ...locationBuildingDetails.buildingSecurityDetail,
+                      fireSprinkler: e.value,
+                    },
+                  });
+                }}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Water Supply
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={waterSupplyDropdown}
+                value={
+                  locationBuildingDetails?.buildingSecurityDetail?.waterSupply
+                    ? waterSupplyDropdown.find(
+                      (item) =>
+                        item.value ===
+                        locationBuildingDetails?.buildingSecurityDetail
+                          ?.waterSupply
+                    )
+                    : null
+                }
+                // value={locationBuildingDetails?.buildingSecurityDetail?.waterSupply ? locationBuildingDetails?.buildingSecurityDetail?.waterSupply : null}
+                // isMulti
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    buildingSecurityDetail: {
+                      ...locationBuildingDetails.buildingSecurityDetail,
+                      waterSupply: e.value,
+                    },
+                  });
+                }}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row w-full my-5">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Security Protection at Property
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                options={securityProtectionDropdown}
+                value={
+                  locationBuildingDetails?.buildingSecurityDetail
+                    ?.securityProtection
+                    ? securityProtectionDropdown.find(
+                      (item) =>
+                        item.value ===
+                        locationBuildingDetails?.buildingSecurityDetail
+                          ?.securityProtection
+                    )
+                    : null
+                }
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    minWidth: 400,
+                    // maxWidth: 700,
+                    width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    buildingSecurityDetail: {
+                      ...locationBuildingDetails.buildingSecurityDetail,
+                      securityProtection: e.value,
+                    },
+                  });
+                }}
+              />
+            </div>
+            <Selection
+              label="Is the location connected to the town's water mains?"
+              className={" w-full sm:max-w-[400px]"}
+              glassCoverageClassName={"w-full sm:w-1/2 "}
+              value={
+                locationBuildingDetails?.buildingSecurityDetail
+                  ?.isConnectedWaterMains
+                  ? 1
+                  : 0
+              }
+              setSetter={(value) => {
+                setLocationBuildingDetails({
+                  ...locationBuildingDetails,
+                  buildingSecurityDetail: {
+                    ...locationBuildingDetails.buildingSecurityDetail,
+                    isConnectedWaterMains: value === 1 ? true : false,
+                  },
+                });
+              }}
+            />
+            <div className="flex flex-col sm:flex-row w-full my-5">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Nearest Fire Station
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={fireStationDropdown}
+                value={
+                  locationBuildingDetails?.buildingSecurityDetail
+                    ?.nearestFireStation
+                    ? fireStationDropdown.find(
+                      (item) =>
+                        item.value ===
+                        locationBuildingDetails?.buildingSecurityDetail
+                          ?.nearestFireStation
+                    )
+                    : null
+                }
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    buildingSecurityDetail: {
+                      ...locationBuildingDetails.buildingSecurityDetail,
+                      nearestFireStation: e.value,
+                    },
+                  });
+                }}
+              />
+            </div>
+            <Selection
+              label="Does the business store flammable goods?"
+              className={" w-full sm:max-w-[400px]"}
+              glassCoverageClassName={"w-full sm:w-1/2 "}
+              value={
+                locationBuildingDetails?.buildingSecurityDetail
+                  ?.hasFlammableGoods
+                  ? 1
+                  : 0
+              }
+              setSetter={(value) => {
+                setLocationBuildingDetails({
+                  ...locationBuildingDetails,
+                  buildingSecurityDetail: {
+                    ...locationBuildingDetails.buildingSecurityDetail,
+                    hasFlammableGoods: value === 1 ? true : false,
+                  },
+                });
+              }}
+            />
+            <div className="flex flex-col sm:flex-row w-full my-4 pb-5">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Type of fire brigade
+                </label>
+              </div>
+              <Select
+                id="quotes"
+                instanceId="quotes"
+                className="w-full sm:max-w-[400px]"
+                options={typeFireBrigadeDropdown}
+                value={
+                  locationBuildingDetails?.buildingSecurityDetail
+                    ?.fireBrigadeType
+                    ? typeFireBrigadeDropdown.find(
+                      (item) =>
+                        item.value ===
+                        locationBuildingDetails?.buildingSecurityDetail
+                          ?.fireBrigadeType
+                    )
+                    : null
+                }
+                styles={{
+                  control: (controlStyles) => ({
+                    ...controlStyles,
+                    ":hover": { borderColor: "#de4523" },
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    // borderColor: "#de4523",
+                    // minWidth: 400,
+                    // maxWidth: 700,
+                    // width: "100%",
+                    outlineColor: "#de4523",
+                    boxShadow: "none",
+                  }),
+                  multiValueRemove: (styles, { data }) => ({
+                    ...styles,
+                    color: "#de4523",
+                  }),
+                  multiValue: (styles, { data }) => {
+                    return {
+                      ...styles,
+                      backgroundColor: "transparent",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                    };
+                  },
+                }}
+                menuColor="#de4523"
+                onMenuScrollToBottom={() => {
+                  console.log("onMenuScrollToBottom");
+                }}
+                placeholder={"Select Option"}
+                onChange={(e) => {
+                  // console.log("onChange", e);
+                  setLocationBuildingDetails({
+                    ...locationBuildingDetails,
+                    buildingSecurityDetail: {
+                      ...locationBuildingDetails.buildingSecurityDetail,
+                      fireBrigadeType: e.value,
+                    },
+                  });
+                }}
+              />
+            </div>
+            <Selection
+              label="Does Sprinkler meets Australian Standards?"
+              className={" w-full sm:max-w-[400px] mb-5"}
+              glassCoverageClassName={"w-full sm:w-1/2 "}
+              value={
+                locationBuildingDetails?.buildingSecurityDetail
+                  ?.sprinklerMeetsAustralianStandards
+                  ? 1
+                  : 0
+              }
+              setSetter={(value) => {
+                setLocationBuildingDetails({
+                  ...locationBuildingDetails,
+                  buildingSecurityDetail: {
+                    ...locationBuildingDetails.buildingSecurityDetail,
+                    sprinklerMeetsAustralianStandards:
+                      value === 1 ? true : false,
+                  },
+                });
+              }}
+            />
+            <Selection
+              label="Please confirm monitored alarm system?"
+              className={" w-full sm:max-w-[400px] pb-5"}
+              glassCoverageClassName={"w-full sm:w-1/2"}
+              value={
+                locationBuildingDetails?.buildingSecurityDetail
+                  ?.hasMonitoredAlarmSystem
+                  ? 1
+                  : 0
+              }
+              setSetter={(value) => {
+                setLocationBuildingDetails({
+                  ...locationBuildingDetails,
+                  buildingSecurityDetail: {
+                    ...locationBuildingDetails.buildingSecurityDetail,
+                    hasMonitoredAlarmSystem: value === 1 ? true : false,
+                  },
+                });
+              }}
+            />
+            <Selection
+              label="Is there an ATM on the premises?"
+              className={" w-full sm:max-w-[400px] pb-5"}
+              glassCoverageClassName={"w-full sm:w-1/2 "}
+              value={
+                locationBuildingDetails?.buildingSecurityDetail?.hasAtmOnPremise
+                  ? 1
+                  : 0
+              }
+              setSetter={(value) => {
+                setLocationBuildingDetails({
+                  ...locationBuildingDetails,
+                  buildingSecurityDetail: {
+                    ...locationBuildingDetails.buildingSecurityDetail,
+                    hasAtmOnPremise: value === 1 ? true : false,
+                  },
+                });
+              }}
+            />
+            <div className="flex w-full gap-2 mt-5">
+              <ButtonComponent
+                name="Back"
+                className="text-[#0070B0] border-[1px] border-[#0070B0] montserrat-regular rounded-md my-1 w-[200px]"
+                // onClick={() => setOpenCreateModal(false)}
+                onClick={() => {
+                  setTab([{ id: 0, label: "Building Details" }]);
+                }}
+              />
+              <ButtonComponent
+                name="Continue"
+                className="text-white border-[1px] bg-[#0070b0] montserrat-regular my-1  w-[200px]"
+                onClick={() => {
+                  setTab([{ id: 2, label: "Lease Information" }]);
+                }}
+              />
+            </div>
+          </>
+        )}
+        {tab[0].label === tabsLabel[2].label && (
+          <>
+            <div className="flex flex-col sm:flex-row w-full my-4">
+              <div className="flex items-center w-1/2">
+                <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                  Annual Rental Income
+                </label>
+              </div>
+              <Input
+                wrapperClass="w-full sm:max-w-[400px]"
+                inputClass="border-gray-500 rounded w-full"
+                type="number"
+                value={
+                  locationBuildingDetails.buildingLeaseInformation
+                    ?.annualRentalIncomeAmount || ""
+                }
+                onChange={(e) =>
+                  setLocationBuildingDetails((prev) => {
+                    return {
+                      ...prev,
+                      buildingLeaseInformation: {
+                        ...locationBuildingDetails.buildingLeaseInformation,
+                        annualRentalIncomeAmount: parseFloat(e.target.value),
+                      },
+                    };
+                  })
+                }
+              />
+            </div>
+            <div className="flex w-full gap-2 mt-5">
+              <ButtonComponent
+                name="Back"
+                className="text-[#0070B0] border-[1px] border-[#0070B0] montserrat-regular rounded-md my-1 w-[200px]"
+                // onClick={() => setOpenCreateModal(false)}
+                onClick={() => {
+                  setTab([{ id: 1, label: "Building Security Details" }]);
+                }}
+              />
+              <ButtonComponent
+                name="Continue"
+                className="text-white border-[1px] bg-[#0070b0] montserrat-regular my-1  w-[200px]"
+                onClick={() => {
+                  setTab([{ id: 3, label: "Building Cover" }]);
+                }}
+              />
+            </div>
+          </>
+        )}
+        {tab[0].label === tabsLabel[3].label && (
+          <>
+            {/* <div className="grid grid-rows-2 grid-flow-col gap-4 p-5 rounded-lg"> */}
+
+            {/* <div>
+                        <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                           Building - Sum Insured
+                        </label>
+                     </div>
+                     <div>
+                        <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                           Contents - Sum Insured
+                        </label>
+                     </div>
+                     <div>
+                        <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                           Stock - Sum Insured
+                        </label>
+                     </div>
+                     <div>
+                        <label className="text-[#162F3E] montserrat-regular text-[14px]">
+                           Contents & Stock - Sum Insured
+                           <span className="text-[#de4523]">*</span>
+                        </label>
+                     </div>
+                     <div className="w-[200px]">
+                        <Input
+                           inputClass="border-gray-500 rounded"
+                           type="number"
+                           placeholder={"00000"}
+                           value={
+                              locationBuildingDetails.buildingCover?.buildingSumInsuredAmount ||
+                              ""
+                           }
+                           onChange={(e) => {
+                              setLocationBuildingDetails((prev) => {
+                                 return {
+                                    ...prev,
+                                    buildingCover: {
+                                       ...locationBuildingDetails.buildingCover,
+                                       buildingSumInsuredAmount: parseFloat(e.target.value),
+                                    },
+                                 }
+                              })
+                           }}
+                        />
+                     </div>
+                     <div className="flex w-[200px]">
+                        <Input
+                           inputClass="border-gray-500 rounded"
+                           type="number"
+                           placeholder={"00000"}
+                           required
+                           value={
+                              locationBuildingDetails.buildingCover?.contentsSumInsuredAmount ||
+                              ""
+                           }
+                           onChange={(e) => {
+                              setLocationBuildingDetails((prev) => {
+                                 return {
+                                    ...prev,
+                                    buildingCover: {
+                                       ...locationBuildingDetails.buildingCover,
+                                       contentsSumInsuredAmount: parseFloat(e.target.value),
+                                    },
+                                 }
+                              })
+                           }}
+                        />
+                     </div>
+                     <div className="w-[200px]">
+                        <Input
+                           inputClass="border-gray-500 rounded"
+                           type="number"
+                           placeholder={"00000"}
+                           value={
+                              locationBuildingDetails.buildingCover?.stockSumInsuredAmount || ""
+                           }
+                           onChange={(e) => {
+                              setLocationBuildingDetails((prev) => {
+                                 return {
+                                    ...prev,
+                                    buildingCover: {
+                                       ...locationBuildingDetails.buildingCover,
+                                       stockSumInsuredAmount: parseFloat(e.target.value),
+                                    },
+                                 }
+                              })
+                           }}
+                        />
+                     </div> */}
+            {/* </div> */}
+            <div className="flex flex-col md:flex-row gap-5 w-full">
+              <div className="flex flex-col sm:flex-row gap-5">
+                <div className="flex flex-col w-full">
+                  <label className="text-[#162F3E] montserrat-regular text-[14px] mt-5 min-h-[0] md:min-h-[50px]">
+                    Building - Sum Insured
+                  </label>
+                  <Input
+                    inputClass="border-gray-500 rounded"
+                    type="number"
+                    placeholder={"00000"}
+                    value={
+                      locationBuildingDetails.buildingCover
+                        ?.buildingSumInsuredAmount || ""
+                    }
+                    onChange={(e) => {
+                      setLocationBuildingDetails((prev) => {
+                        return {
+                          ...prev,
+                          buildingCover: {
+                            ...locationBuildingDetails.buildingCover,
+                            buildingSumInsuredAmount: parseFloat(
+                              e.target.value
+                            ),
+                          },
+                        };
+                      });
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col w-full">
+                  <label className="text-[#162F3E] montserrat-regular text-[14px] mt-0 sm:mt-5 min-h-[0] md:min-h-[50px]">
+                    Contents - Sum Insured*
+                  </label>
+                  <Input
+                    inputClass="border-gray-500 rounded"
+                    type="number"
+                    placeholder={"00000"}
+                    required
+                    value={
+                      locationBuildingDetails.buildingCover
+                        ?.contentsSumInsuredAmount || ""
+                    }
+                    onChange={(e) => {
+                      setLocationBuildingDetails((prev) => {
+                        return {
+                          ...prev,
+                          buildingCover: {
+                            ...locationBuildingDetails.buildingCover,
+                            contentsSumInsuredAmount: parseFloat(
+                              e.target.value
+                            ),
+                          },
+                        };
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col w-full">
+                  <label className="text-[#162F3E] montserrat-regular text-[14px] mt-0 md:mt-5 min-h-[0] md:min-h-[50px]">
+                    Stock - Sum Insured
+                  </label>
+                  <Input
+                    inputClass="border-gray-500 rounded"
+                    type="number"
+                    placeholder={"00000"}
+                    value={
+                      locationBuildingDetails.buildingCover
+                        ?.stockSumInsuredAmount || ""
+                    }
+                    onChange={(e) => {
+                      setLocationBuildingDetails((prev) => {
+                        return {
+                          ...prev,
+                          buildingCover: {
+                            ...locationBuildingDetails.buildingCover,
+                            stockSumInsuredAmount: parseFloat(e.target.value),
+                          },
+                        };
+                      });
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col w-full">
+                  <label className="text-[#162F3E] montserrat-regular text-[14px] mt-2 md:mt-5">
+                    Contents & Stock - Sum Insured
+                  </label>
+                  {/* <span className="mt-1"></span> */}
+                </div>
+              </div>
+            </div>
+            <div className="flex w-full gap-2 mt-5">
+              <ButtonComponent
+                name="Back"
+                className="text-[#0070B0] border-[1px] border-[#0070B0] montserrat-regular rounded-md my-1 w-[200px]"
+                onClick={() => {
+                  setTab([{ id: 2, label: "Lease Information" }]);
+                }}
+              />
+              {/* {console.log('locationBuildingDetailssss', locationBuildingDetails?.buildingLeaseInformation?.annualRentalIncomeAmount)} */}
+              <ButtonComponent
+                name="Save"
+                className="text-white border-[1px] bg-[#0070b0] hover:bg-[#075b8b] montserrat-regular my-1  w-[200px]"
+                onClick={() => {
+                  addNewBuilding();
+                  // localStorage.setItem('locationBuildingDetails', JSON.stringify(locationBuildingDetails))
+                  setOpenCreateModal(!openCreateModal);
+                }}
+              />
+            </div>
+          </>
+        )}
+      </Modal>
+
+      <div className="flex flex-col mb-2 w-full">
+        <p className="w-full border-[#162f3e] border-b-2 text-red-theme text-[20px] montserrat-bold pb-2 mb-2">
+          Building
+        </p>
+        <p className="mt-[20px] border-l-4 border-red-theme montserrat-bold mb-2 pl-2">
+          Locations
+        </p>
+        <p className="text-[#162F3E] montserrat-regular py-5">All Locations</p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-end w-full gap-3">
+          <Select
+            id="quotes"
+            instanceId="quotes"
+            // className="disabled:bg-gray-400 disabled:cursor-not-allowed"
+            options={locationOptions}
+            isOptionDisabled={(option) => option.disabled} // disable an option
+            // isDisabled={filteredLocation?.address}
+            styles={{
+              control: (controlStyles) => ({
+                ...controlStyles,
+                ":hover": { borderColor: "#de4523" },
+                // ":disabled": {cursor: "cursor-not-allowed"},
+                // pointerEvents: filteredLocation?.address ? true : false,
+                borderColor: "#de4523",
+                borderRadius: 4,
+                borderWidth: 1,
+                // borderColor: "#de4523",
+                minWidth: 300,
+                maxWidth: 400,
+                // width: "100%",
+                outlineColor: "#de4523",
+                boxShadow: "none",
+                marginTop: "5px",
+                marginBottom: "5px",
+              }),
+            }}
+            menuColor="#de4523"
+            onMenuScrollToBottom={() => {
+              console.log("onMenuScrollToBottom");
+            }}
+            placeholder={"Select Location"}
+            onChange={(e) => {
+              console.log("SELECTED LOCATION", e.value);
+              onLocationSelect(e.value);
+            }}
+          />
+          <ButtonComponent
+            // disabled={filteredLocation?.address ? true : false }
+            name="Add Building"
+            className="text-white bg-[#DE4523] montserrat-regular rounded-md my-1 w-[200px]"
+            onClick={() => {
+              setEditAdd("Add");
+              setOpenCreateModal(!openCreateModal);
+            }}
+          />
+        </div>
+        {newBuilding && (
+          <div>
+            {newBuilding.map((building, i) => {
+              return (
+                <div
+                  key={i + building}
+                  className="border-2 border-gray-200 rounded-lg p-4 mt-5"
+                >
+                  <div className="flex flex-col-reverse sm:flex-row item-start gap-4 w-full">
+                    <div className="md:w-1/2 grid md:grid-cols-2">
+                      <p className="text-[#162F3E] montserrat-regular">
+                        Description:
+                      </p>
+                      <p className="text-[#5B5B5B] montserrat-bold">
+                        {building.description}
+                      </p>
+                    </div>
+                    <div className="md:col-span-2 flex items-start flex-row sm:justify-end gap-5 md:mb-5 w-full md:w-1/2">
+                      <button
+                        className="border-b-2 border-[#1FD1B2] text-[#1FD1B2] cursor-pointer"
+                        onClick={() => {
+                          onEditLocation(building, i);
+                          setEditAdd("Edit");
+                          setEditIndex(i);
+                          setOpenCreateModal(!openCreateModal);
+                        }}
+                        aria-label="Edit"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="border-b-2 border-[#E51F36] text-[#E51F36] cursor-pointer"
+                        onClick={() => {
+                          onDeleteBuilding(building, i);
+                        }}
+                        aria-label="Delete"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid md:grid-cols-2 gap-x-4">
+                      <p className="montserrat-regular">Address:</p>
+                      <p className="montserrat-bold text-[#5B5B5B]">
+                        {building.address}
+                      </p>
+                    </div>
+                    <div className="grid gap-4">
+                      <div className="grid md:grid-cols-2 gap-x-4">
+                        <p className="montserrat-regular">Building Name:</p>
+                        <p className="montserrat-bold text-[#5B5B5B]">
+                          {building.buildingName}
+                        </p>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-x-4">
+                        <p className="montserrat-regular">Location Type:</p>
+                        <p className="montserrat-bold text-[#5B5B5B]">
+                          {getOptionLabel(locationTypes, building.locationType)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* <div key={i + 1}>
+                    {buildingDisplay.map((col, index) => {
+                      return (
+                        <div
+                          key={index + col}
+                          className="grid md:grid-cols-4 w-full"
+                        >
+                          <div>
+                            <p className="montserrat-regular">{col.column}</p>
+                          </div>
+
+                          <div>
+                            <p className="montserrat-bold text-[#5B5B5B]">
+                              {building[`${col.col1key}`]}
+                            </p>
+                          </div>
+                          <div className="montserrat-regular">
+                            <p>{col.secondCol}</p>
+                          </div>
+                          <div>
+                            <p className="montserrat-bold text-[#5B5B5B] capitalize">
+                              {building[`${col.col2key}`]}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div> */}
+                </div>
+              );
+            })}
+          </div>
+        )}
+        <div className="flex w-full gap-4 mt-5 border-t py-4">
+          <ButtonComponent
+            name="Go Back"
+            className="text-[#0070B0] border-[1px] border-[#0070B0] montserrat-regular rounded-md my-1 w-[200px]"
+            onClick={() => {
+              router.push("/quotes/journey/location-risk");
+            }}
+          />
+          <ButtonComponent
+            name="Continue"
+            className="text-white border-[1px] bg-[#0070b0] montserrat-regular my-1  w-[200px]"
+            onClick={() => {
+              router.push("/quotes/journey/situational-coverage");
+            }}
+          />
+        </div>
+      </div>
+    </>
+  );
+};
+export default BuildingComponent;

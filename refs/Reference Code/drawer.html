@@ -1,0 +1,31 @@
+<Header className="bg-white" style={{ padding: 0, background: 'white', display: 'flex', alignItems: 'center' }}>
+  <Row justify="space-between">
+    <Col xs={24}>
+      {collapsed ? <MenuUnfoldOutlined className="trigger" onClick={toggle} size={24} /> : <MenuFoldOutlined className="trigger" onClick={toggle} size={24} />}
+      {/* {React.createElement(
+        collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+        {
+          className: 'trigger',
+          onClick: toggle,
+        }
+      )} */}
+    </Col>
+    {/* <Col xs={12} style={{ textAlign: 'right' }}>
+        <div style={{ paddingRight: 24 }}>
+          {authUser.type === 'admin' && (
+            <MicroservicesMenu authUser={authUser} />
+          )}
+        </div>
+      </Col> */}
+    {/* <Col xs={12} style={{ textAlign: 'right' }}>
+        <div style={{ paddingRight: 24 }}>
+          {authUser && (
+            <ToolBoxComponent
+              hasPermission={hasPermission}
+              authUser={authUser}
+            />
+          )}
+        </div>
+      </Col> */}
+  </Row>
+</Header>

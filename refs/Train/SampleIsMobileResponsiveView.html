@@ -1,0 +1,99 @@
+import Image from "next/image";
+import { useEffect, useState } from "react";
+export default function Block({ block }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  const handleResize = () => {
+    if (window.innerWidth < 720) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+  });
+
+  const title = "Customize To Your Heart’s Desire!";
+  const description =
+    "<p>This is fill in text. It is here temporarily, and will be replaced with the proper text shortly.</p><br /><p>It is repeated many times so we will see.</p>";
+  return (
+    <>
+      {isMobile ? (
+        <>
+          <div className="relative w-auto bg-no-repeat bg-cover bg-center 2xl:bg-cover h-[160px] sm:h-[240px] md:h-[270px] lg:h-[320px] xl:h-[422px]">
+            <Image
+              alt="banner"
+              src="/images/announcement.jpg"
+              fill
+              priority
+              className="object-cover object-center"
+            />
+          </div>
+          <div className=" w-full h-full flex bg-[#18ACBA] p-5 ">
+            <div className="z-20 relative w-full h-full flex max-w-xl justify-center m-auto ">
+              <div className="w-[365px] lg:w-[465px] max-h-full my-auto relative flex flex-col items-center sm:items-start gap-y-4 font-poppins text-[#FFFFFF] text-[12px] leading-[20px] lg:text-[16px] lg:leading-[23px]">
+                <p className=" leading-[23px] text-[20px] text-center sm:text-start lg:leading-[50px] font-[700]">
+                  {title}
+                </p>
+                <span
+                  dangerouslySetInnerHTML={{ __html: description }}
+                  className="text-center sm:text-start"
+                />
+                <button className="bg-[#D81B60] py-2.5 px-3.5 mt-4 rounded-md">
+                  Get a Quote
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="relative w-auto bg-no-repeat bg-cover bg-center 2xl:bg-cover h-[160px] sm:h-[240px] md:h-[270px] lg:h-[320px] xl:h-[422px]">
+            <Image
+              alt="banner"
+              src="/images/announcement.jpg"
+              fill
+              priority
+              className="object-cover object-center"
+            />
+            <div className="absolute w-full h-full flex justify-end right-0 ">
+              <div className="relative w-[319px] sm:w-[469px] md:w-[549px] lg:w-[659px] xl:w-[819px] h-[160px] sm:h-[240px] md:h-[270px] lg:h-[320px] xl:h-[422px]">
+                <Image
+                  alt="banner"
+                  src="/images/announcement_bg.png"
+                  fill
+                  priority
+                  className="object-cover object-center"
+                />
+              </div>
+              <div className="absolute w-full h-full flex justify-end right-0">
+                <div className="relative w-[291px] sm:w-[441px] md:w-[521px] lg:w-[631px] xl:w-[791px] h-[160px] sm:h-[240px] md:h-[270px] lg:h-[320px] xl:h-[422px]">
+                  <Image
+                    alt="banner"
+                    src="/images/announcement_bg_2.png"
+                    fill
+                    priority
+                    className="object-cover object-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="z-20 relative w-full h-full flex justify-end max-w-xl m-auto">
+              <div className="w-[365px] lg:w-[465px] max-h-full my-auto relative flex flex-col items-start gap-y-4 font-poppins text-[#FFFFFF] text-[12px] leading-[20px] lg:text-[16px] lg:leading-[23px]">
+                <p className="text-[16px] leading-[23px] lg:text-[45px] lg:leading-[50px] font-[700]">
+                  {title}
+                </p>
+                <div dangerouslySetInnerHTML={{ __html: description }}></div>
+                <button className="bg-[#D81B60] py-2.5 px-3.5 mt-4 rounded-md">
+                  Get a Quote
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+}

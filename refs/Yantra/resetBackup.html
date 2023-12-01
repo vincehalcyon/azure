@@ -1,0 +1,74 @@
+<AuthLayout backgroundImage="/images/yantra1.png">
+      <div className="w-full h-full max-w-[562px] max-h-[412px] rounded-[8px] px-8 py-16 bg-[#FFFFFF] custom-box-shadow flex justify-center items-center">
+        {success ? (
+          <div className="text-center flex flex-col gap-y-4">
+            <h1 className="font-poppins text-[#231F20] text-[40px] leading-[60px] font-[600]">
+              Password Changed!
+            </h1>
+            <p className="font-poppins text-[#555] text-[16px] leading-[23px]">
+              You will now be redirected to the login page in...
+            </p>
+            <div className="relative flex justify-center">
+              <span className="absolute top-[50%] translate-y-[-50%] font-poppins text-[#315589] text-[20px] leading-[23px] font-[600]">
+                {countDown}
+              </span>
+              <GradientLoadingIcon />
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-y-8">
+            <h1 className="text-center font-poppins text-[#231F20] text-[20px] sm:text-[24px] md:text-[40px] leading-[60px] font-[600] tracking-[0.1em]">
+              Set new password
+            </h1>
+            {resetPasswordFormError &&
+              typeof resetPasswordFormError === "string" && (
+                <div className="text-white bg-[#ff9797] p-2 rounded-lg max-w-[368px] w-full mx-auto">
+                  <p>{resetPasswordFormError}</p>
+                </div>
+              )}
+            <div className="max-w-[368px] w-full mx-auto">
+              <FormField
+                type="password"
+                peek={true}
+                name="password"
+                placeholder="Password"
+                className="p-2 border-[1px] border-[#bababa] rounded-lg w-full"
+                value={resetPasswordForm.password}
+                onChange={(e) => onChangeReset({ password: e?.target?.value })}
+                onKeyDown={(e) =>
+                  e?.key === "Enter" ? triggerOnResetPassword() : null
+                }
+                errors={resetPasswordFormError}
+                errortype="bordertext"
+              />
+            </div>
+            <div className="max-w-[368px] w-full mx-auto">
+              <FormField
+                type="password"
+                peek={true}
+                name="password_confirmation"
+                placeholder="Confirm Password"
+                className="p-2 border-[1px] border-[#bababa] rounded-lg w-full"
+                value={resetPasswordForm.password_confirmation}
+                onChange={(e) =>
+                  onChangeReset({ password_confirmation: e?.target?.value })
+                }
+                onKeyDown={(e) =>
+                  e?.key === "Enter" ? triggerOnResetPassword() : null
+                }
+                errors={resetPasswordFormError}
+                errortype="bordertext"
+              />
+            </div>
+
+            <LoadingButton
+              onClick={triggerOnResetPassword}
+              loading={submissionLoading}
+              loadingColor="bg-[#EE3424]"
+              label="Save"
+              labelLoading="Save..."
+              className={`max-w-[258px] w-full mx-auto bg-[#315589] text-[#FFFFFF] text-[16px] leading-[24px] font-[700] p-3 rounded-[1.5rem]`}
+            />
+          </div>
+        )}
+      </div>

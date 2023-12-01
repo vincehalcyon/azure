@@ -1,0 +1,303 @@
+import Header from "components/Header/Header";
+import react from "react";
+import Link from "next/link";
+import { AiOutlineEye, AiOutlineSearch } from "react-icons/ai";
+import { BiChevronLeft } from "react-icons/bi";
+import { FaChevronRight } from "react-icons/fa";
+import { useRouter } from "next/router";
+import { useCustomRequest, paramsToString } from "lib/custom-hook";
+import moment from "moment";
+import Table from "components/Table/Table";
+import { useState } from "react/cjs/react.development";
+import AppButton from "components/Base/AppButton";
+
+export default function ExamineesScore({ authUser }) {
+  const router = useRouter();
+  const { id } = router.query;
+
+  console.log("authUser", authUser);
+
+  const isOwner = authUser?.roles.find((item) => item.slug === "owner");
+
+  const {
+    data: quizData,
+    isValidating: quizDataIsValidating,
+    mutate: updateQuizData,
+  } = useCustomRequest({
+    url: `${process.env.NEXT_PUBLIC_CRM_API_URL}/v1/quizzes/${id}?includes=responses,broker`,
+  });
+
+  console.log("quizData", quizData);
+
+  //   const {
+  //     data: companyData,
+  //     isValidating: companyDataIsValidating,
+  //     mutate: updatecompanyData,
+  //   } = useCustomRequest({
+  //     url: `${process.env.NEXT_PUBLIC_CRM_API_URL}/v1/quizzes/${id}/companies`,
+  //   });
+
+  //   console.log("companyData", companyData);
+
+  const [sortQuery, setSortQuery] = useState("");
+  const [search, setSearch] = useState("");
+
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
+
+  const paginationQuery = paramsToString({
+    page: pagination.currentPage,
+    limit: pagination.perPage,
+  });
+
+  const { data: responses, isValidating: responsesIsValidating } =
+    useCustomRequest({
+      url: `${
+        process.env.NEXT_PUBLIC_CRM_API_URL
+      }/v1/quizzes/${id}/companies?includes=broker&search=${search}${
+        sortQuery ? "&" + sortQuery : ""
+      }&${paginationQuery}`,
+    });
+
+  const responsesData = responses?.data || null;
+  const responsesMeta = responses?.meta || null;
+
+  const responsesIsLoading = responses === undefined && responsesIsValidating;
+
+  const columns = [
+    {
+      name: "Company ID",
+      slot: (companyDetails) => {
+        console.log("datassss", companyDetails);
+        return <p>{companyDetails.id}</p>;
+      },
+      key: "id",
+      sortable: true,
+    },
+    {
+      name: "Company Name",
+      slot: (companyDetails) => {
+        return <p>{companyDetails.name}</p>;
+      },
+      key: "name",
+      sortable: true,
+    },
+    {
+      name: "Total Responses",
+      slot: (companyDetails) => {
+        // 10 / 10
+        return (
+          <p>
+            {companyDetails?.meta?.responsesCount} /{" "}
+            {companyDetails?.meta?.usersCount}
+          </p>
+        );
+      },
+    },
+    {
+      width: 150,
+      slot: (companyDetails) => {
+        return (
+          <>
+            <div className="flex justify-end cursor-pointer">
+              <Link
+                href={`/training-education/quizzes-overview/${id}/company/${companyDetails.id}`}
+              >
+                <a className="text-contenta-blue">
+                  <AiOutlineEye size={20} />
+                </a>
+              </Link>
+            </div>
+          </>
+        );
+      },
+    },
+  ];
+  // const [pagination, setPagination] = useState({
+  //    currentPage: 1,
+  //    perPage: 10,
+  //    total: companyData?.length || 1,
+  // })
+
+  const filters = columns
+    .filter((col) => col.name && col.name !== "")
+    .map((item) => {
+      let params = {
+        label: item.name,
+        column: item?.key || item?.dataIndex,
+        type: "text",
+        inputProps: null,
+      };
+
+      if (item.name.includes("Date") || ["Last Modified"].includes(item.name))
+        params.type = "date";
+      else if (item.name.includes("Results")) {
+        params.type = "number";
+      } else if (["Status"].includes(item.name)) {
+        params.options = ["Draft", "Discontinued", "Published"].map(
+          (status) => {
+            return { label: status, value: status.toLowerCase() };
+          }
+        );
+      }
+      return params;
+    });
+
+  const onPaginate = (page) => {
+    setPagination({
+      ...page,
+      currentPage: page.currentPage,
+      total: page.total,
+    });
+  };
+
+  const exportCallback = () => {
+    // Required ID - quizId, companyId
+    //  window.open(
+    //    `${process.env.NEXT_PUBLIC_CRM_API_URL}/v1/quizzes/${id}/company/${authUser.companyId}/download/csv?includes=broker`,
+    //    "_blank"
+    //  );
+  };
+
+  return (
+    <>
+      <Header page=" " />
+      <div className="flex flex-col px-7 py-10">
+        <div className="flex flex-row">
+          <a
+            href="#"
+            className="flex text-sm items-center justify-reverse cursor-pointer text-xs font-montserratBold text-contenta-pinky-red"
+            onClick={(e) => {
+              e.preventDefault();
+              router.push(`/training-education/quizzes-overview`);
+            }}
+          >
+            <div className="">
+              <BiChevronLeft size={25} />
+            </div>
+            <div className="my-2">Back to Quiz</div>
+          </a>
+        </div>
+        <div className="py-5 text-xl text-contenta-greyish-brown font-montserratBold">
+          Company List - {quizData?.title}
+        </div>
+        <div className="flex flex-col">
+          <div className="flex content-shadow bg-white rounded-xl p-5 my-5">
+            <div className="flex flex-col w-1/2 ">
+              <div className="flex pb-5">
+                <div className="w-1/2 text-sm font-montserratBold text-contenta-gray">
+                  Status
+                </div>
+                {quizData?.status.toLowerCase() === "draft" && (
+                  <div className="px-4 py-1 bg-opacity-50 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-puke-yellow text-contenta-muddy-brown">
+                    Draft
+                  </div>
+                )}
+                {quizData?.status.toLowerCase() === "halt" && (
+                  <div className="px-4 py-1 bg-opacity-50 rounded-xl text-sm font-montserratBold justify-center flex text-contenta-darkish-red bg-contenta-pinky-red">
+                    Discontinued
+                  </div>
+                )}
+                {quizData?.status.toLowerCase() === "published" && (
+                  <div className="px-4 py-1 bg-opacity-50 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-seaweed-green text-contenta-jungle-green">
+                    Published
+                  </div>
+                )}
+              </div>
+              <div className="flex pb-5">
+                <div className="w-full text-sm font-montserratBold text-contenta-gray">
+                  Total Items
+                </div>
+                <div className="w-full font-montserratBold text-contenta-greyish-brown">
+                  {quizData?.meta.questionsCount}
+                </div>
+              </div>
+              <div className="flex pb-5">
+                <div className="w-full text-sm font-montserratBold text-contenta-gray">
+                  Responses
+                </div>
+                <div className="w-full font-montserratBold text-contenta-greyish-brown">
+                  {quizData?.responses.length} / {quizData?.meta.questionsCount}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col w-1/2">
+              <div className="flex pb-5">
+                <div className="w-full text-sm font-montserratBold text-contenta-gray">
+                  Date Created
+                </div>
+                <div className="w-full font-montserratBold text-contenta-greyish-brown">
+                  {moment(quizData?.createdAt).format("DD-MM-YYYY")}
+                </div>
+              </div>
+              <div className="flex pb-5">
+                <div className="w-full text-sm font-montserratBold text-contenta-gray">
+                  Last Update
+                </div>
+                <div className="w-full font-montserratBold text-contenta-greyish-brown">
+                  {moment(quizData?.updatedAt).format("DD-MM-YYYY")}
+                </div>
+              </div>
+              <div className="flex">
+                <div className="w-full">
+                  <Link href={`/training-education/quizzes-overview/${id}`}>
+                    <a className="flex items-center text-sm font-montserratBold text-contenta-pinky-red gap-1">
+                      View Quiz <FaChevronRight size={10} />
+                    </a>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* <Table
+                  columns={columns}
+                  data={companyData?.data}
+                  pagination={pagination}
+                  onPaginate={onPaginate}
+                  hideTotal={true}
+                  perPageToggle={true}
+               /> */}
+          <Table
+            loading={responsesIsLoading}
+            perPageToggle={true}
+            columns={columns}
+            data={responsesData}
+            paginationProps={{
+              pagination: {
+                ...pagination,
+                currentPage:
+                  responsesMeta?.currentPage || pagination?.currentPage,
+                perPage: responsesMeta?.perPage || pagination.perPage,
+                total: responsesMeta?.total,
+              },
+              onPaginate: onPaginate,
+              hideTotal: true,
+            }}
+            filter={{
+              isSearchOnly: true,
+              onChange: (e) => setSearch(e.target.value),
+              filters: filters,
+              setPayload: (payload) => console.log({ payload }),
+              rightFilterSlot: (
+                <AppButton
+                  label="Export CSV"
+                  className="whitespace-nowrap font-montserratBold text-xs border-2 border-contenta-blue text-contenta-blue hover:bg-contenta-blue hover:text-white rounded-lg !p-2 disabled:hover:text-gray-500 disabled:border-contenta-gray"
+                  onPress={exportCallback}
+                  disabled={!responsesMeta?.total}
+                />
+              ),
+            }}
+            onSort={(sort) =>
+              setSortQuery(
+                paramsToString({ sort: sort?.key, sortType: sort?.type })
+              )
+            }
+          />
+        </div>
+      </div>
+    </>
+  );
+}

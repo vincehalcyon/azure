@@ -1,0 +1,241 @@
+import React, { useState, useEffect } from 'react';
+import DefaultLayout from '@/layouts/DefaultLayout';
+const HomePage = () => {
+  const top = [
+    {
+      image: '/img/logos/yellow-cab-logo.jpg'
+    },
+    {
+      image: '/img/logos/miniso-logo.jpg'
+    },
+    {
+      image: '/img/logos/robinsons-logo.jpg'
+    },
+    {
+      image: '/img/logos/starbucks-logo.jpg'
+    },
+  ]
+  return (
+    <DefaultLayout>
+      <>
+        <div className="flex flex-col bg-gray-300">
+          <div className="flex justify-center my-4 pt-20 h-96">
+            
+          </div>
+        </div>
+        <div className="flex flex-col items-center bg-sodexo-dark-purple-blue">
+          <div className="flex flex-col justify-center items-center my-4 w-full">
+            <div className="flex flex-col items-center w-9/12">
+              <div className="text-lg sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl tracking-wide text-white py-5">
+                INTRODUCTION HERE
+              </div>
+              <div className="text-gray-300 pb-10">
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veniam alias possimus necessitatibus odio sunt, autem cumque asperiores quam iusto consequatur labore minima, maxime eaque expedita corrupti officia omnis! Pariatur, facere! Lorem ipsum dolor, sit amet consectetur adipisicing elit. Maiores dicta dolor neque accusamus alias praesentium! Non ut cumque animi voluptatibus explicabo? Possimus vel velit provident. Corrupti similique dolore iure quia.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="flex flex-col justify-center">
+            <div className="flex justify-start mt-12 mb-8 mx-4">
+              <div className="flex flex-col items-start">
+                <div className="text-xl lg:text-4xl xl:text-4xl text-white tracking-wide text-sodexo-fuschia">
+                  TOP PICKS OF THE MONTH
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col lg:flex-row xl:flex-row justify-center flex-wrap m-2">
+              {top && top.length > 0 
+                ? top.map((item, i) =>
+                <div className="flex-1 items-center justify-center rounded m-3 " key={i}>
+                  <div className="flex-col justify-center flex-wrap max-w-md min-w-md bg-white rounded-xl shadow-lg">
+                    <img className="object-cover h-48 w-72" src={item.image} />
+                    <div className="flex flex-col text-xs m-2 py-6 items-center text-gray-700">
+                      <div className="text-sm break-normal my-2 text-sodexo-dark-purple-blue cursor-pointer uppercase" >
+                        Learn More
+                      </div>
+                      <div className="border-b-2 w-15 justify-center text-sodexo-red" />
+                    </div>
+                  </div>
+                </div>
+                )
+                :<></>
+              }
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="flex flex-col justify-center">
+            <div className="flex justify-center mt-12 mb-8 mx-4">
+              <div className="flex flex-col items-center">
+                <div className="text-xl lg:text-4xl xl:text-4xl text-white tracking-wide text-sodexo-fuschia">
+                  CHOOSE FROM OVER 12,000 MERCHANTS!
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col lg:flex-row xl:flex-row justify-center flex-wrap m-2">
+              <div className="flex-1 flex-row items-center justify-center rounded m-3 ">
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+                <div className="m-4 bg-gray-400 h-48 w-48 rounded-xl">
+                  <div className="flex flex-col justify-center items-center h-full mt-2">
+                    <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                      Icon here
+                    </div>
+                    <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                      Title here
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    </DefaultLayout>
+  )
+}
+
+export default HomePage
+
+
+
+{/* <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col items-center justify-center py-10 flex-wrap m-2 w-9/12 border-2">
+              <div className="text-lg sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl tracking-wide py-5 text-sodexo-fuschia">
+                CHOOSE FROM OVER 12,000 MERCHANTS!
+              </div>
+              <div className="flex flex-col lg:flex-row">
+                <div className="flex flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row justify-center items-center">
+                  <div className="m-4 border-default bg-gray-400 h-48 w-48 rounded-xl">
+                    <div className="flex flex-col justify-center items-center h-full mt-2">
+                      <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                        Icon here
+                      </div>
+                      <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                        Title here
+                      </div>
+                    </div>
+                  </div>
+                  <div className="m-4 border-default bg-gray-400 h-48 w-48 rounded-xl">
+                    <div className="flex flex-col justify-center items-center h-full mt-2">
+                      <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                        Icon here
+                      </div>
+                      <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                        Title here
+                      </div>
+                    </div>
+                  </div>
+                  <div className="m-4 border-default bg-gray-400 h-48 w-48 rounded-xl">
+                    <div className="flex flex-col justify-center items-center h-full mt-2">
+                      <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                        Icon here
+                      </div>
+                      <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                        Title here
+                      </div>
+                    </div>
+                  </div>
+                  <div className="m-4 border-default bg-gray-400 h-48 w-48 rounded-xl">
+                    <div className="flex flex-col justify-center items-center h-full mt-2">
+                      <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                        Icon here
+                      </div>
+                      <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                        Title here
+                      </div>
+                    </div>
+                  </div>
+                  <div className="m-4 border-default bg-gray-400 h-48 w-48 rounded-xl">
+                    <div className="flex flex-col justify-center items-center h-full mt-2">
+                      <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                        Icon here
+                      </div>
+                      <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                        Title here
+                      </div>
+                    </div>
+                  </div>
+                  <div className="m-4 border-default bg-gray-400 h-48 w-48 rounded-xl">
+                    <div className="flex flex-col justify-center items-center h-full mt-2">
+                      <div className="flex items-center text-xs justify-center rounded-full bg-white w-20 h-20 text-black text-sodexo-dark-purple-blue">
+                        Icon here
+                      </div>
+                      <div className="text-sodexo-dark-purple-blue text-xs mt-4">
+                        Title here
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </div> */}
+          {/* <div className="flex flex-col items-center bg-red-300">
+            <div className="flex flex-col justify-center w-9/12 bg-green-300">
+              <div className="flex flex-col items-center">
+                <div className="text-xl lg:text-4xl xl:text-4xl text-white tracking-wide text-sodexo-fuschia">
+                  CHOOSE FROM OVER 12,000 MERCHANTS!
+                </div>
+              </div>
+            </div>
+          </div> */}

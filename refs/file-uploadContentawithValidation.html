@@ -1,0 +1,566 @@
+import Header from "components/Header/Header"
+import React, { useEffect, useRef, useState } from "react"
+import { Router, useRouter } from "next/router"
+import AppInput from "components/Base/AppInput"
+import { BiChevronLeft } from "react-icons/bi"
+import { MdFileUpload } from "react-icons/md"
+import { AiOutlineFileText } from "react-icons/ai"
+import Modal from "components/Base/Modal"
+import { useRequest } from "lib/custom-hook"
+import contentaAxios from "lib/axios/contentaAxios"
+import { contentaUploadFile } from "lib/utils"
+import useInput from "lib/utils/useInput"
+
+const isEmpty = (value) => value.trim() !== ""
+
+const AddCompliance = ({ authUser }) => {
+  const router = useRouter()
+
+  const [modalUploadFiles, setModalUploadFiles] = useState(false)
+  const [fileDataToUpdate, setFileDataToUpdate] = useState([])
+  const [inputFiles, setInputFiles] = useState([])
+  const [messageError, setMessageError] = useState()
+  const [messageErrorForDocs, setMessageErrorForDocs] = useState()
+  const [successName, setSuccessName] = useState()
+  const [successNameForDocs, setSuccessNameForDocs] = useState()
+  const [file, setFile] = useState(null)
+  const [publishing, setPublishing] = useState(false)
+  const [fileIsNotPresent, setFileIsNotPresent] = useState(false)
+  const [formIsModified, setFormIsModified] = useState(true)
+  const [fileSaving, setFileSaving] = useState(false)
+  const [categorySelected, setCategorySelected] = useState(false)
+
+  const isOwner =
+    authUser && authUser.roles.find((item) => item.slug === "owner")
+
+  const [formData, setFormData] = useState({
+    body: "",
+    file: null,
+    fileModified: false,
+    image_raw: null,
+  })
+
+  const {
+    value: categoryInput,
+    isValid: categoryIsValid,
+    changed: categoryChanged,
+    hasError: categoryHasError,
+    changeHandler: categoryChangeHandler,
+    blurHandler: categoryBlurHandler,
+    reset: categoryReset,
+  } = useInput(isEmpty)
+
+  const {
+    value: titleInput,
+    isValid: titleIsValid,
+    changed: titleChanged,
+    hasError: titleHasError,
+    changeHandler: titleChangeHandler,
+    blurHandler: titleBlurHandler,
+    reset: titleReset,
+  } = useInput(isEmpty)
+
+  const {
+    value: fileDescriptionInput,
+    isValid: fileDescriptionIsValid,
+    changed: fileDescriptionChanged,
+    hasError: fileDescriptionHasError,
+    changeHandler: fileDescriptionChangeHandler,
+    blurHandler: fileDescriptionBlurHandler,
+    reset: fileDescriptionReset,
+  } = useInput(isEmpty)
+
+  let formValid =
+    categoryIsValid &&
+    titleIsValid &&
+    formData.body !== "" &&
+    formData.file &&
+    formData.image_raw &&
+    !isOwner
+
+  const toggleUploadFiles = () => {
+    setModalUploadFiles(!modalUploadFiles)
+  }
+
+  const editorRef = useRef()
+  const { CKEditor, ClassicEditor } = editorRef.current || {}
+
+  const [loaded, setLoaded] = useState(false)
+
+  const {
+    data: taxonomyList,
+    isValidating: loading,
+    mutate: updateTaxonomyList,
+  } = useRequest(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/taxonomy_term/compliance_category`
+  )
+
+  const taxonomy = taxonomyList?.data || []
+
+  const uploadImage = async () => {
+    const input = document.getElementById("file-solo")
+
+    let list = []
+    const imageType = ["image/png", "image/jpeg"]
+
+    if (imageType.includes(input.files[0].type)) {
+      // for (let index = 0; index < input.files.length; index++) {
+      setFormIsModified(true)
+      list.push(input.files.item(0))
+
+      const response = await contentaUploadFile(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/node/compliance/image_raw`,
+        input.files.item(0)
+      )
+
+      setFormData((prev) => {
+        return { ...prev, image_raw: response }
+      })
+
+      setSuccessName(input.files.item(0).name)
+      setMessageError("")
+      // }
+    } else {
+      setMessageError("Error, only accept image type")
+      setSuccessName("")
+    }
+  }
+
+  const uploadFiles = () => {
+    const input = document.getElementById("file-document")
+    setFileIsNotPresent(false)
+    let list = []
+    const docType = [
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/pdf",
+    ]
+    if (docType.includes(input.files[0].type)) {
+      // for (let index = 0; index < input.files.length; index++) {
+      list.push(input.files.item(0))
+      setFile(input.files.item(0))
+      setSuccessNameForDocs(input.files.item(0).name)
+      setMessageErrorForDocs("")
+      // }
+    } else {
+      setMessageErrorForDocs("Error, only accept .docs,.pdf")
+      setSuccessNameForDocs("")
+    }
+  }
+
+  const removeFileToUpload = (index, type) => {
+    if (type === "upload") {
+      const filteredFiles = inputFiles.filter((item, indx) => indx !== index)
+      setInputFiles(filteredFiles)
+    } else {
+      const filteredFiles = fileDataToUpdate.filter(
+        (item, indx) => indx !== index
+      )
+      setFileDataToUpdate(filteredFiles)
+    }
+  }
+
+  useEffect(() => {
+    editorRef.current = {
+      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
+      ClassicEditor: require("@ckeditor/ckeditor5-build-classic"),
+    }
+
+    setLoaded(true)
+  }, [])
+
+  const submitFile = async () => {
+    setFormIsModified(true)
+    setFileSaving(true)
+    if (!file) {
+      setFileIsNotPresent(true)
+      return
+    }
+
+    const response = await contentaUploadFile(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/node/compliance/file`,
+      file
+    )
+
+    setFormData((prev) => {
+      return {
+        ...prev,
+        file: response,
+      }
+    })
+
+    setFileSaving(false)
+
+    toggleUploadFiles()
+  }
+
+  const submitHandler = async (e) => {
+    e.preventDefault()
+
+    if (!isOwner) {
+      formValid = false
+      return
+    }
+
+    if (!formValid) {
+      setFormIsModified(false)
+      return
+    }
+
+    if (categoryInput === "" && formIsModified) {
+      setFormIsModified(false)
+      return
+    }
+
+    if (!formData.file && !formData.image_raw) {
+      setFormIsModified(false)
+      return
+    }
+
+    setPublishing(true)
+
+    const data = {
+      data: {
+        type: "node--compliance",
+        attributes: {
+          title: titleInput,
+          body: {
+            value: formData.body,
+          },
+        },
+        relationships: {
+          category: {
+            data: {
+              type: "taxonomy_term--compliance_category",
+              id: categoryInput,
+            },
+          },
+        },
+      },
+    }
+
+    if (formData.file) {
+      data.data.relationships.file = {
+        data: {
+          type: "file--document",
+          id: formData.file,
+          meta: {
+            display: null,
+            description: fileDescriptionInput,
+          },
+        },
+      }
+    }
+
+    if (formData.image_raw) {
+      data.data.relationships.image_raw = {
+        data: {
+          type: "file--image",
+          id: formData.image_raw,
+        },
+      }
+    }
+
+    try {
+      const res = await contentaAxios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/node/compliance`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/vnd.api+json",
+          },
+        }
+      )
+
+      if (res.status === 201) {
+        router.push("/compliance")
+        setPublishing(false)
+        return
+      }
+
+      throw new Error("Adding compliance failed")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  return (
+    loaded && (
+      <>
+        <Header page="Compliance " />
+        <Modal
+          isOpen={modalUploadFiles}
+          onClose={() => setModalUploadFiles(false)}
+          closable
+          titleClass="text-xl text-center w-full"
+          headerClass="w-full pl-8"
+          contentClass="max-w-2xl w-full rounded-lg"
+          modalClass="p-0"
+        >
+          <div className="w-full">
+            <AppInput
+              name="title"
+              type="text"
+              size="150"
+              placeholder="Title"
+              inputClass="my-1 w-full"
+              classNames="border-2 border-default rounded w-1/2 py-2 px-4 text-gray-700 focus:outline-none "
+              onChange={fileDescriptionChangeHandler}
+              onBlur={fileDescriptionBlurHandler}
+              value={fileDescriptionInput}
+            />
+            {fileDescriptionHasError && fileDescriptionChanged && (
+              <span className="text-red-500 text-sm">
+                File title is required!
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col mt-5">
+            <label className="w-full flex flex-col items-center px-4 py-6 border-2 border-dashed border-contenta-blue text-blue rounded-lg shadow-lg tracking-wide cursor-pointer">
+              <AiOutlineFileText className="text-contenta-blue" size={52} />
+              <span className="mt-2 text-sm text-contenta-greyish-brown font-montserratBold pb-5">
+                Upload New Document
+              </span>
+
+              <span className="text-sm text-contenta-greyish-brown">
+                Drop files here or <b className="text-contenta-blue">Browse</b>
+              </span>
+              <input
+                type="file"
+                id="file-document"
+                className="hidden"
+                onChange={() => uploadFiles()}
+              />
+              {messageErrorForDocs ? (
+                <span className="text-red-500 font-bold">
+                  {" "}
+                  {messageErrorForDocs}{" "}
+                </span>
+              ) : (
+                <span className="text-black font-bold">
+                  {successNameForDocs}{" "}
+                </span>
+              )}
+            </label>
+            {fileIsNotPresent && (
+              <span className="text-red-500 text-sm">
+                File title is required!
+              </span>
+            )}
+          </div>
+          <div className="flex justify-center py-5">
+            <button
+              name=""
+              disabled={!file || !fileDescriptionIsValid}
+              // bg-gray-100 border-2 border-gray-500 text-gray-600 cursor-not-allowed
+              className={`px-10 py-2 rounded-md text-sm transition duration-300 ease-in-out font-montserratBold ${
+                !file || !fileDescriptionIsValid
+                  ? "bg-gray-100 border-2 border-gray-500 text-gray-600 cursor-not-allowed"
+                  : "bg-white border-2 border-contenta-light-blue text-contenta-light-blue focus:outline-none hover:bg-contenta-light-blue hover:text-white"
+              }`}
+              type="button"
+              onClick={submitFile}
+            >
+              {fileSaving ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </Modal>
+        <div className="flex flex-col px-7 py-10 items">
+          <div className="flex flex-row">
+            <a
+              href="#"
+              className="flex text-sm items-center justify-reverse cursor-pointer text-xs font-montserratBold text-contenta-pinky-red"
+              onClick={(e) => {
+                e.preventDefault()
+                router.back()
+              }}
+            >
+              <div className="">
+                <BiChevronLeft size={25} />
+              </div>
+              <div className="my-2">Back to Compliance</div>
+            </a>
+          </div>
+          <div className="flex flex-col flex-wrap py-5">
+            <div className="flex flex-row gap-5">
+              <div className="w-full xl:w-9/12 lg:w-full content-shadow bg-white rounded-lg p-5">
+                <div className="flex flex-col">
+                  <div className="text-sm font-montserratBold text-contenta-greyish-brown pb-5">
+                    Select Compliance Type
+                  </div>
+                  <div
+                    className="inline-flex rounded-md shadow-sm gap-5 "
+                    role="group"
+                    value={categoryInput}
+                    onClick={(e) => {
+                      categoryChangeHandler(e)
+                      setCategorySelected(true)
+                    }}
+                  >
+                    {taxonomy.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        value={item.id}
+                        style={{
+                          backgroundColor:
+                            categoryInput === item.id
+                              ? item.attributes.bg_color.color
+                              : "#ffffff",
+                          color:
+                            categoryInput === item.id
+                              ? item.attributes.text_color.color
+                              : "#5b5b5b",
+                        }}
+                        className={
+                          categoryInput === item.id
+                            ? `bg-opacity-50 px-5 py-1 text-contenta-jungle-green rounded-full font-montserratBold text-sm border-1 border-transparent`
+                            : "text-sm text-contenta-greyish-brown font-montserratBold border-1 px-5 py-1 border-default rounded-full cursor-pointer"
+                        }
+                      >
+                        {item.attributes.filter_title}
+                      </button>
+                    ))}
+                  </div>
+                  {!categoryIsValid && categorySelected && (
+                    <span className="text-red-500 text-sm">Select a type</span>
+                  )}
+                </div>
+                <div className="w-full py-5">
+                  <AppInput
+                    name="title"
+                    type="text"
+                    size="150"
+                    placeholder="Title"
+                    inputClass="my-1 w-full"
+                    classNames="border-2 border-default rounded w-1/2 py-2 px-4 text-gray-700 focus:outline-none "
+                    onChange={titleChangeHandler}
+                    value={titleInput}
+                  />
+                  {!titleIsValid && titleChanged && (
+                    <span className="text-red-500 text-sm">
+                      Title is required!
+                    </span>
+                  )}
+                </div>
+                <div className="ck-editor-wrapper">
+                  <CKEditor
+                    editor={ClassicEditor}
+                    /* config={editorConfiguration} */
+                    data=""
+                    onInit={(editor) => {
+                      // You can store the "editor" and use when it is needed.
+                    }}
+                    onChange={(event, editor) => {
+                      const data = editor.getData()
+                      setFormIsModified(false)
+                      setFormData((prev) => {
+                        return { ...prev, body: data }
+                      })
+                    }}
+                    onBlur={(event, editor) => {}}
+                    onFocus={(event, editor) => {}}
+                  />
+
+                  {formData.body === "" && !formIsModified && (
+                    <span className="text-red-500 text-sm">
+                      Title is required!
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="w-full xl:w-3/12">
+                <div className="flex flex-col">
+                  <div className="flex flex-col content-shadow rounded-xl">
+                    <label className="w-full flex flex-col items-center px-4 py-6 bg-contenta-blue rounded-tl-xl rounded-tr-xl text-white tracking-wide cursor-pointer hover:bg-contenta-light-blue">
+                      <MdFileUpload size={32} />
+                      <span className="mt-2 text-sm leading-normal font-montserratBold">
+                        Upload Thumbnail
+                      </span>
+                      <span className="text-sm font-montserratRegular">
+                        Drop files here or <b>Browse</b>
+                      </span>
+                      <input
+                        type="file"
+                        id="file-solo"
+                        className="hidden"
+                        onChange={() => {
+                          uploadImage()
+                        }}
+                      />
+                      {messageError ? (
+                        <span className="text-red-500 font-bold">
+                          {" "}
+                          {messageError}{" "}
+                        </span>
+                      ) : (
+                        <span className="text-white font-bold">
+                          {successName}{" "}
+                        </span>
+                      )}
+                    </label>
+                    <div
+                      className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-br-xl rounded-bl-xl tracking-wide cursor-pointer hover:bg-gray-200"
+                      onClick={toggleUploadFiles}
+                    >
+                      <AiOutlineFileText
+                        size={32}
+                        className="text-contenta-blue"
+                      />
+                      <span className="mt-2 text-sm text-contenta-blue leading-normal font-montserratBold">
+                        Upload File
+                      </span>
+                      <span className="text-sm text-contenta-greyish-brown font-montserratRegular">
+                        Drop files here or <b>Browse</b>
+                      </span>
+                    </div>
+                  </div>
+                  {!formData.file &&
+                    !formData.image_raw &&
+                    fileIsNotPresent && (
+                      <span className="text-red-500 text-sm">
+                        upload an image or a file
+                      </span>
+                    )}
+                  <form onSubmit={submitHandler}>
+                    <div className="py-5">
+                      <div className="py-2">
+                        <button
+                          name=""
+                          disabled={!formValid}
+                          // bg-gray-100 border-2 border-gray-500 text-gray-600
+                          className={`w-full py-2 rounded-md text-sm transition duration-300 ease-in-out font-montserratBold ${
+                            formValid
+                              ? "bg-white border-2 border-contenta-light-blue text-contenta-light-blue focus:outline-none hover:bg-contenta-light-blue hover:text-white"
+                              : "bg-gray-100 border-2 border-gray-500 text-gray-600 cursor-not-allowed"
+                          }`}
+                          type="submit"
+                        >
+                          {publishing ? "loading..." : "Publish"}
+                        </button>
+                      </div>
+                      <div className="py-2">
+                        <button
+                          name=""
+                          className="w-full py-2 rounded-md bg-white border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            router.push(`#`)
+                          }}
+                        >
+                          Save as Draft
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  )
+}
+
+export default AddCompliance

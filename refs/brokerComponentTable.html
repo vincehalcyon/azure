@@ -1,0 +1,719 @@
+
+import ChartPie from "components/Chart/pie-chart";
+import Header from "components/Header/Header";
+import React, { useEffect, useState } from "react";
+import AppInput from "components/Base/AppInput";
+import AppTable from "components/Base/AppTable";
+import { AiOutlineSearch } from "react-icons/ai";
+import { MdArrowDropDown } from "react-icons/md";
+import { FaChevronRight } from "react-icons/fa";
+import Router, { useRouter } from 'next/router';
+import Link from 'next/link';
+
+
+const CustomerAccess = () => {
+
+	const router = useRouter();
+
+	const columns = [
+      {
+			name: "Broker ID",
+			dataIndex: "brokerID",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "Broker",
+			dataIndex: "brokerName",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "No. of Customer",
+			dataIndex: "customerNo",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "Email",
+			dataIndex: "email",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "Phone",
+			dataIndex: "phone",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "Last Login",
+			dataIndex: "lastLogin",
+			icon: "MdArrowDropDown",
+		},
+   ]
+
+	let brokersData = [
+		{
+			brokerID: "1Z-00936A",
+			brokerName: "John",
+			customerNo: 20,
+			dateCreated: "10/04/21",
+			email: "saas@gmail.com",
+			phone: "099999999",
+			lastLogin: "10-10-21",
+			address: "Poblacion Cordova Cebu",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			brokerPortal: "pending",
+         brokerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+		{
+			brokerID: "1Z-00936B",
+			brokerName: "Sarah",
+			customerNo: 21,
+			dateCreated: "10/05/21",
+			email: "abc@gmail.com",
+			phone: "0988888888",
+			lastLogin: "10-10-21",
+			address: "dgg",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			brokerPortal: "pending",
+         brokerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+		{
+			brokerID: "1Z-00936C",
+			brokerName: "Doe",
+			customerNo: 22,
+			dateCreated: "10/06/21",
+			email: "123@gmail.com",
+			phone: "0977777777",
+			lastLogin: "10-10-21",
+			address: "sdg",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			brokerPortal: "pending",
+         brokerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+		{
+			brokerID: "1Z-00936D",
+			brokerName: "Rose",
+			customerNo: 23,
+			dateCreated: "10/07/21",
+			email: "jajajj@gmai.com",
+			lastLogin: "10-10-21",
+			phone: "09666666666",
+			address: "asd",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			brokerPortal: "pending",
+         brokerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+		{
+			brokerID: "1Z-00936E",
+			brokerName: "BP",
+			customerNo: 24,
+			dateCreated: "10/08/21",
+			email: "kakakak@gmail.com",
+			lastLogin: "10-10-21",
+			phone: "45",
+			address: "gds",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			brokerPortal: "pending",
+         brokerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+		{
+			brokerID: "1Z-00936F",
+			brokerName: "JS",
+			customerNo: "25",
+			dateCreated: "10/08/21",
+			email: "kakakak@gmail.com",
+			lastLogin: "10-10-21",
+			phone: "45",
+			address: "gds",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			brokerPortal: "pending",
+         brokerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+	]
+
+	const [filterBroker, setFilterBroker] = useState(brokersData)
+
+	const [search, setSearch] = useState("");
+
+	const brokerAccOnchangeFilter = (keyword) => {
+		const filteredAccessBroker = brokersData.filter((item) => item.brokerName.toLocaleLowerCase().includes(keyword.toLowerCase()))
+		setFilterBroker(filteredAccessBroker)
+	}
+
+	
+
+	// CLIENT or USER DATA TABLE
+	const customersTableHeader = [
+		{
+			name: "Customer ID",
+			dataIndex: "customerID",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "Full Name",
+			dataIndex: "customerName",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "Email",
+			dataIndex: "email",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "Phone",
+			dataIndex: "phone",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "Last Login",
+			dataIndex: "address",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "Customer Portal",
+			dataIndex: "customerStatus",
+			icon: "MdArrowDropDown",
+		},
+		{
+			name: "Rewards Exchange",
+			dataIndex: "customerStatus",
+			icon: "MdArrowDropDown",
+		},
+	];
+
+	let customersData = [
+		{
+			customerID: "1Z-00936A",
+			customerName: "John",
+			dateCreated: "10/04/21",
+			email: "saas@gmail.com",
+			phone: "099999999",
+			lastLogin: "10-10-21",
+			address: "Poblacion Cordova Cebu",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			customerPortal: "pending",
+         customerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+		{
+			customerID: "1Z-00936B",
+			customerName: "Sarah",
+			dateCreated: "10/05/21",
+			email: "abc@gmail.com",
+			phone: "0988888888",
+			lastLogin: "10-10-21",
+			address: "dgg",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			customerPortal: "pending",
+         customerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+		{
+			customerID: "1Z-00936C",
+			customerName: "Doe",
+			dateCreated: "10/06/21",
+			email: "123@gmail.com",
+			phone: "0977777777",
+			lastLogin: "10-10-21",
+			address: "sdg",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			customerPortal: "pending",
+         customerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+		{
+			customerID: "1Z-00936D",
+			customerName: "Rose",
+			dateCreated: "10/07/21",
+			email: "jajajj@gmai.com",
+			lastLogin: "10-10-21",
+			phone: "09666666666",
+			address: "asd",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			customerPortal: "pending",
+         customerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+		{
+			customerID: "1Z-00936E",
+			customerName: "BP",
+			dateCreated: "10/08/21",
+			email: "kakakak@gmail.com",
+			lastLogin: "10-10-21",
+			phone: "45",
+			address: "gds",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			customerPortal: "pending",
+         customerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+		{
+			customerID: "1Z-00936F",
+			customerName: "JS",
+			dateCreated: "10/08/21",
+			email: "kakakak@gmail.com",
+			lastLogin: "10-10-21",
+			phone: "45",
+			address: "gds",
+			suburb: "Schrute Farm",
+			postCode: "1570",
+			customerPortal: "pending",
+         customerExchange: "exchange",
+         duration_hrs: 2,
+         duration_mins: 10,
+		},
+	]
+	const [filter, setFiltered] = useState(customersData)
+
+	const [q, setQ] = useState("");
+
+	const customerAccOnchangeFilter = (keyword) => {
+		const filteredAccess = customersData.filter((item) => item.customerName.toLocaleLowerCase().includes(keyword.toLowerCase()))
+		setFiltered(filteredAccess)
+	}
+
+	const toggleCustomerPortal = (id, type) => {
+      if(type === 'customer portal') {
+         const data = filter.map(item => {
+            if(item.customerID === id) {
+               item.customerPortal = item.customerPortal === 'pending' ? 'confirm' : 'pending'
+               return item
+            }
+
+            return item
+         })
+
+         setFiltered(data)
+
+         return
+      }
+      const data = filter.map(item => {
+         if(item.customerID === id) {
+            item.customerExchange = item.customerExchange === 'exchange' ? 'done' : 'exchange'
+            return item
+         }
+
+         return item
+      })
+
+      setFiltered(data)
+   }
+
+	return (
+		<>
+			<Header page="Customer Access " label="this is for Customer Access" />
+			<div className="flex flex-col px-7 py-10 items ">
+				<div className="flex lg:flex-row flex-col w gap-5 w-full pb-5">
+					<div className="lg:w-1/2 w-full">
+						<div className="pb-5 text-sm text-contenta-greyish-brown font-montserratBold">
+							Customer Access Summary
+						</div>
+						<div className="content-shadow p-5 rounded-lg bg-white">
+							<ChartPie />
+						</div>
+					</div>
+					<div className="lg:w-1/2 w-full border-red-900">
+						<div className="pb-5 text-sm text-contenta-greyish-brown font-montserratBold">
+							Customer Population
+						</div>
+						<div className="flex items-center justify-between content-shadow p-5 mb-5 rounded-lg bg-white">
+							<div className="flex flex-row text-contenta-greyish-brown">
+								<div className="text-3xl font-montserratBold">
+									10,258
+								</div>
+								<div className="flex flex-col px-5">
+									<span className="font-montserratBold">Total Number of Customer</span>
+									<small className="font-montserratRegular">as of today</small>
+								</div>
+							</div>
+							<div>
+								<svg width="40" height="38" viewBox="0 0 40 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M11.1332 15.2742H9.84862C8.09559 15.2095 6.34824 15.5132 4.71502 16.1665C3.08179 16.8199 1.59754 17.8088 0.354373 19.072L0 19.494V31.9726H6.02434V24.8893L6.83645 23.9549L7.20559 23.5179C9.12795 21.5022 11.5212 20.0189 14.1602 19.2076C12.8389 18.1815 11.7969 16.8274 11.1332 15.2742Z" fill="#145897"/>
+									<path d="M39.6899 19.0251C38.4467 17.7619 36.9624 16.773 35.3292 16.1197C33.696 15.4664 31.9486 15.1626 30.1956 15.2273C29.658 15.2288 29.1207 15.259 28.5862 15.3177C27.91 16.7749 26.8965 18.0422 25.6331 19.01C28.4503 19.8056 31.0024 21.3685 33.0158 23.5313L33.385 23.9533L34.1823 24.8876V31.986H39.9999V19.4471L39.6899 19.0251Z" fill="#145897"/>
+									<path d="M9.80485 12.334H10.2626C10.0499 10.4701 10.3703 8.58325 11.1852 6.90114C12 5.21903 13.2745 3.8136 14.8547 2.8545C14.2819 1.96133 13.4916 1.23531 12.5613 0.747525C11.631 0.259743 10.5925 0.0269271 9.54754 0.0718731C8.50258 0.116819 7.48697 0.437987 6.60016 1.00393C5.71335 1.56987 4.98575 2.36118 4.48859 3.30037C3.99144 4.23956 3.74178 5.29444 3.76407 6.3617C3.78635 7.42896 4.07982 8.47202 4.61573 9.38874C5.15163 10.3055 5.91161 11.0644 6.82124 11.5913C7.73087 12.1181 8.75896 12.3948 9.80485 12.3943V12.334Z" fill="#145897"/>
+									<path d="M29.4863 11.2039C29.5043 11.5503 29.5043 11.8974 29.4863 12.2438C29.7697 12.2896 30.0559 12.3148 30.3427 12.3192H30.6233C31.6646 12.2625 32.6737 11.9316 33.5525 11.3587C34.4313 10.7857 35.1498 9.99034 35.638 9.04988C36.1262 8.10941 36.3676 7.05595 36.3385 5.99204C36.3094 4.92813 36.0109 3.89004 35.4721 2.97882C34.9332 2.06761 34.1724 1.31432 33.2637 0.79231C32.355 0.270297 31.3293 -0.00265791 30.2865 1.95088e-05C29.2438 0.00269693 28.2194 0.280916 27.3133 0.807589C26.4072 1.33426 25.6501 2.09144 25.1157 3.00541C26.4521 3.896 27.551 5.11126 28.3138 6.54218C29.0767 7.97309 29.4795 9.57491 29.4863 11.2039Z" fill="#145897"/>
+									<path d="M19.8002 17.9537C23.4453 17.9537 26.4004 14.9377 26.4004 11.2171C26.4004 7.49657 23.4453 4.48047 19.8002 4.48047C16.155 4.48047 13.2 7.49657 13.2 11.2171C13.2 14.9377 16.155 17.9537 19.8002 17.9537Z" fill="#145897"/>
+									<path d="M20.1548 21.5448C18.2265 21.4653 16.3023 21.7848 14.4982 22.4841C12.694 23.1834 11.0471 24.248 9.65649 25.6139L9.28735 26.0359V35.5757C9.29312 35.8864 9.3588 36.1929 9.48065 36.4778C9.60251 36.7626 9.77815 37.0201 9.99754 37.2356C10.2169 37.4512 10.4758 37.6205 10.7593 37.7339C11.0428 37.8473 11.3454 37.9025 11.6498 37.8966H28.6155C28.9199 37.9025 29.2225 37.8473 29.506 37.7339C29.7895 37.6205 30.0484 37.4512 30.2678 37.2356C30.4871 37.0201 30.6628 36.7626 30.7846 36.4778C30.9065 36.1929 30.9722 35.8864 30.9779 35.5757V26.066L30.6236 25.6139C29.242 24.2438 27.6008 23.1762 25.8006 22.4765C24.0005 21.7768 22.0793 21.4597 20.1548 21.5448Z" fill="#145897"/>
+								</svg>
+							</div>
+						</div>
+						<div className="flex items-center justify-between content-shadow p-5 mb-5 rounded-lg bg-white">
+							<div className="flex flex-row text-contenta-greyish-brown">
+								<div className="text-3xl font-montserratBold">
+									7,130
+								</div>
+								<div className="flex flex-col px-5">
+									<span className="font-montserratBold">Number of Active Customer</span>
+									<small className="font-montserratRegular">as of today</small>
+								</div>
+							</div>
+							<div>
+								<svg width="27" height="38" viewBox="0 0 27 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M11.2524 14.3461C15.1397 14.3461 18.291 11.1346 18.291 7.17304C18.291 3.21148 15.1397 0 11.2524 0C7.36513 0 4.21387 3.21148 4.21387 7.17304C4.21387 11.1346 7.36513 14.3461 11.2524 14.3461Z" fill="#145897"/>
+									<path fillRule="evenodd" clipRule="evenodd" d="M5.57889 18.2172C7.5105 17.4701 9.57055 17.1288 11.6351 17.2136C13.6955 17.1228 15.7524 17.4615 17.6797 18.2091C19.607 18.9566 21.3641 20.0972 22.8433 21.5609L23.2227 22.0439V25.4796C22.5056 25.2286 21.7361 25.0923 20.9354 25.0923C17.0481 25.0923 13.8968 28.3038 13.8968 32.2653C13.8968 33.1137 14.0413 33.9276 14.3067 34.683H2.52936C2.20342 34.6894 1.87942 34.6304 1.57589 34.5092C1.27236 34.3881 0.995233 34.2072 0.760347 33.9769C0.525462 33.7467 0.337418 33.4716 0.206955 33.1673C0.0764928 32.863 0.00616883 32.5355 0 32.2035V22.0117L0.395213 21.5609C1.88401 20.1017 3.64727 18.9643 5.57889 18.2172Z" fill="#145897"/>
+									<path fillRule="evenodd" clipRule="evenodd" d="M26.3612 32.2663C26.3612 35.287 23.9325 37.7358 20.9366 37.7358C17.9406 37.7358 15.512 35.287 15.512 32.2663C15.512 29.2456 17.9406 26.7969 20.9366 26.7969C23.9325 26.7969 26.3612 29.2456 26.3612 32.2663ZM24.299 32.2673C24.299 34.149 22.7936 35.6745 20.9366 35.6745C19.0797 35.6745 17.5743 34.149 17.5743 32.2673C17.5743 30.3855 19.0797 28.8601 20.9366 28.8601C22.7936 28.8601 24.299 30.3855 24.299 32.2673Z" fill="#145897"/>
+								</svg>
+							</div>
+						</div>
+						<div className="flex items-center justify-between content-shadow p-5 rounded-lg bg-white">
+							<div className="flex flex-row text-contenta-greyish-brown">
+								<div className="text-3xl font-montserratBold">
+									10,258
+								</div>
+								<div className="flex flex-col px-5">
+									<span className="font-montserratBold">Number of Inactive Customer</span>
+									<small className="font-montserratRegular">as of today</small>
+								</div>
+							</div>
+							<div>
+								<svg width="27" height="38" viewBox="0 0 27 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M11.2522 14.3456C15.1393 14.3456 18.2905 11.1342 18.2905 7.17279C18.2905 3.21137 15.1393 0 11.2522 0C7.36502 0 4.21387 3.21137 4.21387 7.17279C4.21387 11.1342 7.36502 14.3456 11.2522 14.3456Z" fill="#145897"/>
+									<path fillRule="evenodd" clipRule="evenodd" d="M5.57869 18.2172C7.51024 17.4701 9.57022 17.1288 11.6347 17.2136C13.695 17.1228 15.7518 17.4615 17.6791 18.209C19.6064 18.9565 21.3634 20.0971 22.8425 21.5607L23.2219 22.0437V25.4761C22.505 25.2253 21.7359 25.0892 20.9355 25.0892C17.0484 25.0892 13.8972 28.3006 13.8972 32.262C13.8972 33.1114 14.0421 33.9263 14.308 34.6824H2.52928C2.20334 34.6888 1.87936 34.6298 1.57583 34.5086C1.27231 34.3875 0.995198 34.2066 0.760321 33.9764C0.525444 33.7461 0.337406 33.471 0.206948 33.1667C0.0764901 32.8624 0.00616861 32.535 0 32.203V22.0115L0.395199 21.5607C1.88395 20.1016 3.64714 18.9642 5.57869 18.2172Z" fill="#145897"/>
+									<path fillRule="evenodd" clipRule="evenodd" d="M20.9354 37.7315C23.9312 37.7315 26.3598 35.2828 26.3598 32.2622C26.3598 29.2416 23.9312 26.793 20.9354 26.793C17.9396 26.793 15.511 29.2416 15.511 32.2622C15.511 35.2828 17.9396 37.7315 20.9354 37.7315ZM18.2447 30.6684C17.9543 30.378 17.9543 29.9072 18.2447 29.6169C18.535 29.3265 19.0058 29.3265 19.2962 29.6169L20.8738 31.1945L22.451 29.6172C22.7414 29.3269 23.2122 29.3269 23.5025 29.6172C23.7929 29.9076 23.7929 30.3783 23.5025 30.6687L21.9253 32.2459L23.5022 33.8228C23.7925 34.1132 23.7925 34.5839 23.5022 34.8743C23.2118 35.1646 22.741 35.1646 22.4507 34.8743L20.8738 33.2974L19.2965 34.8746C19.0062 35.165 18.5354 35.165 18.245 34.8746C17.9547 34.5843 17.9547 34.1135 18.245 33.8231L19.8223 32.2459L18.2447 30.6684Z" fill="#145897"/>
+								</svg>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* ADMIN/OWNER USER */}
+				<div className="flex flex-col py-5">
+					<div className="align-middle inline-block min-w-full">
+						<div className="content-shadow overflow-hidden border-b border-gray-200 sm:rounded-lg ">
+							<div className="flex items-center px-5 py-2 shadow-sm rounded-t-md shadow-lg bg-white justify-between  border-b-1 border-gray-200">
+								<div className="items-center flex text-contenta-gray text-sm font-montserratBold">
+									<div className="">
+										<AiOutlineSearch size={24} />
+									</div>
+									<AppInput
+										name="title"
+										type="text"
+										size="150"
+										placeholder="Seartch or Add Filter"
+										inputClass="my-1 w-full text-sm text-contenta-gray"
+										classNames=" rounded w-1/2 py-2 text-contenta-gray px-4 text-gray-700 focus:outline-none"
+										value={search}
+										onChange={(e) => {setSearch(e.target.value)
+											brokerAccOnchangeFilter(e.target.value)}
+										}
+									/>
+								</div>
+								<div className="flex items-center">
+									<div className="relative lg:mx-0">
+										<button className="btn-width py-2 rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white">
+											Export CSV
+										</button>
+									</div>
+								</div>
+							</div>
+							<AppTable
+								columns={columns}
+								data={brokersData}
+							/>
+							{/* {filterBroker.length > 0 ?
+								<>
+									
+								</> : <>
+											<div className="flex justify-center w-full text-sm p-10 text-contenta-greyish-brown w-full bg-white">
+												No results found
+											</div>
+										</>
+							}
+							<div className="flex gap-1 bg-white">
+								<Link 
+									href="customer-access/broker-overview/"
+									passHref
+								>
+									<div className="flex items-center p-5 text-xxs font-montserratBold text-contenta-pinky-red p-5 cursor-pointer w-full justify-end">
+										View More
+										<FaChevronRight />
+									</div>
+								</Link>
+							</div> */}
+						</div>
+					</div>
+				</div>
+				{/* <div className="flex flex-col py-5">
+					<div className="align-middle inline-block min-w-full">
+						<div className="content-shadow overflow-hidden border-b border-gray-200 sm:rounded-lg ">
+							<div className="flex items-center px-5 py-2 shadow-sm rounded-t-md shadow-lg bg-white justify-between  border-b-1 border-gray-200">
+								<div className="items-center flex text-contenta-gray text-sm font-montserratBold">
+									<div className="">
+										<AiOutlineSearch size={24} />
+									</div>
+									<AppInput
+										name="title"
+										type="text"
+										size="150"
+										placeholder="Seartch or Add Filter"
+										inputClass="my-1 w-full text-sm text-contenta-gray"
+										classNames=" rounded w-1/2 py-2 text-contenta-gray px-4 text-gray-700 focus:outline-none"
+										value={search}
+										onChange={(e) => {setSearch(e.target.value)
+											brokerAccOnchangeFilter(e.target.value)}
+										}
+									/>
+								</div>
+								<div className="flex items-center">
+									<div className="relative lg:mx-0">
+										<button className="btn-width py-2 rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white">
+											Export CSV
+										</button>
+									</div>
+								</div>
+							</div>
+							{filterBroker.length > 0 ?
+								<>
+									<table className="min-w-full bg-white">
+										<thead >
+											<tr>
+												{brokerTableHeader.map((items, i) =>
+													<th
+														key={i}
+														scope="col"
+														className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-1 border-gray-200 "
+													>
+														<div className="flex items-center">
+															<div className="text-sm font-montserratBold text-contenta-blue">
+																{items.name}
+															</div>
+															<button>
+																<MdArrowDropDown size={18} />
+															</button>
+														</div>
+													</th>
+												)}
+											</tr>
+										</thead>
+										<tbody >
+											{filterBroker.map((items, i) =>
+												<tr key={i} className="border-b-1 border-gray-200 hover:bg-gray-200">
+													<div
+														className="cursor-pointer"
+														onClick={(e) => {
+															e.preventDefault();
+															Router.push(`/customer-access/${items.brokerID}`)
+														}}
+													>
+														<td className="px-6 py-4 whitespace-nowrap ">
+															<div className="text-sm text-gray-500">
+																{items.brokerID}
+															</div>
+														</td>
+													</div>
+													<td className="px-6 py-4 whitespace-nowrap">
+														<div className="text-sm text-gray-500">
+															{items.brokerName}
+														</div>
+													</td>
+													<td className="px-6 py-4 whitespace-nowrap">
+														<div className="text-sm text-gray-500">
+															{items.customerNo}
+														</div>
+													</td>
+													<td className="px-6 py-4 whitespace-nowrap">
+														<div className="text-sm text-gray-500">
+															{items.email}
+														</div>
+													</td>
+													<td className="px-6 py-4 whitespace-nowrap">
+														<div className="text-sm text-gray-500">
+															{items.phone}
+														</div>
+													</td>
+													<td className="px-6 py-4 whitespace-nowrap">
+														<div className="text-sm text-gray-500">
+															11-10-2021
+														</div>
+													</td>
+													<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+														<div className="cursor-pointer">
+															<FaChevronRight />
+														</div>
+													</td>
+												</tr>
+											)}
+										</tbody>
+									</table>
+								</> : <>
+											<div className="flex justify-center w-full text-sm p-10 text-contenta-greyish-brown w-full bg-white">
+												No results found
+											</div>
+										</>
+							}
+							<div className="flex gap-1 bg-white">
+								<Link 
+									href="customer-access/broker-overview/"
+									passHref
+								>
+									<div className="flex items-center p-5 text-xxs font-montserratBold text-contenta-pinky-red p-5 cursor-pointer w-full justify-end">
+										View More
+										<FaChevronRight />
+									</div>
+								</Link>
+							</div>
+						</div>
+					</div>
+				</div> */}
+
+
+				{/* CLIENT USER */}
+				<div className="flex flex-col py-5 hidden">
+					<div className="align-middle inline-block min-w-full">
+						<div className="content-shadow overflow-hidden border-b border-gray-200 sm:rounded-lg ">
+							<div className="flex items-center px-5 py-2 shadow-sm rounded-t-md shadow-lg bg-white justify-between  border-b-1 border-gray-200">
+								<div className="items-center flex text-contenta-gray text-sm font-montserratBold">
+									<div className="">
+										<AiOutlineSearch size={24} />
+									</div>
+									<AppInput
+										name="title"
+										type="text"
+										size="150"
+										placeholder="Seartch or Add Filter"
+										inputClass="my-1 w-full text-sm text-contenta-gray"
+										classNames=" rounded w-1/2 py-2 text-contenta-gray px-4 text-gray-700 focus:outline-none"
+										value={q}
+										onChange={(e) => {setQ(e.target.value)
+											customerAccOnchangeFilter(e.target.value)}
+										}
+									/>
+								</div>
+								<div className="flex items-center">
+									<div className="relative lg:mx-0">
+										<button className="btn-width py-2 rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white">
+											Export CSV
+										</button>
+									</div>
+								</div>
+							</div>
+							{filter.length > 0 ?
+								<>
+									<table className="min-w-full bg-white">
+										<thead >
+											<tr>
+												{customersTableHeader.map((items, i) =>
+													<th
+														key={i}
+														scope="col"
+														className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-1 border-gray-200 "
+													>
+														<div className="flex items-center">
+															<div className="text-sm font-montserratBold text-contenta-blue">
+																{items.name}
+															</div>
+															<button>
+																<MdArrowDropDown size={18} />
+															</button>
+														</div>
+													</th>
+												)}
+											</tr>
+										</thead>
+										<tbody >
+											{filter.map((items, i) =>
+												<tr key={i} className="border-b-1 border-gray-200 hover:bg-gray-200">
+													<div
+														className="cursor-pointer"
+														onClick={(e) => {
+															e.preventDefault();
+															Router.push(`/customer-access/${items.customerID}`)
+														}}
+													>
+														<td className="px-6 py-4 whitespace-nowrap ">
+															<div className="text-sm text-gray-500">
+																{items.customerID}
+															</div>
+														</td>
+													</div>
+													<td className="px-6 py-4 whitespace-nowrap">
+														<div className="text-sm text-gray-500">
+															{items.customerName}
+														</div>
+													</td>
+													<td className="px-6 py-4 whitespace-nowrap">
+														<div className="text-sm text-gray-500">
+															{items.email}
+														</div>
+													</td>
+													<td className="px-6 py-4 whitespace-nowrap">
+														<div className="text-sm text-gray-500">
+															{items.phone}
+														</div>
+													</td>
+													<td className="px-6 py-4 whitespace-nowrap">
+														<div className="text-sm text-gray-500">
+															11-10-2021
+														</div>
+													</td>
+													<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+														<div>
+															<label htmlFor={`${items.customerID}`} className="toggle" onClick={() => toggleCustomerPortal(items.customerID, 'customer portal')} >
+																<input className="toggle__input" type="checkbox" />
+																<div className={items.customerPortal === 'pending' ? "toggle__fill" : 'toggle__fill_checked transition-transform'}/>
+															</label>
+														</div>
+													</td>
+													<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+														<div>
+															<label htmlFor={`${items.customerExchange}`} className="toggle" onClick={() => toggleCustomerPortal(items.customerID, 'customer exchange')}>
+																<input className="toggle__input" type="checkbox"  />
+																<div className={items.customerExchange === 'exchange' ? "toggle__fill" : 'toggle__fill_checked'}/>
+															</label>
+														</div>
+													</td>
+												</tr>
+											)}
+										</tbody>
+									</table>
+								</> : <>
+											<div className="flex justify-center w-full text-sm p-10 text-contenta-greyish-brown w-full bg-white">
+												No results found
+											</div>
+										</>
+							}
+							<div className="flex gap-1 bg-white">
+								<Link 
+									href="customer-access/customer-overview/"
+									passHref
+								>
+									<div className="flex items-center p-5 text-xxs font-montserratBold text-contenta-pinky-red p-5 cursor-pointer w-full justify-end">
+										View More
+										<FaChevronRight />
+									</div>
+								</Link>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</>
+	)
+}
+export default CustomerAccess;

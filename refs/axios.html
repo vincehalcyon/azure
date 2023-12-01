@@ -1,0 +1,37 @@
+import logo from "./logo.svg";
+import "./App.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+function App({ test }) {
+  const [data, setData] = useState();
+  useEffect(() => {
+    axios
+      .get(`https://s3.staging.halcyondigitalhost.com/api/test/articles`)
+      .then((res) => {
+        console.log(res);
+        setData(res.data);
+      });
+  }, [test]);
+
+  return (
+    <div>
+      {data?.map((item, index) => {
+        return (
+          <div key={index}>
+            <h1>{item.title}</h1>
+            <img src={item.image_raw} alt="" />
+            <p
+              className="ck-content"
+              dangerouslySetInnerHTML={{
+                __html: item.body,
+              }}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default App;

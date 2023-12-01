@@ -1,0 +1,136 @@
+import Image from "next/image";
+import Link from "next/link";
+import Logo from "@/components/partials/Logo";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
+import { GlobalContext } from "@/lib/context/GlobalContext";
+import CloseSvg from "@/components/partials/CloseSvg";
+export default function Menu({}) {
+  const router = useRouter();
+  const [showMenu, setShowMenu] = useState(false);
+  const { menus } = useContext(GlobalContext);
+  const nodes = menus?.parentNodes || [];
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [screenHeight, setScreenHeight] = useState();
+
+  useEffect(() => {
+    setShowMenu(false);
+    if (window.innerWidth >= 767) {
+      setShowMenu(true);
+    }
+
+    const handleScroll = () => {
+      const position = window.scrollY;
+      setScrollPosition(position);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [router]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const height = window.innerHeight;
+      setScreenHeight(height);
+    };
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return (
+    <div
+      className={`fixed z-10 w-full ${
+        showMenu ? "h-full" : "h-auto"
+      } md:h-auto`}
+    >
+      <div
+        className={`w-full p-3 bg-[#ffeee5]  backdrop-blur-sm ${
+          scrollPosition ? "lg:p-2" : "lg:p-4 bg-opacity-75"
+        }`}
+        // ${router?.route === "/" ? "bg-[#ced5e3]" : "bg-[#FF8440]"}
+      >
+        <div className="flex justify-between max-w-[1400px] m-auto max-h-[65px] items-center">
+          <Link href="/" aria-label="logo" alt="logo">
+            <div
+              className={`w-[150px] ${
+                scrollPosition
+                  ? "transform-none transition duration-[550ms] lg:w-[246px]"
+                  : "transform-none transition duration-[550ms] lg:w-[320px]"
+              }`}
+            >
+              {/* <Logo /> */}
+              <Image
+                alt="logo"
+                src="/menu.webp"
+                className="w-full h-full object-cover"
+                width={170}
+                height={60}
+                loading="eager"
+                priority
+              />
+            </div>
+          </Link>
+
+          {showMenu ? (
+            <span
+              className="block md:hidden"
+              onClick={() => setShowMenu((e) => !e)}
+            >
+              <CloseSvg />
+            </span>
+          ) : (
+            <div
+              className={`md:hidden cursor-pointer hover:opacity-50 hover:duration-500 mr-0.5`}
+              onClick={() => setShowMenu((e) => !e)}
+            >
+              <div className="border-2 border-[#F15A24] w-full max-w-[42px] p-[8px] py-[10px] rounded-[5px]">
+                <span className="bg-[#F15A24] h-[2px] w-[20px] block mb-[5px]"></span>
+                <span className="bg-[#F15A24] h-[2px] w-[20px] block mb-[5px]"></span>
+                <span className="bg-[#F15A24] h-[2px] w-[20px] block"></span>
+              </div>
+            </div>
+          )}
+
+          <div
+            className="hidden md:block cursor-pointer hover:opacity-50 hover:duration-500"
+            onClick={() => setShowMenu((e) => !e)}
+          >
+            <div className="border-2 border-[#F15A24] w-full max-w-[45px] p-[10px] rounded-[5px]">
+              <span className="bg-[#F15A24] h-[2px] w-[20px] block mb-[5px]"></span>
+              <span className="bg-[#F15A24] h-[2px] w-[20px] block mb-[5px]"></span>
+              <span className="bg-[#F15A24] h-[2px] w-[20px] block"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className={`${
+          showMenu ? "max-h-screen" : "hidden"
+        } max-height 5s ease-in-out max-h-0 overflow-hidden w-full bg-[#4A0505] text-white py-2 h-full md:h-auto `}
+      >
+        <div
+          className={`${
+            screenHeight === 320
+              ? "text-[13px] gap-2 mt-2"
+              : "text-[20px] gap-8"
+          } text-center md:text-left  md:gap-0 mt-10 md:mt-0  md:text-[13px] lg:text-[16px]  md:h-full flex flex-col md:flex-row justify-between max-w-[1400px] m-auto px-4 3xl:px-0`}
+        >
+          {nodes.map((node, i) => {
+            const active =
+              node.url === router.asPath ? "text-[#C0C0C0]" : "text-white";
+            return (
+              <Link
+                href={node.url}
+                key={i}
+                target={node.target}
+                className={`${active} hover:text-[#F15A24]`}
+              >
+                {node.label}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}

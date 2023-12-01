@@ -1,0 +1,94 @@
+  
+``FILTER CUSTOM``
+  const [selectAll, setSelectAll] = useState(false);
+
+  const toggleSelectAll = () => {
+    const newData = !selectAll;
+    setSelectAll(newData);
+
+    const updatedCustomFilter = newData
+      ? customFilterStatic.map((item) => item.id)
+      : [];
+    productStore.setState({ customFilter: updatedCustomFilter });
+
+    const dataParams = {};
+    updatedCustomFilter.forEach((id) => {
+      dataParams[id] = 1;
+    });
+    const newParams = {
+      ...dataParams,
+      brands: selectedBrands.join(","),
+      categories: selectedCategories.join(","),
+      search,
+    };
+    removeEmptyAttribute(newParams);
+    router.replace(`/products?${paramsToString(newParams)}`, undefined, {
+      shallow: true,
+    });
+  };  
+
+
+  <button
+    className="text-[#ED3628] text-[14px] text-end"
+    onClick={toggleSelectAll}
+  >
+    {selectAll ? "Unselect All" : "Select All"}
+  </button>
+
+
+
+  ``FILTER TAXONOMIES``
+   const [selectAll, setSelectAll] = useState(false);
+  const toggleSelectAll = () => {
+    const newValue = !selectAll; // Invert the current state
+    setSelectAll(newValue); // Update the state
+
+    // Update the dataHandler to select/deselect all taxonomies
+    const updatedDataHandler = newValue
+      ? data.taxonomies.map((taxonomy) => taxonomy.id)
+      : [];
+    productStore.setState({ [data.keyword]: updatedDataHandler });
+
+    // Update the URL and checkboxes accordingly
+    const customFilterParams = {};
+    customFilter.forEach((n) => {
+      customFilterParams[n] = 1;
+    });
+    const newParams = {
+      ...params,
+      [data.id]: updatedDataHandler.join(","),
+      ...customFilterParams,
+      search,
+    };
+    removeEmptyAttribute(newParams);
+    router.replace(`/products?${paramsToString(newParams)}`, undefined, {
+      shallow: true,
+    });
+  };
+
+
+
+
+
+  <div className="md:hidden font-poppins text-[#555555] mt-4 flex flex-col gap-y-4">
+      {/* {item?.purchasable?.combination && ( */}
+      <div className="flex gap-x-4 text-[12px] leading-[21px] w-[250px] sm:w-[450px]">
+        <p>Pack</p>
+        <p className="text-[#AAAAAA] overflow-hidden text-ellipsis">
+          3 Seeds
+        </p>
+      </div>
+      {/* )} */}
+      <div className="flex justify-between mb-4">
+        <div className="flex gap-x-4 text-[12px] md:text-[14px] leading-[23px]">
+          <p>Quantity</p>
+          <p className="text-[#AAAAAA]">{item.quantity}</p>
+        </div>
+        <div className="flex gap-x-4 text-[#555555] text-[14px] md:text-[16px] leading-[23px]">
+          <span className="text-[12px] font-normal text-dim-black mr-1">
+            Subtotal:
+          </span>
+          {order?.currency?.symbol} {item.sub_total}
+        </div>
+      </div>
+    </div>

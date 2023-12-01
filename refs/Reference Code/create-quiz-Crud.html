@@ -1,0 +1,290 @@
+import AppButton from "components/Base/AppButton";
+import AppInput from "components/Base/AppInput";
+import Header from "components/Header/Header";
+import router from "next/router";
+import react, { useState } from "react";
+import { Fragment } from "react";
+import { AiOutlineClose, AiOutlineMinusSquare, AiOutlinePlusSquare } from "react-icons/ai";
+import { BiChevronLeft } from "react-icons/bi";
+import { BsCheck2Circle } from "react-icons/bs";
+import { MdFileUpload } from "react-icons/md";
+import crmAxios from 'lib/axios/crmAxios'
+
+export default function CreateQuiz() {
+
+   const [quizTitle, setQuizTitle] = useState()
+   console.log("quizTitle", quizTitle)
+
+   const [questionList, setQuestionList] = useState([
+      {
+         title: '',
+         choices: [{ title: '', isAnswer: 1 }]
+      }
+   ]);
+
+   // const createQuizHandler = () => {
+   //    setQuestionList([
+   //       {
+   //          question: '',
+   //          choices: [{ choice: '', correct: true }]
+   //       }
+   //    ])
+   // }
+
+   const handleInputChange = (event, parentIndex, choiceIndex) => {
+      const choices = questionList[parentIndex].choices.map((item, index) => {
+         if (index === choiceIndex) {
+            item.title = event.target.value
+            return item
+         }
+
+         return item
+      })
+
+      setQuestionList((prev) => {
+         const newList = [...prev]
+         newList[parentIndex].choices = choices
+         return [...newList]
+      });
+   }
+
+   const handleRemoveChoices = (questionIndex, choicesIndex) => {
+      const newChoices = questionList[questionIndex].choices.filter((item, i) => i !== choicesIndex)
+      // newChoices.filter()
+      setQuestionList((prev) => {
+         const newList = [...prev]
+         newList[questionIndex].choices = newChoices
+         return [...newList]
+      });
+      // const list = [...questionList];
+      // list.splice(index, 1);
+      // setQuestionList(list);
+   };
+
+   const handleAddChoices = (index) => {
+      const newChoices = questionList[index].choices
+      newChoices.push({ title: '', isAnswer: 0 })
+      setQuestionList((prev) => {
+         const newList = [...prev]
+         newList[index].choices = newChoices
+         return [...newList]
+      });
+   };
+
+   const addQuestionHandler = () => {
+      setQuestionList(prev => {
+         return [...prev, { title: '', choices: [{ title: '', isAnswer: 1 }] }]
+      })
+   }
+
+   const removeQuestionHandler = (index) => {
+      const newList = questionList.filter((item, i) => i !== index)
+      setQuestionList(newList)
+   }
+
+   const choiceCorrectAnswerHandler = (parentIndex, choiceIndex) => {
+      const choices = questionList[parentIndex].choices.map((item, index) => {
+         if (index === choiceIndex) {
+            item.isAnswer = 1
+            return item
+         }
+
+         item.isAnswer = 0
+         return item
+      })
+
+      setQuestionList((prev) => {
+         const newList = [...prev]
+         newList[parentIndex].choices = choices
+         return [...newList]
+      });
+   }
+
+   console.log('questionList', questionList)
+
+   function getLetter(num) {
+      var letter = String.fromCharCode(num + 64);
+      return letter.toLowerCase();
+   }
+
+   const submitHandler = async (e) => {
+      e.preventDefault()
+      const formData = {
+         quiz: {
+            title: quizTitle,
+            description: "",
+            status: 'published'
+         },
+         questions: questionList
+      }
+
+      const response = await crmAxios.post(`${process.env.NEXT_PUBLIC_CRM_API_URL}/v1/quizzes`, {...formData})
+
+      console.log("formData", response)
+
+   }
+
+   const questionChangeHandler = (event, questionListIndex) => {
+
+      setQuestionList(prev => {
+         const newQuestionList = questionList
+         newQuestionList[questionListIndex].title = event.target.value
+         return [...newQuestionList]
+      })
+   }
+
+   return (
+      <>
+         <Header page=" " />
+         <div className="flex flex-col px-7 py-10 items">
+            <div className="flex flex-row">
+               <a
+                  href="#"
+                  className="flex text-sm items-center justify-reverse cursor-pointer text-xs font-montserratBold text-contenta-pinky-red"
+                  onClick={(e) => {
+                     e.preventDefault()
+                     router.back()
+                  }}
+               >
+                  <div className="">
+                     <BiChevronLeft size={25} />
+                  </div>
+                  <div className="my-2">Back to Training & Education</div>
+               </a>
+            </div>
+            <div className="flex flex-col flex-wrap py-5">
+               <div className="flex flex-row gap-5">
+                  <div className="w-full xl:w-9/12 lg:w-full content-shadow bg-white rounded-lg p-5">
+                     <div className="text-sm font-montserratBold text-contenta-greyish-brown">
+                        <AppInput
+                           size="50"
+                           type="text"
+                           // required
+                           placeholder="Quiz Title"
+                           inputClass="my-1"
+                           classNames="border-2 border-default rounded w-full py-2 px-4 text-gray-700 focus:outline-none focus:bg-white focus:border-sodexo-dark-purple-blue"
+                           // value={title}
+                           onChange={(e) => setQuizTitle(e.target.value)}
+                        />
+                     </div>
+                     <div className="flex flex-col border-b-2 border-gray-300 py-5">
+                        {questionList.map((item, i) =>
+                           <Fragment key={i}>
+                              <div className="flex items-center">
+                                 <span className="text-sm text-contenta-greyish-brown font-montserratBold">{i + 1}.</span>
+                                 <div className="w-full">
+                                    <AppInput
+                                       size="200"
+                                       type="text"
+                                       // required
+                                       onChange={(e) => questionChangeHandler(e, i)}
+                                       placeholder=""
+                                       inputClass="my-1 px-5"
+                                       classNames="border-2 border-default rounded w-full py-2 px-4 text-gray-700 focus:outline-none focus:bg-white focus:border-sodexo-dark-purple-blue"
+                                    />
+                                 </div>
+                                 <div className="p-1 text-contenta-blue cursor-pointer" onClick={() => removeQuestionHandler(i)}>
+                                    <AiOutlineClose size={20} />
+                                 </div>
+                              </div>
+                              {item.choices?.map((choice, index) =>
+                              (<div className="flex items-center py-1 pl-7" key={index}>
+                                 <span className="text-sm text-contenta-greyish-brown font-montserratBold" >
+                                    {getLetter(index + 1)}.
+                                 </span>
+                                 <div className="">
+                                    <AppInput
+                                       size="50"
+                                       type="text"
+                                       name="choices"
+                                       value={choice.title}
+                                       placeholder=""
+                                       inputClass="my-1 px-5"
+                                       classNames="border-2 border-default rounded w-full py-2 px-4 text-contenta-greyish-brown"
+                                       onChange={e => handleInputChange(e, i, index)}
+                                    />
+                                 </div>
+                                 {item.choices.length - 1 !== index &&
+                                    <div
+                                       className="text-contenta-blue cursor-pointer px-5"
+                                       onClick={() => handleRemoveChoices(i, index)}
+                                    >
+                                       <AiOutlineMinusSquare size={24} />
+                                    </div>
+                                 }
+                                 {item.choices.length - 1 === index &&
+                                    <div
+                                       className="text-contenta-blue cursor-pointer px-5"
+                                       onClick={() => handleAddChoices(i)}
+                                    >
+                                       <AiOutlinePlusSquare size={24} />
+                                    </div>
+                                 }
+                                 <div className={`${choice.isAnswer ? 'text-contenta-blue' : 'text-contenta-greyish-brown'} cursor-pointer px-5`} onClick={() => choiceCorrectAnswerHandler(i, index)}>
+                                    <BsCheck2Circle size={24} />
+                                 </div>
+                              </div>)
+                              )}
+                           </Fragment>
+                        )}
+                     </div>
+                     <div className="flex justify-center py-7">
+                        <AppButton
+                           label="Add Question"
+                           customTheme="px-8 mx-2 py-2 font-montserratBold bg-white text-contenta-blue rounded text-xs border-2 border-contenta-blue hover:bg-contenta-blue hover:text-white"
+                           labelClass="flex-row-reverse"
+                           onPress={addQuestionHandler}
+                        />
+                     </div>
+                  </div>
+                  <div className="w-full xl:w-3/12">
+                     <div className="flex flex-col">
+                        <div className="flex flex-col">
+                           <div className="">
+                              <label className="w-full flex flex-col  items-center bg-contenta-blue rounded-xl px-4 py-6 text-white content-shadow tracking-wide cursor-pointer">
+                                 <MdFileUpload size={24} />
+                                 <span className="mt-2 text-sm leading-normal font-montserratBold">
+                                    Upload Thumbnail
+                                 </span>
+                                 <span className="text-sm font-montserratRegular">
+                                    Drop files here or <b>Browse</b>
+                                 </span>
+                                 <input type='file' className="hidden" />
+                              </label>
+                           </div>
+                        </div>
+                        {/* <form onSubmit={submitHandler}> */}
+                        <div className="py-5">
+                           <div className="py-2">
+                              <button
+                                 name=""
+                                 className="w-full py-2 rounded-md bg-white border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                                 type="submit"
+                                 onClick={(e) => submitHandler(e)}
+                              >
+                                 Publish
+                              </button>
+                           </div>
+                           <div className="py-2">
+                              <button
+                                 name=""
+                                 className="w-full py-2 rounded-md bg-white border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                                 type="button"
+                                 onClick={(e) => {
+                                    e.preventDefault();
+                                    router.push(`#`)
+                                 }}
+                              >
+                                 Save as Draft
+                              </button>
+                           </div>
+                        </div>
+                        {/* </form> */}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </>
+   )
+}

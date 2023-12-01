@@ -1,0 +1,245 @@
+import Header from 'components/Header/Header';
+import react from 'react';
+import Link from "next/link"
+import AppInput from "components/Base/AppInput"
+import AppTable from "components/Base/AppTable"
+import { AiOutlineEye, AiOutlineSearch } from 'react-icons/ai';
+import { BiChevronLeft } from 'react-icons/bi';
+import { FaChevronRight } from 'react-icons/fa';
+import { useRouter } from 'next/router';
+import { useCustomRequest } from 'lib/custom-hook';
+import moment from 'moment';
+import Table from 'components/Table/Table';
+import { useState } from 'react/cjs/react.development';
+
+
+
+export default function ExamineesScore({ authUser }) {
+   const router = useRouter()
+   const { id } = router.query
+
+   console.log('authUser', authUser)
+
+   const isOwner = authUser?.roles.find(item => item.slug === 'owner')
+
+   const {
+      data: quizData,
+      isValidating: quizDataIsValidating,
+      mutate: updateQuizData,
+   } = useCustomRequest({
+      url: `${process.env.NEXT_PUBLIC_CRM_API_URL}/v1/quizzes/${id}?includes=responses,broker`,
+   })
+
+   console.log('quizData', quizData)
+
+   const {
+      data: brokerData,
+      isValidating: brokerDataIsValidating,
+      mutate: updatebrokerData,
+   } = useCustomRequest({
+      url: `${process.env.NEXT_PUBLIC_CRM_API_URL}/v1/quizzes/${id}/responses?includes=broker`,
+   })
+
+   console.log('brokerData', brokerData)
+
+   const columns = [
+      !isOwner ? {
+         name: "Company ID",
+         slot: (brokerDetails) => {
+            // return <p>{brokerDetails.broker.id}</p>
+         }
+
+      } : {
+         name: "Broker ID",
+         slot: (brokerDetails) => {
+            return <p>{brokerDetails.broker.id}</p>
+         }
+
+      },
+      !isOwner ? {
+         name: "Company Name",
+         slot: (brokerDetails) => {
+            // return <p>{brokerDetails.broker.fullName}</p>
+         }
+      } : {
+         name: "Name",
+         slot: (brokerDetails) => {
+            return <p>{brokerDetails.broker.fullName}</p>
+         }
+      },
+      !isOwner ? {
+         name: "Total Responses",
+         slot: (brokerDetails) => {
+            return <p>{brokerDetails.score} / {quizData?.meta.questionsCount}</p>
+         }
+      }: "",
+      isOwner ? {
+         name: "Results",
+         slot: (brokerDetails) => {
+            return <p>{brokerDetails.score} / {quizData?.meta.questionsCount}</p>
+         }
+      } : "",
+      isOwner ? {
+         name: "Date Taken",
+         slot: (brokerDetails) => {
+            return <p>{moment(brokerDetails.createdAt).format(
+               "DD-MM-YYYY"
+            )}</p>
+         }
+      } :  "",
+      {
+         width: 150,
+         slot: (brokerDetails) => {
+            return (
+               <>
+                  <div className="flex justify-end cursor-pointer">
+                     <Link href={`/training-education/quizzes-overview/${id}/examinees/${brokerDetails.broker.id}`}>
+                        <a className="text-contenta-blue">
+                           <AiOutlineEye size={20} />
+                        </a>
+                     </Link>
+                  </div>
+               </>
+            )
+         }
+      }
+   ]
+   const [pagination, setPagination] = useState({
+      currentPage: 1,
+      perPage: 10,
+      total: brokerData?.length || 1,
+   })
+
+   const onPaginate = (page) => {
+      setPagination({
+         ...page,
+         currentPage: page.currentPage,
+         total: page.total,
+      })
+   }
+
+   return (
+      <>
+         <Header page=" " />
+         <div className="flex flex-col px-7 py-10">
+            <div className="flex flex-row">
+               <a
+                  href="#"
+                  className="flex text-sm items-center justify-reverse cursor-pointer text-xs font-montserratBold text-contenta-pinky-red"
+                  onClick={(e) => {
+                     e.preventDefault()
+                     router.push(`/training-education/quizzes-overview`)
+                  }}
+               >
+                  <div className="">
+                     <BiChevronLeft size={25} />
+                  </div>
+                  <div className="my-2">Back to Quiz</div>
+               </a>
+            </div>
+            <div className="py-5 text-xl text-contenta-greyish-brown font-montserratBold">
+               Results - {quizData?.title}
+            </div>
+            <div className="flex flex-col">
+               <div className="flex content-shadow bg-white rounded-xl p-5 my-5">
+                  <div className="flex flex-col w-1/2 ">
+                     {!isOwner &&
+                        <div className="flex pb-5">
+                           <div className="w-1/2 text-sm font-montserratBold text-contenta-gray">
+                              Status
+                           </div>
+                           {quizData?.status.toLowerCase() === "draft" && (
+                              <div className="px-4 py-1 bg-opacity-50 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-puke-yellow text-contenta-muddy-brown">
+                                 Draft
+                              </div>
+                           )}
+                           {quizData?.status.toLowerCase() === "halt" && (
+                              <div className="px-4 py-1 bg-opacity-50 rounded-xl text-sm font-montserratBold justify-center flex text-contenta-darkish-red bg-contenta-pinky-red">
+                                 Discontinued
+                              </div>
+                           )}
+                           {quizData?.status.toLowerCase() === "published" && (
+                              <div className="px-4 py-1 bg-opacity-50 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-seaweed-green text-contenta-jungle-green">
+                                 Published
+                              </div>
+                           )}
+                           {/* <div className="px-4 py-1 bg-opacity-50 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-seaweed-green text-contenta-jungle-green">
+                           Published
+                        </div> */}
+                        </div>
+                     }
+                     <div className="flex pb-5">
+                        <div className="w-full text-sm font-montserratBold text-contenta-gray">
+                           Total Items
+                        </div>
+                        <div className="w-full font-montserratBold text-contenta-greyish-brown">
+                           {quizData?.meta.questionsCount}
+                        </div>
+                     </div>
+                     <div className="flex pb-5">
+                        <div className="w-full text-sm font-montserratBold text-contenta-gray">
+                           Responses
+                        </div>
+                        <div className="w-full font-montserratBold text-contenta-greyish-brown">
+                           {quizData?.responses.length} / {quizData?.meta.questionsCount}
+                        </div>
+                     </div>
+                     {isOwner &&
+                        <div className="flex">
+                           <div className="w-full">
+                              <Link href={`/training-education/quiz-overview/${id}`}>
+                                 <a className="flex items-center text-sm font-montserratBold text-contenta-pinky-red gap-1">
+                                    View Quiz <FaChevronRight size={10} />
+                                 </a>
+                              </Link>
+                           </div>
+                        </div>
+                     }
+                  </div>
+                  <div className="flex flex-col w-1/2">
+                     <div className="flex pb-5">
+                        <div className="w-full text-sm font-montserratBold text-contenta-gray">
+                           Date Created
+                        </div>
+                        <div className="w-full font-montserratBold text-contenta-greyish-brown">
+                           {moment(quizData?.createdAt).format(
+                              "DD-MM-YYYY"
+                           )}
+                        </div>
+                     </div>
+                     <div className="flex pb-5">
+                        <div className="w-full text-sm font-montserratBold text-contenta-gray">
+                           Last Update
+                        </div>
+                        <div className="w-full font-montserratBold text-contenta-greyish-brown">
+                           {moment(quizData?.updatedAt).format(
+                              "DD-MM-YYYY"
+                           )}
+                        </div>
+                     </div>
+                     {!isOwner &&
+                        <div className="flex">
+                           <div className="w-full">
+                              <Link href={`/training-education/quiz-overview/${id}`}>
+                                 <a className="flex items-center text-sm font-montserratBold text-contenta-pinky-red gap-1">
+                                    View Quiz <FaChevronRight size={10} />
+                                 </a>
+                              </Link>
+                           </div>
+                        </div>
+                     }
+                  </div>
+               </div>
+               <Table
+                  columns={columns}
+                  data={brokerData}
+                  pagination={pagination}
+                  onPaginate={onPaginate}
+                  hideTotal={true}
+                  perPageToggle={true}
+               />
+            </div>
+         </div>
+      </>
+   )
+}

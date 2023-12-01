@@ -1,0 +1,217 @@
+import React, { useEffect, useState } from "react";
+import { AiFillSetting } from "react-icons/ai";
+import Header from "../../components/Header/Header";
+import { BsFillCircleFill } from "react-icons/bs";
+import AppButton from "../../components/Base/Appbutton";
+import axios from "axios";
+
+export default function ShowMore() {
+
+	const onSubmitHandler = async (e) =>{
+		e.preventDefault()
+		try {
+			
+			const s = await axios.post('https://s3.staging.halcyondigitalhost.com/api/node/test_content_type', {
+				"data": {
+				"type": "node--test_content_type",
+				"attributes": {
+						"title": "Tested  Post",
+						"body": {
+						"value": "This is a third test"
+						}
+					}
+				}
+			 }, {
+				 headers: {
+					 'Content-Type': 'application/vnd.api+json',
+					 'Authorization': `Basic ${{Username: 'vince', Password: 1}}`
+				 },
+			 })
+	
+			 console.log('s', s);
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	return (
+		<>
+			<Header page="Welcome " />
+			<div className="container mx-auto px-6 py-8">
+				<div className="flex flex-row justify-between">
+					<div className="text-sm text-contenta-greyish-brown font-montserratBold">
+						Alerts
+					</div>
+					<div 
+						className="text-contenta-gray"
+					>
+						<AiFillSetting />
+					</div>
+				</div>
+				<div className="flex flex-col">
+					<form onSubmit={onSubmitHandler}>
+						{/* <input type="text" className="border"/> */}
+						<button>submit</button>
+					</form>
+				</div>
+				{/* <div className="w-full flex flex-col gap-4 items-center">
+					<div className="flex flex-row bg-white content-shadow rounded-xl p-5">
+						<div className="flex flex-row items-center ">
+							<div className="text-contenta-pinky-red p-5">
+								<BsFillCircleFill/>
+							</div>
+							<div className="flex flex-col w-64 text-contenta-greyish-brown font-MontserratRegular">
+								<div className="flex justify-center text-sm">
+									10/12/12
+								</div>
+								<div className="flex justify-center text-xs">
+									25 mins ago
+								</div>
+							</div>
+							<div className="px-5 text-sm text-contenta-greyish-brown font-MontserratRegular">
+								Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.
+							</div>
+						</div>
+						<div className="flex flex-row items-center justify-end gap-2">
+							<AppButton
+								label="Go"
+								customTheme="py-2 btn-width rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+								labelClass="flex justify-center"
+								icon="AiOutlineShoppingCart"
+							/>
+							<AppButton
+								label="Mark as Read"
+								customTheme="py-2 btn-width rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+								labelClass="flex-row-reverse"
+							/>
+						</div>
+					</div>
+					<div className="flex flex-row bg-white content-shadow rounded-xl p-5">
+						<div className="flex flex-row items-center ">
+							<div className="text-contenta-pinky-red p-5">
+								<BsFillCircleFill/>
+							</div>
+							<div className="flex flex-col w-64 text-contenta-greyish-brown font-MontserratRegular">
+								<div className="flex justify-center text-sm">
+									10/12/12
+								</div>
+								<div className="flex justify-center text-xs">
+									25 mins ago
+								</div>
+							</div>
+							<div className="px-5 text-sm text-contenta-greyish-brown font-MontserratRegular">
+								Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.
+							</div>
+						</div>
+						<div className="flex flex-row items-center justify-end gap-2">
+							<AppButton
+								label="Go"
+								customTheme="py-2 btn-width rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+								labelClass="flex justify-center"
+								icon="AiOutlineShoppingCart"
+							/>
+							<AppButton
+								label="Mark as Read"
+								customTheme="py-2 btn-width rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+								labelClass="flex-row-reverse"
+							/>
+						</div>
+					</div>
+					<div className="flex flex-row bg-white content-shadow rounded-xl p-5">
+						<div className="flex flex-row items-center ">
+							<div className="text-contenta-pinky-red p-5">
+								<BsFillCircleFill/>
+							</div>
+							<div className="flex flex-col w-64 text-contenta-greyish-brown font-MontserratRegular">
+								<div className="flex justify-center text-sm">
+									10/12/12
+								</div>
+								<div className="flex justify-center text-xs">
+									25 mins ago
+								</div>
+							</div>
+							<div className="px-5 text-sm text-contenta-greyish-brown font-MontserratRegular">
+								Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.
+							</div>
+						</div>
+						<div className="flex flex-row items-center justify-end gap-2">
+							<AppButton
+								label="Go"
+								customTheme="py-2 btn-width rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+								labelClass="flex justify-center"
+								icon="AiOutlineShoppingCart"
+							/>
+							<AppButton
+								label="Mark as Read"
+								customTheme="py-2 btn-width rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+								labelClass=""
+							/>
+						</div>
+					</div>
+					<div className="flex flex-row bg-white content-shadow rounded-xl p-5">
+						<div className="flex flex-row items-center ">
+							<div className="text-contenta-pinky-red p-5">
+								<BsFillCircleFill/>
+							</div>
+							<div className="flex flex-col w-64 text-contenta-greyish-brown font-MontserratRegular">
+								<div className="flex justify-center text-sm">
+									10/12/12
+								</div>
+								<div className="flex justify-center text-xs">
+									25 mins ago
+								</div>
+							</div>
+							<div className="px-5 text-sm text-contenta-greyish-brown font-MontserratRegular">
+								Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quaerat rerum laudantium veniam nobis, natus excepturi soluta aliquid dolore praesentium facilis nostrum consequatur? Sit repellat fugiat sint odit ut consequuntur.
+							</div>
+						</div>
+						<div className="flex flex-row items-center justify-end gap-2">
+							<AppButton
+								label="Go"
+								customTheme="py-2 btn-width rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+								labelClass="flex justify-center"
+								icon="AiOutlineShoppingCart"
+							/>
+							<AppButton
+								label="Mark as Read"
+								customTheme="py-2 btn-width rounded-lg bg-transparent border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+								labelClass=""
+							/>
+						</div>
+					</div>
+				</div> */}
+			</div>
+		</>
+	);
+}
+
+
+.get(`https://s3.staging.halcyondigitalhost.com/api/node/test_content_type`, {"data": {
+    "type": "node--test_content_type",
+    "attributes": {
+      "title": "sample title",
+      "body": {
+        "value": "sample body"
+        }
+      }
+    }},{
+    headers:{
+    'Accept' : 'json',
+    'Content-Type' : 'application/vnd.api+json',
+    'Authorization' : 'Basic c3lzdGVtOjdWdT1ZYl1zOzIqKg==',
+    "
+
+<img className="
+  // object-cover 
+  // fhd:h-72 
+  // fhd:w-128 
+  // xxl:h-60 
+  // xxl:w-80 
+  // xl:h-52 
+  // xl:w-88 
+  // lg:h-60 
+  // lg:w-72 
+  rounded-tl-xl 
+  rounded-tr-xl
+  "
+  src={item.file} />

@@ -1,0 +1,35 @@
+import Image from "next/image";
+
+export default function Block({ block }) {
+  const { image, title, subtitle } = block.main;
+
+  return (
+    <>
+      <section className="">
+        <div className="w-full relative overflow-hidden">
+          <div className="w-full">
+            <Image
+              src={image}
+              className="w-full h-full"
+              alt="Flowers"
+              width={1920}
+              height={645}
+            />
+          </div>
+          <div className="flex justify-center w-full">
+            <div className="flex container-primary absolute bottom-0 py-2 sm:py-5 md:py-10 xl:py-20">
+              <div className="flex flex-col sm:gap-y-1 md:gap-y-2 lg:gap-y-7 xl:gap-y-10 w-full px-5 xl:px-0">
+                <h1 className=" font-[700] w-[100%] text-end text-xs sm:text-sm md:text-[25px] lg:text-[40px] xl:text-[60px] text-white">
+                  title
+                </h1>
+                <h2 className=" font-[700] w-[100%] text-end text-xs sm:text-sm md:text-[25px] lg:text-[40px] xl:text-[60px] text-white ">
+                  subtitle
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

@@ -1,0 +1,53 @@
+import Input from "@/components/Input/input";
+import { useRouter } from "next/router";
+import { useState } from "react";
+
+
+export default function QuotesScreenSix(props) {
+   const router = useRouter()
+   
+   const [parameticInsurance, setParameticInsurance] = useState(
+      {
+         isCovered: true,
+      }
+   )
+
+   console.log('parameticInsurance', parameticInsurance)
+   return (
+      <div className="flex flex-wrap -mx-6">
+         <div className="w-full px-6">
+            <div className="flex flex-col desktopXl items-start w-full ">
+               {/* Left Container*/}
+               <div className="flex flex-col w-full ">
+                  <div className="flex w-full border-[#162f3e] border-b-2">
+                     <span className="text-[#de4523] text-[20px] montserrat-bold mb-2 ">Parametric Insurance</span>
+                  </div>
+                  <div className="flex flex-row items-center mt-[20px]">
+                     <div className="border-l-4 border-[#de4523] ">
+                        <span className="flex justify-center text-[20px] montserrat-bold ml-[10px]">Parametric Insurance</span>
+                     </div>
+                  </div>
+                  <div className="flex w-full items-center ">
+                     <Input
+                        type="checkbox"
+                        label={`Parametric Insurance Coverage (Included)`}
+                        wrapperClass="mt-4"
+                        inputClass="flex items-center"
+                        // value={parameticInsurance?.isCovered}
+                        checked={parameticInsurance?.isCovered}
+                        onChange={(event) => {
+                           console.log('eventsss', event)
+                           setParameticInsurance({
+                              ...parameticInsurance,
+                              isCovered: event.target.checked
+                           })
+                        }}
+                     />
+                  </div>
+                  <div className="border-2 border-[#c9d9de]  my-10" />
+               </div>
+            </div>
+         </div>
+      </div>
+   )
+}

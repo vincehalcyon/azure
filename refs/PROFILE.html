@@ -1,0 +1,55 @@
+/* PROFILE CUSTOM CSS */
+.wrapper{
+  height: 200px;
+  width: 210px;
+  position: relative;
+  border: 5px solid #2a295c;
+  border-radius: 50%;
+  background: url('/img/lufy.jpg');
+  background-size:100% 100%;
+  overflow: hidden;
+}
+.my_file{
+  position: absolute;
+  bottom: 0;
+  outline: none;
+  color: transparent;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 80px 100px;
+  cursor: pointer;
+  transition: 0.5s;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+}
+
+.my_file::-webkit-file-upload-button{
+  visibility: hidden;
+}
+
+.my_file::before{
+  content:'';
+  color: #fff;
+  font-size: 50px;
+  display: inline-block;
+  -webkit-user-select: none; 
+}
+.my_file::after{
+  content: 'Upload Image';
+  font-family: 'Arial';
+  font-weight: bold;
+  color: #fff;
+  display: block;
+  top: 90px;
+  left: 55px;
+  font-size: 14px;
+  position: absolute;
+}
+
+.my_file:hover{
+  opacity: 1;
+}
+
+<div className="wrapper">
+    <input type="file" className="my_file" />
+ </div>

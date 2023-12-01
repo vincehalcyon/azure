@@ -1,0 +1,72 @@
+import Header from "components/Header/Header";
+import React from "react";
+import { FaUserTimes } from "react-icons/fa";
+import { HiUserAdd, HiUserGroup, HiUserRemove } from "react-icons/hi";
+export default function CustomerAccess() {
+  	return (
+    	<>
+		 	<Header page="Customer Access" label="this is for Customer Access"/>
+			<div className="flex flex-col px-10 pt-10 pb-20 items">
+				<div className="pb-5 text-sm text-contenta-greyish-brown font-montserratBold">
+               Latest Article
+            </div>
+				<div className="flex gap-5 w-full">
+					<div className="w-1/2">
+						<div className="content-shadow p-5 rounded-lg">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui corporis distinctio veritatis at soluta recusandae expedita maxime natus hic voluptates, eos illo saepe non cupiditate, earum repudiandae tempora quas id?
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum temporibus distinctio est culpa in enim asperiores quae aspernatur tempore. Eaque eveniet quo perspiciatis aliquam consequatur? Delectus, officia. Vero, a ipsa.
+							Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cupiditate, earum, tempore velit totam odio ea explicabo, maiores dignissimos ratione facere repudiandae recusandae laudantium nesciunt unde esse! Itaque ipsam neque dignissimos!
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio sunt magnam aut! Ipsum obcaecati ab placeat, fugit, fuga dolorum, provident molestiae nulla doloremque ducimus sint numquam atque. Illo, explicabo eveniet.
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, earum est. Aspernatur illum ipsum cumque voluptatibus illo perferendis rerum nam possimus tenetur eum, aliquam adipisci! Quaerat vitae eligendi veritatis obcaecati?
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore nemo eaque distinctio non tempora fugit enim saepe, quo harum sunt repudiandae, hic corporis fugiat asperiores dignissimos nulla numquam natus voluptates.
+						</div>
+					</div>
+					<div className=" w-1/2">
+						<div className="flex items-center justify-between content-shadow p-5 mb-5 rounded-lg">
+							<div className="flex flex-row text-contenta-greyish-brown">
+								<div className="text-3xl font-montserratBold">
+									10,258
+								</div>
+								<div className="flex flex-col px-5">
+									<span className="font-montserratBold">Total Number of Customer</span>
+									<small className="font-montserratRegular">as of today</small>
+								</div>
+							</div>
+							<div>
+								<HiUserGroup className="text-contenta-light-blue" size={40} />
+							</div>
+						</div>
+						{/* <div className="flex items-center justify-between content-shadow p-5 mb-5 rounded-lg">
+							<div className="flex flex-row text-contenta-greyish-brown">
+								<div className="text-3xl font-montserratBold">
+									713
+								</div>
+								<div className="flex flex-col px-5">
+									<span className="font-montserratBold">Number of Active Customer</span>
+									<small className="font-montserratRegular">as of today</small>
+								</div>
+							</div>
+							<div>
+								<HiUserAdd className="text-contenta-light-blue" size={40} />
+							</div>
+						</div>
+						<div className="flex items-center justify-between content-shadow p-5 rounded-lg">
+							<div className="flex flex-row text-contenta-greyish-brown">
+								<div className="text-3xl font-montserratBold">
+									10,258
+								</div>
+								<div className="flex flex-col px-5">
+									<span className="font-montserratBold">Number of Inactive Customer</span>
+									<small className="font-montserratRegular">as of today</small>
+								</div>
+							</div>
+							<div>
+								<HiUserRemove className="text-contenta-light-blue" size={40} />
+							</div>
+						</div> */}
+					</div>
+				</div>
+			</div>
+    	</>
+  	)
+}

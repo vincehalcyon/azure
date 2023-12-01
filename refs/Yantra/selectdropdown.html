@@ -1,0 +1,187 @@
+import React, { useState, useEffect } from "react";
+import persistentStore from "@/lib/store/persistentStore";
+import globalData from "@/lib/preBuildScripts/static/globalData.json";
+import Image from "next/image";
+import FormField from "../forms/FormField";
+
+const CookieBar = () => {
+  const { tenantDetails } = globalData;
+  const [showCookieBar, setShowCookieBar] = useState(false);
+  const [hasAccepted, setHasAccepted] = useState(false);
+  const locale = persistentStore((state) => state.locale);
+  const [age18, setAge18] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
+  function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
+
+  useEffect(() => {
+    function getCookie(cname) {
+      var name = cname + "=";
+      var ca = document.cookie.split(";");
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == " ") {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    const hasAcceptedCookies = getCookie("cookiesAccepted");
+
+    if (!hasAcceptedCookies) {
+      setShowCookieBar(true);
+      document.body.classList.add("overflow-hidden");
+    } else {
+      setHasAccepted(true);
+    }
+  }, []);
+
+  const acceptCookies = () => {
+    setCookie("cookiesAccepted", "true", 365); // Set the cookie to expire in 1 year (365 days)
+    setShowCookieBar(false);
+    document.body.classList.remove("overflow-hidden");
+  };
+
+  const country = [
+    {
+      value: "",
+      label: "Choose a Country",
+    },
+    {
+      label: "Philippines",
+      value: "PH",
+    },
+    {
+      label: "United States",
+      value: "Us",
+    },
+    {
+      label: "Canada",
+      value: "CA",
+    },
+  ];
+
+  const [selected, setSelected] = useState(country[0].value);
+
+  const handleChange = (event) => {
+    setSelected(event?.value);
+  };
+
+  const isButtonDisabled = () => {
+    return !isChecked || age18 || !selected;
+  };
+
+  return !hasAccepted ? (
+    // cookie-bar?
+    <div
+      className={`w-full fixed top-0 max-h-full h-full z-[999] py-5 px-2 sm:py-10 bg-black/50 flex items-center overflow-y-auto overflow-x-hidden
+      ${showCookieBar ? "block" : "hidden"}
+      `}
+    >
+      <div className="max-w-lg rounded-md bg-white  px-[16px] py-[14px] 1sm:py-[41px] m-auto w-full flex flex-col  gap-[15px] 1sm:gap-[23px] transition-all duration-300 overflow-hidden">
+        <div className="w-full justify-center flex">
+          <Image
+            alt="logo"
+            src={tenantDetails?.data?.main.logo}
+            width={128}
+            height={42}
+          />
+        </div>
+        <hr />
+        <div className="flex flex-col gap-y-5 ">
+          <span className="text-[#231F20] text-[18px] pt-2 font-[700] text-center">
+            Select Your Location:
+          </span>
+          <p className="text-[16px] mb-[0px] text-center">
+            Please select your delivery country to shop the products and offers
+            available to you.
+          </p>
+          <div>
+            <label className="text-[14px] font-[500] leading-[20px]">
+              Add Country <span className="ml-1 text-red-600">*</span>
+            </label>
+
+            <FormField
+              type="select"
+              className="react-select cursor-pointer border-[1px] border-[#b3b3b3] rounded-md py-1"
+              placeholder="Account Type"
+              options={country}
+              value={country?.find((e) => e.value == selected) || null}
+              onChange={handleChange}
+            >
+              <label className="text-[#555555] text-[14px] leading-[20px] font-[500]">
+                Account Type
+              </label>
+            </FormField>
+          </div>
+          <div
+            className={`rounded-md p-5 w-full justify-center text-center ${
+              age18 ? "bg-[#FFD2CE]" : "bg-[#CEE2FF]"
+            }`}
+          >
+            <span className="text-[#231F20] text-[18px] font-[700] ">
+              {age18
+                ? "Sorry, you're not old enough"
+                : " Yes - I am 18+ years old:"}
+            </span>
+            <p>
+              You must be 18+ years old and over to purchase from our website.
+              Please see{" "}
+              <a href="#" className="underline">
+                Terms & Conditions
+              </a>
+              .
+            </p>
+            <button className="underline" onClick={() => setAge18(!age18)}>
+              {age18 ? "Yes," : "No,"} I am 18+
+            </button>
+          </div>
+          <div className="flex w-full justify-center items-center gap-x-2">
+            <input
+              type="checkbox"
+              checked={isChecked}
+              onChange={handleCheckboxChange}
+            />
+            <label
+              className="cursor-pointer text-[#374151] text-[14px] leading-[20px] font-[500]"
+              htmlFor="shippingIsbilling"
+            >
+              I accept cookie policy and privacy policy
+            </label>
+          </div>
+          <div className="flex mx-auto">
+            <button
+              onClick={acceptCookies}
+              className={`inline-flex justify-center text-center  bg-[#315589] py-3.5 px-5 rounded-[26px] text-[#FFFFFF] text-[16px] leading-[24px] font-[600] ${
+                isButtonDisabled() ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={isButtonDisabled()}
+            >
+              Agree and Enter
+            </button>
+          </div>
+          <p className="text-center text-[14px]">
+            By entering this site, you agree to our Terms of use and acknowledge
+            that you have read and understood our Cookie Policy and Privacy
+            Policy
+          </p>
+        </div>
+      </div>
+    </div>
+  ) : null;
+};
+
+export default CookieBar;

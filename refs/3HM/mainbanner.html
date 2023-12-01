@@ -1,0 +1,84 @@
+import Image from "next/image";
+import Link from "next/link";
+import CarouselFade from "@/components/partials/CarouselFade";
+// import { useState } from "react";
+export default function Block({ block }) {
+  // const [imageIni, setImageIni] = useState(true);
+  // setTimeout(() => {
+  //   setImageIni(false);
+  // }, 5000);
+
+  const {
+    title,
+    description,
+    image,
+    mobile_image,
+    button_link,
+    button_label,
+    images,
+    slides,
+  } = block?.main;
+
+  // const slides = block.main.slides;
+
+  console.log("slides", slides);
+
+  return (
+    <div className="relative w-auto bg-no-repeat bg-cover bg-center 2xl:bg-cover h-[235px] sm:h-[240px] md:h-[270px] lg:h-[320px] xl:h-[422px] mb-[340px] sm:mb-0">
+      {/* <div className={`bg-[url('/image0.webp')] w-full h-[100px] bg-cover sm:h-[240px] md:h-[270px] lg:h-[320px] xl:h-[422px] h-[235px] sm:h-[240px] md:h-[270px] lg:h-[320px] xl:h-[422px] object-cover object-left md:object-center`} /> */}
+      {/* <picture>
+        <source media="(max-width: 500px)" srcSet="/image1.webp" />
+        <source media="(min-width: 501px)" srcSet="/image0.webp" />
+        <img
+          className="absolute w-full h-full object-cover object-left md:object-center"
+          src="/image1.webp"
+          alt="3HM Custom Print"
+          fetchpriority="high"
+        />
+      </picture> */}
+
+      {/* {slides.map((item, i) => (
+        <div key={i}>
+          <span>{item.title}</span>
+        </div>
+      ))} */}
+      <CarouselFade images={[{images: images, contents: <div className="">jlasdj</div>}]} />
+
+      {/* <Image
+        alt="banner"
+        src={image}
+        width={235}
+        height={235}
+        fetchpriority="high"
+        quality={10}
+        loading="eager"
+        className="w-auto h-[235px] sm:h-[240px] md:h-[270px] lg:h-[320px] xl:h-[422px] h-[235px] sm:h-[240px] md:h-[270px] lg:h-[320px] xl:h-[422px] object-cover object-left md:object-center"
+      /> */}
+      <div className="absolute w-full h-full flex justify-end right-0 bottom-[-100%] sm:bottom-0">
+        <div className="absolute w-full h-full flex justify-end right-0">
+          <div className="relative w-[763px] bg-[#D81B60] sm:bg-transparent sm:w-[441px] md:w-[521px] lg:w-[631px] xl:w-[791px] h-[340px] sm:h-[240px] md:h-[270px] lg:h-[320px] xl:h-[422px]">
+            <div className="z-20 relative h-full sm:mr-[20px] ml-0 sm:ml-[110px] md:ml-[130px] lg:ml-[150px] xl:ml-[200px]">
+              <div className="h-full flex flex-col justify-center items-center md:items-start text-center sm:text-left relative gap-y-8 sm:gap-y-2 md:gap-y-4 px-8 sm:px-0 font-poppins text-[#FFFFFF]">
+                <p className="text-[32px] leading-[41px] sm:text-[23px] lg:text-[45px] lg:leading-[50px] font-[700]">
+                  {title}
+                </p>
+                <div
+                  className="text-[12px] leading-[20px] lg:text-[16px] lg:leading-[23px]"
+                  dangerouslySetInnerHTML={{ __html: description }}
+                ></div>
+                <div>
+                  <Link
+                    href={button_link}
+                    className="bg-[#D81B60] border-2 border-white sm:border-none rounded-md py-2 px-4 text-[14px] md:text-[16px] leading-[23px] font-[700]"
+                  >
+                    {button_label}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

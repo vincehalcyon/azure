@@ -1,0 +1,20 @@
+<Col lg={6}>
+  <FormGroup>
+    <Label><small>DTI Permit Number</small></Label>{<b style={{color: 'red'}}> *</b>}
+    <Input type="text" name="dti_permit_number" bsSize="sm" {...register('dti_permit_number')} required/>
+  </FormGroup>
+</Col>
+<Col lg={12}>
+  <FormGroup>
+    <Label><small>Voucher Code</small></Label>{<b style={{color: 'red'}}> *</b>}
+    <Input type="text" name="voucher_code" bsSize="sm" {...register('voucher_code')} required/>
+  </FormGroup>
+</Col>
+<Col lg={12}>
+  <FormGroup check>
+    <Label check>
+      <Input type="checkbox"/>
+      <small>Combinable Promo Code</small>
+    </Label>
+  </FormGroup>
+</Col>

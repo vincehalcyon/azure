@@ -1,0 +1,403 @@
+import Header from 'components/Header/Header';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import AppInput from "components/Base/AppInput";
+import { BiChevronLeft } from 'react-icons/bi';
+import { MdFileUpload, MdOutlinePlayCircle } from "react-icons/md";
+import { AiOutlineAudio, AiOutlineClose, AiOutlineFileText, AiOutlineMinusSquare, AiOutlinePlusSquare } from 'react-icons/ai';
+import AppButton from 'components/Base/AppButton';
+import { BsCheck2Circle } from 'react-icons/bs';
+
+export default function AddCompliance() {
+
+   const router = useRouter();
+
+   const editorRef = useRef()
+   const { CKEditor, ClassicEditor } = editorRef.current || {}
+
+   const [loaded, setLoaded] = useState(false)
+
+   useEffect(() => {
+      editorRef.current = {
+         CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
+         ClassicEditor: require("@ckeditor/ckeditor5-build-classic"),
+      }
+
+      setLoaded(true)
+   }, [])
+
+   const [questionList, setQuestionList] = useState([]);
+
+   const createQuizHandler = () => {
+      setQuestionList([
+         {
+            question: '',
+            choices: [{ choice: '', correct: true }]
+         }
+      ])
+   }
+
+      const handleInputChange = (event, parentIndex, choiceIndex) => {
+      const choices = questionList[parentIndex].choices.map((item, index) => {
+         if (index === choiceIndex) { 
+            item.choice = event.target.value 
+            return item
+         }
+
+         return item
+      })
+
+      setQuestionList((prev) => {
+         const newList = [...prev]
+         newList[parentIndex].choices = choices
+         return [...newList]
+      });
+   }
+
+   const handleRemoveChoices = (questionIndex, choicesIndex) => {
+      const newChoices = questionList[questionIndex].choices.filter((item, i) => i !== choicesIndex)
+      // newChoices.filter()
+      setQuestionList((prev) => {
+         const newList = [...prev]
+         newList[questionIndex].choices = newChoices
+         return [...newList]
+      });
+      // const list = [...questionList];
+      // list.splice(index, 1);
+      // setQuestionList(list);
+   };
+
+   const handleAddChoices = (index) => {
+      const newChoices = questionList[index].choices
+      newChoices.push({ choice: '', correct: false })
+      setQuestionList((prev) => {
+         const newList = [...prev]
+         newList[index].choices = newChoices
+         return [...newList]
+      });
+   };
+
+   const addQuestionHandler = () => {
+      setQuestionList(prev => {
+         return [...prev, { question: '', choices: [{ choice: '', correct: true }] }]
+      })
+   }
+
+   const removeQuestionHandler = (index) => {
+      const newList = questionList.filter((item, i) => i !== index)
+
+      setQuestionList(newList)
+   }
+
+   const choiceCorrectAnswerHandler = (parentIndex, choiceIndex) => {
+      const choices = questionList[parentIndex].choices.map((item, index) => {
+         if (index === choiceIndex) { 
+            item.correct = true 
+            return item
+         }
+
+         item.correct = false
+         return item
+      })
+
+      setQuestionList((prev) => {
+         const newList = [...prev]
+         newList[parentIndex].choices = choices
+         return [...newList]
+      });
+   }
+
+
+   console.log('questionList', questionList)
+
+   function getLetter(num) {
+      var letter = String.fromCharCode(num + 64);
+      return letter.toLowerCase();
+   }
+
+   return loaded && (
+      <>
+         <Header page=" " />
+         <div className="flex flex-col px-7 py-10 items">
+            <div className="flex flex-row">
+               <a href="#"
+                  className="flex text-sm items-center justify-reverse cursor-pointer text-xs font-montserratBold text-contenta-pinky-red"
+                  onClick={(e) => {
+                     e.preventDefault();
+                     router.back()
+                  }}
+               >
+                  <div className="">
+                     <BiChevronLeft size={25} />
+                  </div>
+                  <div className="my-2">
+                     Back to Training & Education
+                  </div>
+               </a>
+            </div>
+            <div className="flex flex-col flex-wrap py-5">
+               <div className="flex flex-row gap-5">
+                  <div className="w-full xl:w-9/12 lg:w-full">
+                     <div className="content-shadow bg-white rounded-xl p-5">
+                        <div className="w-full">
+                           <AppInput
+                              name="title"
+                              type="text"
+                              size="150"
+                              placeholder="Title"
+                              inputClass="my-1 w-full"
+                              classNames="border-2 border-default rounded w-1/2 py-2 px-4 text-gray-700 focus:outline-none "
+                           />
+                        </div>
+                        <div className="ck-editor-wrapper">
+                           <CKEditor
+                              editor={ClassicEditor}
+                              /* config={editorConfiguration} */
+                              data=""
+                              onInit={editor => {
+                                 // You can store the "editor" and use when it is needed.
+                                 console.log("Editor is ready to use!", editor);
+                              }}
+                              onChange={(event, editor) => {
+                                 const data = editor.getData();
+                                 console.log({ event, editor, data });
+                              }}
+                              onBlur={(event, editor) => {
+                                 console.log("Blur.", editor);
+                              }}
+                              onFocus={(event, editor) => {
+                                 console.log("Focus.", editor);
+                              }}
+                           />
+                        </div>
+                     </div>
+                     {!questionList.length &&
+                        <div className="py-5">
+                           <AppButton 
+                              label="Create Quiz"
+                              type="button"
+                              customTheme="w-full py-2 rounded-md bg-white border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                              onPress={createQuizHandler}
+                           />
+                        </div>
+                     }
+                     {questionList.length > 0 &&
+                        <div className="flex flex-col bg-white content-shadow rounded-xl p-5 mt-5">
+                           <div className="text-sm font-montserratBold text-contenta-greyish-brown">
+                              Quiz
+                           </div>
+                           <div className="flex flex-col border-b-2 border-gray-300 py-7">
+                              {questionList.map((item, i) =>
+                                 <Fragment>
+                                    <div className="flex items-center">
+                                       <span className="text-sm text-contenta-greyish-brown font-montserratBold">{i + 1}.</span>
+                                       <div className="w-full">
+                                          <AppInput
+                                             size="200"
+                                             type="text"
+                                             // required
+                                             placeholder="test"
+                                             inputClass="my-1 px-5"
+                                             classNames="border-2 border-default rounded w-full py-2 px-4 text-gray-700 focus:outline-none focus:bg-white focus:border-sodexo-dark-purple-blue"
+                                          />
+                                       </div>
+                                       <div className="p-1 text-contenta-blue cursor-pointer" onClick={() => removeQuestionHandler(i)}>
+                                          <AiOutlineClose size={20} />
+                                       </div>
+                                    </div>
+                                    {item.choices?.map((choice, index) =>
+                                    (<div className="flex items-center py-1 pl-7">
+                                       <span className="text-sm text-contenta-greyish-brown font-montserratBold" >
+                                          {getLetter(index + 1)}.
+                                       </span>
+                                       <div className="">
+                                          <AppInput
+                                             size="50"
+                                             type="text"
+                                             name="choices"
+                                             value={choice.choice}
+                                             placeholder=""
+                                             inputClass="my-1 px-5"
+                                             classNames="border-2 border-default rounded w-full py-2 px-4 text-contenta-greyish-brown"
+                                             onChange={e => handleInputChange(e, i, index)}
+                                          />
+                                       </div>
+                                       {item.choices.length - 1 !== index &&
+                                          <div
+                                             className="text-contenta-blue cursor-pointer px-5"
+                                             onClick={() => handleRemoveChoices(i, index)}
+                                          >
+                                             <AiOutlineMinusSquare size={24} />
+                                          </div>
+                                       }
+                                       {item.choices.length - 1 === index &&
+                                          <div
+                                             className="text-contenta-blue cursor-pointer px-5"
+                                             onClick={() => handleAddChoices(i)}
+                                          >
+                                             <AiOutlinePlusSquare size={24} />
+                                          </div>
+                                       }
+                                       <div className={`${choice.correct ? 'text-contenta-blue' : 'text-contenta-greyish-brown'} cursor-pointer px-5`} onClick={() => choiceCorrectAnswerHandler(i, index)}>
+                                          <BsCheck2Circle size={24} />
+                                       </div>
+                                    </div>)
+                                    )}
+                                 </Fragment>
+                              )}
+                           </div>
+                           <div className="flex justify-center py-7">
+                              <AppButton
+                                 label="Add Question"
+                                 customTheme="px-8 mx-2 py-2 font-montserratBold bg-white text-contenta-blue rounded text-xs border-2 border-contenta-blue hover:bg-contenta-blue hover:text-white"
+                                 labelClass="flex-row-reverse"
+                                 onPress={addQuestionHandler}
+                              />
+                           </div>
+                        </div>
+                     }
+                  </div>
+                  <div className="w-full xl:w-3/12">
+                     <div className="flex flex-col">
+                        <div className="text-xxs text-contenta-greyish-brown">
+                           The file upload is limited to either a video or audio embed. You are able to choose still whether or not there would be a thumbnail and/or Training Notes for this file. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                        </div>
+                        <div className="flex flex-col py-5">
+                           <div className="">
+                              <label className="w-full flex flex-col border-b-1 items-center bg-contenta-blue rounded-tl-xl rounded-tr-xl px-4 py-6 text-white content-shadow tracking-wide cursor-pointer">
+                                 <MdFileUpload size={24} />
+                                 <span className="mt-2 text-sm leading-normal font-montserratBold">
+                                    Upload Thumbnail
+                                 </span>
+                                 <span className="text-sm font-montserratRegular">
+                                    Drop files here or <b>Browse</b>
+                                 </span>
+                                 <input type='file' className="hidden" />
+                              </label>
+                           </div>
+
+                           <div className="">
+                              <label className="w-full flex flex-col border-b-1 items-center bg-contenta-blue rounded-br-xl rounded-bl-xl px-4 py-6 text-white content-shadow tracking-wide cursor-pointer">
+                                 <AiOutlineFileText size={24} className="text-white" />
+                                 <span className="mt-2 text-sm text-white leading-normal font-montserratBold">
+                                    Upload Files
+                                 </span>
+                                 <span className="text-sm text-white font-montserratRegular">
+                                    Drop files here or <b>Browse</b>
+                                 </span>
+                                 <input type='file' className="hidden" />
+                              </label>
+                           </div>
+                        </div>
+
+                        <div className="flex flex-col">
+                           <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-tl-xl rounded-tr-xl text-contenta-blue content-shadow tracking-wide cursor-pointer">
+                              <MdOutlinePlayCircle size={24} />
+                              <span className="mt-2 text-sm leading-normal font-montserratBold">
+                                 Upload Video
+                              </span>
+                              <span className="text-sm text-contenta-greyish-brown font-montserratRegular">
+                                 Drop files here or <b>Browse</b>
+                              </span>
+                              <input type='file' className="hidden" />
+                           </label>
+                           <div className="line bg-white font-montserratBold text-contenta-blue text-sm">
+                              <span>or</span>
+                           </div>
+                           <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-br-xl rounded-bl-xl tracking-wide content-shadow cursor-pointer">
+                              <AiOutlineAudio size={24} className="text-contenta-blue" />
+                              <span className="mt-2 text-sm text-contenta-blue leading-normal font-montserratBold">
+                                 Upload Audio
+                              </span>
+                              <span className="text-sm text-contenta-greyish-brown font-montserratRegular">
+                                 Drop files here or <b>Browse</b>
+                              </span>
+                              <input type='file' className="hidden" />
+                           </label>
+                        </div>
+
+                        <div className="py-5">
+                           <div className="py-2">
+                              <button
+                                 name=""
+                                 className="w-full py-2 rounded-md bg-white border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                                 type="button"
+                                 onClick={(e) => {
+                                    e.preventDefault();
+                                    router.push(`#`)
+                                 }}
+                              >
+                                 Publish
+                              </button>
+                           </div>
+                           <div className="py-2">
+                              <button
+                                 name=""
+                                 className="w-full py-2 rounded-md bg-white border-2 border-contenta-light-blue text-contenta-light-blue text-sm transition duration-300 ease-in-out focus:outline-none font-montserratBold hover:bg-contenta-light-blue hover:text-white"
+                                 type="button"
+                                 onClick={(e) => {
+                                    e.preventDefault();
+                                    router.push(`#`)
+                                 }}
+                              >
+                                 Save as Draft
+                              </button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </>
+   )
+}
+
+
+
+TAXONOMY
+
+   const {
+      value: titleInput,
+      isValid: titleIsValid,
+      changed: titleChanged,
+      hasError: titleHasError,
+      changeHandler: titleChangeHandler,
+      blurHandler: titleBlurHandler,
+      reset: titleReset,
+   } = useInput(isEmpty)
+
+const {
+      data: taxonomyList,
+      isValidating: taxonomyIsValidating,
+      mutate: updateTaxonomyList,
+   } = useRequest(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/taxonomy_term/training_education_category`
+   )
+   const taxonomy = taxonomyList?.data || []
+
+   console.log('tested', taxonomyList?.data)
+
+   <div className="text-sm font-montserratBold text-contenta-greyish-brown pb-5">
+      Select Document Library Type
+   </div>
+   <div
+      className="inline-flex rounded-md shadow-sm gap-5 "
+      role="group"
+      value={categoryInput}
+   >
+      {taxonomy.map((item) => (
+         <button
+            key={item.id}
+            type="button"
+            value={item.id}
+            className={
+               categoryInput === item.id
+                 ? `bg-opacity-50 px-5 py-1 text-contenta-blue bg-contenta-blue rounded-full font-montserratBold text-sm border-1 border-transparent`
+                 : "text-sm text-contenta-greyish-brown font-montserratBold border-1 px-5 py-1 border-default rounded-full cursor-pointer"
+             }
+         >
+            {item.attributes.name}
+         </button>
+      ))}
+   </div>

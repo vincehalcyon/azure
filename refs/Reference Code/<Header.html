@@ -1,0 +1,17 @@
+<Header
+        page="Document Library "
+        icon={<AiFillFileWord size={48} className="text-white mr-4" />}
+      />
+
+
+       <div
+              className="flex items-center content-shadow rounded-lg py-7 px-10 bg-white w-1/4 p-5 gap-5 cursor-pointer"
+              onClick={() => router.push("/document-library/draft")}
+            >
+              <div className="text-3xl text-contenta-greyish-brown font-montserratBold">
+                {allDocuments?.filter((item) => item.status === "0").length}
+              </div>
+              <div className="text-sm text-contenta-greyish-brown font-montserratBold">
+                Drafts
+              </div>
+            </div>

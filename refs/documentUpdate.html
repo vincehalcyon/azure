@@ -1,0 +1,243 @@
+import Header from "components/Header/Header";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
+import Router, { useRouter } from 'next/router';
+import Image from 'next/image';
+import { AiOutlinePlus } from "react-icons/ai";
+import axios from "axios";
+
+export default function DocumentLibrary() {
+
+   const router = useRouter();
+   const status = router.query.status ? router.query.status : "";
+   const { type } = router.query
+   const [documentLibrary, setDocumentLibrary] = useState(null)
+   const [filterDocument, setFilterDocument] = useState(null)
+   const [tabs, setTabs] = useState(null)
+   const [tabLength, setTabLength] = useState(null)
+   const [firstLoad, setFirstLoad] = useState(true)
+
+
+   const fetchDocumentLibrary = useCallback(async () => {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/node/api/document_library`)
+      
+      setDocumentLibrary(response.data)
+      setFilterDocument(response.data)
+   }, [])
+   
+   const filterDocumentHandler = useCallback(async () => {
+      if (!router.asPath.includes('type') && documentLibrary) {
+         setFilterDocument(DocumentLibrary)
+         router.push('document-library?type=All')
+      } else {
+         const docuType = documentLibrary && documentLibrary.filter(item => item.category_name == type)
+         setDocumentLibrary(type?.toLowerCase() === 'all' ? documentLibrary : docuType)
+      }
+   }, [router, documentLibrary, type])
+
+   const tabsDataHandler = useCallback(async () => {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/taxonomy/api/document_library`)
+
+      setTabs(response.data ? [{
+         name: "All",
+         link: "document-library?type=All",
+      }, ...response.data] : null )
+
+      setTabLength(documentLibrary ? response.data?.map((itm, index) => documentLibrary.filter(item => item.category_name === itm.name).length) : null )
+      setFirstLoad(false)
+   }, [documentLibrary])
+
+   useEffect(() => {
+      if (firstLoad) {
+
+         fetchDocumentLibrary()
+         filterDocumentHandler()
+         tabsDataHandler()
+      }
+   }, [fetchDocumentLibrary, filterDocumentHandler, tabsDataHandler, firstLoad])
+
+
+   // const { data: allDocumentsLibrary, isValidating: documentsValidating, mutate: updateDocuments } = useRequest({ url: `${process.env.NEXT_PUBLIC_API_URL}/node/api/document_library` })
+   // const { data: tabsData, isValidating: tabsIsValidating, mutate: updateTabs } = useRequest({ url: `${process.env.NEXT_PUBLIC_API_URL}/taxonomy/api/document_library` })
+
+   // console.log("allDocumentsLibrary", allDocumentsLibrary)
+
+   // const tabs = tabsData ? [{
+   //    name: "All",
+   //    link: "document-library?type=All",
+   // }, ...tabsData] : null
+
+   // const allDocuments = allDocumentsLibrary || null
+   // const [filterDocuments, setFilterDocuments] = useState(allDocuments || null)
+
+   // if(type) {
+   //    router.push(`document-library?type=${type}`)
+   // }
+
+   // console.log('allDocuments', allDocuments)
+
+   // useEffect(() => {
+   //    if (!router.asPath.includes('type') && allDocuments) {
+   //       setFilterDocuments(allDocuments)
+   //       router.push('document-library?type=All')
+   //    }
+   //    else {
+   //       const docsType = allDocuments?.filter(item => item.category_name === type)
+   //       setFilterDocuments(type?.toLowerCase() === 'all' ? allDocuments : docsType)
+   //    }
+   // }, [router, allDocuments, type])
+
+   // const tabLength = tabs?.map((itm, index) => allDocuments?.filter(item => item.category_name === itm.name).length)
+
+   return tabLength &&
+      <Fragment>
+         <Header page="Document Library " />
+         <div className="flex flex-col px-7 py-10 items">
+            <div className="flex flex-col">
+               <div className="flex gap-4 py-5 w-full">
+                  <div className="flex items-center content-shadow rounded-lg py-7 px-10 bg-white w-1/4 p-5 gap-5">
+                     <div className="text-3xl text-contenta-greyish-brown font-montserratBold">
+                        10
+                     </div>
+                     <div className="text-sm text-contenta-greyish-brown font-montserratBold">
+                        All Documents
+                     </div>
+                  </div>
+                  <div className="flex items-center content-shadow rounded-lg py-7 px-10 bg-white w-1/4 p-5 gap-5">
+                     <div className="text-3xl text-contenta-greyish-brown font-montserratBold">
+                        7
+                     </div>
+                     <div className="text-sm text-contenta-greyish-brown font-montserratBold">
+                        Published Documents
+                     </div>
+                  </div>
+                  <div className="flex items-center content-shadow rounded-lg py-7 px-10 bg-white w-1/4 p-5 gap-5">
+                     <div className="text-3xl text-contenta-greyish-brown font-montserratBold">
+                        3
+                     </div>
+                     <div className="text-sm text-contenta-greyish-brown font-montserratBold">
+                        Drafts
+                     </div>
+                  </div>
+                  <div
+                     className="flex items-center text-white text-sm font-montserratBold justify-center content-shadow rounded-lg bg-contenta-blue w-1/4 cursor-pointer"
+                     onClick={(e) => {
+                        e.preventDefault()
+                        Router.push(`document-library/add-document`)
+                     }}
+                  >
+                     <AiOutlinePlus className="text-white" /> Upload New Document
+                  </div>
+               </div>
+            </div>
+            <div className="flex items-center overflow-x-auto whitespace-nowrap gap-4">
+               {tabs?.length &&
+                  tabs.map((tab, index) =>
+                     tab.title === status ? (
+                        <div
+                           key={index}
+                           className="cursor-pointer w-full py-3 text-sm text-center whitespace-nowrap px-4 cursor-pointer"
+                        >
+                           {tab.name}
+                        </div>
+                     ) : (
+                        <div
+                           key={index}
+                           className={tab.name.includes(type) ? 'text-sm py-3 mx-5 font-montserratBold text-contenta-greyish-brown border-b-4 border-contenta-blue cursor-pointer' : 'text-contenta-gray py-3 mx-5 text-sm font-montserratBold cursor-pointer'}
+                           aria-label={tab.name}
+                           onClick={() => {
+                              router.push(`document-library?type=${tab.name}`)
+                              setFilterDocument(documentLibrary)
+                              if (tab.name !== 'All') {
+                                 const filtered = documentLibrary.filter(item => item.category_name === tab.name)
+                                 setFilterDocument(filtered)
+                                 return
+                              }
+                              setFilterDocument(documentLibrary)
+                           }}
+                        >
+                           {console.log('documentLibrary', documentLibrary, tabLength)}
+                           {`${tab.name} (${index === 0 ? documentLibrary.length : tabLength[index - 1]})`}
+                        </div>
+                     )
+                  )}
+            </div>
+            <div className="flex flex-col py-5">
+               {filterDocument?.length > 0 ?
+                  <>
+                     <div className="grid grid-flow-row lg:grid-cols-4 grid-cols-1 grid-rows-1 ">
+                        {filterDocument?.map((item, i) => 
+                           <div
+                              className="flex-col justify-center flex-wrap max-w-md min-w-md bg-white rounded-xl m-3 content-shadow cursor-pointer"
+                              onClick={(e) => {
+                                 e.preventDefault();
+                                 Router.push(`${item.viewNode}`)
+                              }}
+                              key={i}
+                           >
+                              <div className="bg-auto bg-no-repeat bg-center">
+                                 <Image
+                                    loader={() => item.image}
+                                    src={item.image}
+                                    width='400'
+                                    height='200'
+                                    objectFit='cover'
+                                    alt="image"
+                                 />
+                              </div>
+                              <div className="text-sm break-normal flex flex-col m-3 justify-center items-center text-sm text-contenta-greyish-brown font-montserratBold">
+                                 {item.title}
+                              </div>
+                              <div className="flex flex-row justify-center text-sm m-3 items-center">
+                                 <div className="text-contenta-greyish-brown font-montserratRegular">
+                                    Added {item.post_date}
+                                 </div>
+                              </div>
+                              <div
+                                 className="break-normal flex justify-center my-2 mx-4 cursor-pointer pb-4"
+                              >
+                                 {
+                                    item.category_name === 'Policy' &&
+                                    (
+                                       <div className="px-4 py-1 bg-opacity-50 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-seaweed-green text-contenta-jungle-green">
+                                          Policy
+                                       </div>
+                                    )
+                                 }
+                                 {
+                                    item.category_name === 'Brochure' &&
+                                    (
+                                       <div className="px-4 py-1 bg-opacity-50 rounded-xl text-sm font-montserratBold justify-center flex text-contenta-darkish-red bg-contenta-pinky-red">
+                                          Brochure
+                                       </div>
+                                    )
+                                 }
+                                 {
+                                    item.category_name === 'Claim' &&
+                                    (
+                                       <div className="px-4 py-1 bg-opacity-50 rounded-xl text-sm font-montserratBold justify-center flex bg-contenta-blue text-contenta-light-blue">
+                                          Claim
+                                       </div>
+                                    )
+                                 }
+                                 {
+                                    item.category_name === 'Other' &&
+                                    (
+                                       <div className="px-4 py-1 rounded-xl text-sm font-montserratBold justify-center flex bg-opacity-50 bg-contenta-greyish-brown text-contenta-greyish-brown">
+                                          Other
+                                       </div>
+                                    )
+                                 }
+                              </div>
+                           </div>
+                        )}
+                     </div>
+                  </> : <>
+                     <div className="flex justify-center w-full text-sm p-10 text-contenta-greyish-brown">
+                        No Results Found
+                     </div>
+                  </>
+               }
+            </div>
+         </div>
+      </Fragment>
+}

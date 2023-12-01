@@ -1,0 +1,233 @@
+import React, { useState, useEffect, useRef, useContext } from 'react'
+
+import API from 'connections/api_connection'
+import debounce from 'lodash.debounce'
+import {
+  Input,
+  Button
+} from "reactstrap";
+import GlobalContext from 'context/GlobalContext'
+
+function BlogRelatedArticleSelection({ selectedBlogs, setSelectedBlogs, editId }) {
+  const {
+    errorHandler,
+  } = useContext(GlobalContext)
+
+  const debouncedSearchRef = useRef(null)
+
+  const [gettingBlogsCount, setGettingBlogsCount] = useState(false)
+  const [blogsCount, setBlogsCount] = useState(0)
+  const [gettingBlogs, setGettingBlogs] = useState(false)
+  const [filterSearch, setFilterSearch] = useState('')
+  const [search, setSearch] = useState(filterSearch || '')
+
+  const [blogs, setBlogs] = useState([])
+
+  const params = {}
+
+  if (filterSearch) {
+    params.search = filterSearch
+  }
+  
+  params.not_id = selectedBlogs.map(({ id }) => id)
+
+  if (editId) {
+    params.not_id.push(editId)
+  }
+
+  function getBlogsCount () {
+    if (filterSearch !== search) {
+      setSearch(filterSearch)
+    }
+
+    setGettingBlogsCount(true)
+    return API.get('admin/blogs/count', {
+      params: {
+        ...params,
+      },
+    }).then((response) => {
+      setBlogsCount(response.data.data.count)
+    }).catch(errorHandler).finally(() => {
+      setGettingBlogsCount(false)
+    })
+  }
+
+  function getBlogs () {
+    if (filterSearch !== search) {
+      setSearch(filterSearch)
+    }
+
+    setGettingBlogs(true)
+    return API.get('admin/blogs', {
+      params: {
+        ...params,
+        order_by: 'created_at|desc',
+        limit: 5,
+      },
+    }).then((response) => {
+      const blogs = response.data.data.blogs.map(blog => ({
+        id: blog.id,
+        title: blog.title,
+      }))
+
+      setBlogs(blogs)
+    }).catch(errorHandler).finally(() => {
+      setGettingBlogs(false)
+    })
+  }
+
+  function submitSearch (search) {
+    setFilterSearch(search)
+  }
+
+  function selectBlog (blog) {
+    if (selectedBlogs.some(({ id }) => id === blog.id)) {
+      return
+    }
+
+    setSelectedBlogs([...selectedBlogs, blog])
+  }
+
+  function removeBlog (blog) {
+    setSelectedBlogs(selectedBlogs.filter(({ id }) => id !== blog.id))
+  }
+  
+  useEffect(() => {
+    if (debouncedSearchRef.current) {
+      debouncedSearchRef.current(search)
+    }
+  }, [search])
+
+  useEffect(() => {
+    debouncedSearchRef.current = debounce(submitSearch, 1000)
+
+    getBlogsCount()
+    getBlogs()
+
+    return () => {
+      debouncedSearchRef.current.cancel()
+    }
+  }, [filterSearch, selectedBlogs])
+
+  return (
+    // align-items-center bg-white
+    <div className="d-flex flex-column p-3">
+
+      <div className="d-flex">
+        {/* borderBottom: '1px solid black' */}
+        <div style={{ width: '510px' }}>
+          <h3 className="m-0">Related Articles ({ selectedBlogs.length })</h3>
+        </div>
+      </div>
+
+      <div className="d-flex ">
+        <div style={{ width: '510px' }}>
+          <div className="d-flex flex-column">
+            {
+              selectedBlogs.map(blog => (
+                <div
+                  key={ blog.id }
+                  className="d-flex justify-content-between align-items-center py-1 my-1 px-2 text-xs"
+                  style={{ border: '1px solid gray', borderRadius: '0.375rem' }}
+                  onClick={ () => selectBlog(blog) }
+                >
+                  <span>{ blog.id } | { blog.title }</span>
+                  {/* <button
+                    style={{ border: '.5px solid #2A295C', backgroundColor: '#2A295C' }}
+                    className="text-xs px-2 py-1 text-white"
+                    onClick={ () => removeBlog(blog) }
+                  >Remove</button> */}
+                  <Button
+                    color="default"
+                    className="text-xs px-2 py-1 text-white"
+                    onClick={() => removeBlog(blog)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))
+            }
+
+            <label className="fs-14 mt-4">Select Article ({ blogsCount })</label>
+            {/* <input
+              className="text-xs px-2 py-1 mb-2"
+              style={{ width: '510px' }}
+              placeholder="Search title"
+              value={ search }
+              onChange={ e => setSearch(e.target.value) }
+            /> */}
+            <Input
+              className="text-xs px-2 py-1 mb-1 form-control"
+              placeholder="Search title"
+              type="text"
+              aria-label="Search title"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+
+            {
+              gettingBlogs && (
+                <span>Loading...</span>
+              )
+            }
+
+            {
+              filterSearch && blogs.length === 0 && (
+                <span className="text-xs">No results</span>
+              )
+            }
+
+            <div className="pb-4">
+              {
+                blogs.map(blog => (
+                  <div
+                    key={ blog.id }
+                    className="d-flex justify-content-between align-items-center py-1 my-1 px-2 text-xs"
+                    style={{ border: '1px solid gray', borderRadius: '0.375rem' }}
+                  >
+                    <span>{ blog.id } | { blog.title }</span>
+                    {/* <button
+                    style={{ border: '.5px solid #2A295C', backgroundColor: '#2A295C' }}
+                    className="text-xs px-2 py-1 text-white"
+                    onClick={ () => selectBlog(blog) }
+                  >Select</button> */}
+                  <Button
+                    color="default"
+                    className="text-xs px-2 py-1 text-white"
+                    onClick={() => selectBlog(blog)}
+                  >
+                    Select
+                  </Button>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    --ROWS LIMIT DELETED-- FREE PRODUCT
+    {/* <Col lg="12"><Label><small>Rows Limit</small></Label></Col>
+          <Col lg="2">
+            <Input 
+            type="select" 
+            id="exampleSelect"
+            name="productTypeId"
+            defaultValue={limit}
+            onChange={e => {
+              setLimit(e.target.value)
+              setPage(1)
+              setInitialLoad(true)
+            }}>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </Input>
+          </Col> */}
+  )
+}
+
+export default BlogRelatedArticleSelection

@@ -1,0 +1,173 @@
+import Header from "components/Header/Header";
++import React, { useEffect, useState } from "react";
++import Router, { useRouter } from 'next/router';
++
++export default function SeeAll() {
++   // const [initialLoad, setInitialLoad] = useState(true)
++   const router = useRouter();
++   // const queryType = router.query.type ? router.query.type : "";
++   // const [showing, setShowing] = useState()
++
++   // useEffect(() => {
++   //    if (initialLoad) {
++   //      setShowing()
++   //    }
++   //    return {}
++   // }, [ showing, queryType])
++
++   const filters = [
++      {  
++        label: 'All Categories',
++        query: '',
++      },
++      {
++        label: 'Certifications',
++        query: 'Certifications',
++      },
++      {
++        label: 'Regulations',
++        query: 'Regulations',
++      },
++      {
++        label: 'Documentations',
++        query: 'Documentations',
++      },
++      {
++         label: 'Policy Documents',
++         query: 'Policy',
++       }
++   ]
++   
++   const allCompliance = [
++      {
++         id: 1,
++         title: 'Iso Certificate 1002',
++         date: '10-07-2021',
++         file: '/img/study.jpg',
++         status: "Certification"
++      },
++      {
++         id: 2,
++         title: 'Iso Certificate 1003',
++         date: '10-07-2021',
++         file: '/img/study.jpg',
++         status: "Certification"
++      },
++      {
++         id: 3,
++         title: 'Iso Certificate 1004',
++         date: '10-07-2021',
++         file: '/img/study.jpg',
++         status: "Certification"
++      },
++      {
++         id: 4,
++         title: 'New Regulation 2022',
++         date: '10-07-2021',
++         file: '/img/study.jpg',
++         status: "Regulation"
++      },
++      {
++         id: 5,
++         title: 'New Document 2022',
++         date: '10-07-2021',
++         file: '/img/study.jpg',
++         status: "Documentation"
++      },
++      {
++         id: 6,
++         title: 'Operation Policy',
++         date: '10-07-2021',
++         file: '/img/study.jpg',
++         status: "Policy"
++      },
++      {
++         id: 7,
++         title: 'Basic Tax Policy',
++         date: '10-07-2021',
++         file: '/img/study.jpg',
++         status: "Policy"
++      },
++   ]
++
++   return (
++      <>
++         <Header page="Compliance " />
++         <div className="flex flex-col px-10 pt-10 pb-20 items">
++            {/* <div className="block xl:flex lg:flex md:flex flex-row items-center mb-4 overflow-x-auto">
++               {
++                  filters.map((item, i) => 
++                     <div
++                        className="mx-1 xl:mx-6 lg:mx-6 text-lg  lg:text-md xl:text-md cursor-pointer"
++                        key={i}
++                        onClick={() => {
++                           router.push({
++                              query: item.query
++                           });
++                           setShowing(item.label === 'All test' ? '' : item.label)
++                        }}
++                     >
++                        <div 
++                           className={showing === item.label || (showing === '' && item.label === 'All Categories ') ? 'my-2 text-sm py-3 font-montserratBold text-contenta-greyish-brown border-b-2 border-contenta-blue' : 'text-contenta-gray py-3 my-2 text-sm font-montserratBold '}
++                        >
++                           {item.label}
++                        </div>
++                     </div>
++                  )
++               }
++            </div> */}
++            <div className="flex flex-col mt-8 mb-4 items-center">
++                  <div className="flex flex-col lg:flex-row xl:flex-row flex-wrap w-full gap-3">
++                     {allCompliance.map((item, i) =>
++                        <div 
++                           className="flex-col justify-center flex-wrap max-w-md min-w-md bg-white rounded-xl content-shadow cursor-pointer"
++                           onClick={(e) => {
++                              e.preventDefault();
++                              Router.push(`/compliance/${item.id}`)
++                           }}
++                        >
++                           <div className="bg-auto bg-no-repeat bg-center">
++                              <img className="
++                                 object-cover 
++                                 xxl:h-60 
++                                 xxl:w-94  
++                                 xl:h-52 
++                                 xl:w-56 
++                                 lg:h-60 
++                                 lg:w-72 
++                                 rounded-tl-xl 
++                                 rounded-tr-xl
++                                 
++                                 "
++                                 src={item.file} height="150" width="239"/>
++                           </div>
++                           <div className="text-sm break-normal flex flex-col m-3 justify-center items-center text-sm text-contenta-greyish-brown font-montserratBold">
++                              <span>{item.title} </span>
++                           </div>
++                           <div className="flex flex-row justify-center text-sm m-3 items-center">
++                              <div className="text-contenta-greyish-brown font-montserratRegular">
++                                 Added {item.date}
++                              </div>
++                              {/* <div className="m-1">
++                                 {item.minute} minute read
++                              </div> */}
++                           </div>
++                           <div
++                              className="break-normal flex justify-center my-2 mx-4 text-sodexo-dark-purple-blue hover:text-sodexo-fuschia cursor-pointer pb-4"
++                           >
++                              <span 
++                                 className={`text-sm py-1 px-5 rounded-full font-montserratBold transition duration-300 ease-in-out focus:outline-none
++                                 ${item.status === "Certification" ? "bg-contenta-seaweed-green text-contenta-jungle-green " : 
++                                 "text-contenta-darkish-red bg-contenta-pinky-red "}`}
++                              >
++                                 {item.status}
++                              </span>
++                           </div>
++                        </div>
++                     )}
++                  </div>
++               </div>
++         </div>
++      </>
++   )
++}

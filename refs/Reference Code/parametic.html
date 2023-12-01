@@ -1,0 +1,95 @@
+import ButtonComponent from "@/components/Button/Button";
+import Input from "@/components/Input/input";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import QuotesLayout from "@/layouts/QuotesLayout";
+import { useEffect, useState } from "react";
+import QuotesScreenSix from "@/components/Quotes/ScreenSix/QuotesScreenSix";
+
+
+export default function ParameticInsurance(props) {
+    const router = useRouter()
+    useEffect(() => {
+        if (localStorage.getItem("parametic_insurance")) {
+            setForm(JSON.parse(localStorage.getItem("parametic_insurance")))
+        }
+    }, [router])
+
+    const [form, setForm] = useState(null)
+    console.log('formzzz11', form)
+
+    const onNext = () => {
+        let formString = JSON.stringify(form)
+        if (form?.isCovered) {
+            localStorage.setItem("parametic_insurance", formString)
+        } else {
+            localStorage.removeItem("parametic_insurance", formString)
+        }
+        router.push("/quotes/journey/tax-audit")
+    }
+    // useEffect(() => {
+    //     if (localStorage.getItem("parametic_insurance")) {
+    //         setForm(JSON.parse(localStorage.getItem("parametic_insurance")))
+    //     }
+    // }, [router])
+
+    // const [form, setForm] = useState(null)
+    // console.log({ form })
+
+    // const onNext = () => {
+    //     let formString = JSON.stringify(form)
+    //     if (form?.isCovered) {
+    //         localStorage.setItem("parametic_insurance", formString)
+    //     } else {
+    //         localStorage.removeItem("parametic_insurance", formString)
+    //     }
+    //     router.push("/quotes/journey/employee-dishonesty")
+    // }
+    
+    return (
+        <div className="mx-auto pl-[20px] pr-[20px] py-4">
+            <div>
+                <div className="flex items-center">
+                    <Link href="/quotes" passHref>
+                        <a className="text-[#de4523] montserrat-bold contents text-[14px]">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="4"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Back to Quotes
+                        </a>
+                    </Link>
+                </div>
+            </div>
+            <QuotesLayout>
+                <QuotesScreenSix 
+                    onChange={(payload) => setForm(payload)}
+                    initialData={form}
+                />
+                <div className="flex w-full gap-2">
+                    <ButtonComponent
+                        name="Go Back"
+                        className="text-[#0070B0] border-[1px] border-[#0070B0] montserrat-regular rounded-md my-1 w-[200px]"
+                        onClick={() =>
+                            router.push("/quotes/journey/situational-coverage")
+                        }
+                    />
+                    <ButtonComponent
+                        name="Continue"
+                        className="text-white border-[1px] bg-[#0070b0] montserrat-regular my-1  w-[200px]"
+                        onClick={onNext}
+                    />
+                </div>
+            </QuotesLayout>
+        </div>
+    )
+}

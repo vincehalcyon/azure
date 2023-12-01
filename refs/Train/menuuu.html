@@ -1,0 +1,81 @@
+import { useState, useEffect, useContext } from 'react';
+import { useDetectResize } from '@/components/partials/hooks/useDetectResize';
+import Image from 'next/image'
+import Logo from '@/public/logo'
+import Icons from '@/public/icons'
+import Link from 'next/link'
+import clsx from 'clsx';
+import { useRouter } from 'next/router'
+import { AiOutlineMenu } from 'react-icons/ai'
+import { GlobalContext } from '@/lib/context/GlobalContext';
+
+export default function Menu() {
+
+  const { headerMenu } = useContext(GlobalContext);
+
+  const { asPath } = useRouter();
+
+  const [showNav, setShowNav] = useState(false);
+
+  useDetectResize(setShowNav);
+
+  return (
+    <>
+      <div className='sticky flex justify-center w-full py-[20px] bg-[#FFFFFF] border-t-[#F36523] border-t-2 border-b-2 top-0 z-50'>
+        <div className='relative flex flex-row items-center justify-between w-full max-w-[1240px] px-[10px] gap-8 lg:gap-0'>
+          <div className='flex'>
+            <Link href="/">
+              <Image
+                src={Logo["logo.png"]}
+                alt={"cmrs-logo"}
+                quality={100}
+              />
+            </Link>
+          </div>
+          <div className='flex flex-col items-end'>
+            <AiOutlineMenu size={24} onClick={() => setShowNav(!showNav)} className='lg:hidden block cursor-pointer' />
+            <div className={clsx(
+              showNav ? 'flex' : 'hidden lg:flex',
+              'absolute lg:relative z-10 top-[5rem] lg:top-0 left-auto lg:left-auto flex-col border-t-[1px] border-[#DADBDD] lg:border-0 bg-white bg-opacity-100 w-full px-10 lg:p-0 transition-all duration-300',
+            )}>
+              <div className='flex flex-col items-center lg:items-end w-full py-10 lg:py-0 gap-8 lg:gap-4'>
+                <div className='flex flex-col lg:flex-row items-center gap-5'>
+                  <h4 className='text-[16px] text-[#555555] font-lato font-[700] leading-normal'>Connect with us</h4>
+                  <div className='flex gap-5'>
+                    <Link href="/">
+                      <Image
+                        src={Icons["fb-orange.svg"]}
+                        alt={"facebook-icon"}
+                        quality={100}
+                      />
+                    </Link>
+                    <Link href="/">
+                      <Image
+                        src={Icons["mail-orange.png"]}
+                        alt={"mail-orange-icon"}
+                        quality={100}
+                      />
+                    </Link>
+                  </div>
+                </div>
+                <div className='flex flex-col items-center gap-6 lg:gap-0 lg:flex-row text-[16px] font-lato font-[700] text-[#4E4E4E]'>
+                  {headerMenu?.parentNodes.map((item, index) => (
+                    <div key={index} className='lg:border-r-[1px] border-[#9C9C9C] lg:last:border-r-0 lg:px-4 lg:last:pr-0 lg:first:pl-0'>
+                      <Link
+                        className={`hover:text-[#F36523] hover:font-[700] ${asPath === item.url ? "text-[#F36523] font-[700]" : ""}`}
+                        href={item.url}
+                        onClick={() => setShowNav(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}

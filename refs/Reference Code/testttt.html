@@ -1,0 +1,330 @@
+ {/* Email & Password */}
+            <div
+              className={`flex flex-col md:flex-row justify-between py-4 border-b text-[13px ${
+                toEdit !== '' && toEdit !== 'credentials' ? 'hidden' : ''
+              }`}
+            >
+              {toEdit === 'credentials' ? (
+                <div className="grid w-full grid-cols-1 sm:grid-cols-2 xl:w-1/2">
+                  <Input
+                    name="email"
+                    type="text"
+                    placeholder="E-mail Address"
+                    label="E-mail Address"
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
+                    value={form.email || ''}
+                    error={errors.find((err) => err.field === 'email')}
+                    wrapperClass="text-[13px]"
+                  />
+                  <div className="ml-0 mt-3 sm:mt-0 sm:ml-4">
+                    <Input
+                      disabled={!form.password}
+                      name="currentPassword"
+                      type="password"
+                      label="Current Passwordsss"
+                      placeholder="Current Password"
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          currentPassword: e.target.value,
+                        })
+                      }
+                      value={form.currentPassword}
+                      error={errors.find(
+                        (err) => err.field === 'currentPassword'
+                      )}
+                      wrapperClass="text-[13px] mb-4"
+                    />
+                    <Input
+                      name="password"
+                      type="password"
+                      label="New Password"
+                      placeholder="New Password"
+                      onChange={(e) =>
+                        setForm({ ...form, password: e.target.value })
+                      }
+                      value={form.password}
+                      error={errors.find((err) => err.field === 'password')}
+                      wrapperClass="text-[13px] mb-4"
+                    />
+                    <Input
+                      disabled={!form.password}
+                      name="passwordConfirmation"
+                      type="password"
+                      label="Confirm New Password"
+                      placeholder="Confirm New Password"
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          passwordConfirmation: e.target.value,
+                        })
+                      }
+                      value={form.passwordConfirmation}
+                      error={errors.find(
+                        (err) => err.field === 'passwordConfirmation'
+                      )}
+                      wrapperClass="text-[13px]"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col w-full">
+                  <div className="flex flex-col mb-2 md:flex-row">
+                    <p className="w-full mb-2 font-bold md:w-1/3 md:mb-0">
+                      Email
+                    </p>
+                    <p className="w-full md:w-2/3">{user.email}</p>
+                  </div>
+                  <div className="flex flex-col md:flex-row">
+                    <p className="w-full mb-2 font-bold md:w-1/2 md:mb-0">
+                      Password
+                    </p>
+                    <p className="w-full md:w-2/3">********</p>
+                  </div>
+                </div>
+              )}
+              <div className="flex items-start justify-end mt-4 md:pl-4 md:mt-0">
+                {toEdit === 'credentials' && (
+                  <button
+                    className="flex items-center text-greenTheme hover:text-[#777777] mr-2"
+                    aria-label="Save"
+                    onClick={() => update()}
+                  >
+                    Save
+                  </button>
+                )}
+                <button
+                  aria-label={
+                    toEdit && toEdit === 'credentials' ? 'Cancel' : 'Edit'
+                  }
+                  className="flex items-center text-greenTheme hover:text-[#777777]"
+                  onClick={() => toggleEdit('credentials')}
+                >
+                  {toEdit !== 'credentials' && <EditSvg className="mr-2" />}
+                  {toEdit && toEdit === 'credentials' ? 'Cancel' : 'Edit'}
+                </button>
+              </div>
+            </div>
+
+            {/* Update Email */}
+            <div
+              className={`flex flex-col md:flex-row md:justify-between py-4 border-b text-[13px ${
+                toEdit !== '' && toEdit !== 'emailAddress' ? 'hidden' : 'flex-col'
+              }`}
+            >
+              {toEdit === 'emailAddress' ? (
+                <div className="grid w-full grid-cols-1 sm:grid-cols-2 xl:w-1/2">
+                  <Input
+                    name="email"
+                    type="text"
+                    placeholder="E-mail Address"
+                    label={`E-mail Address ${
+                      form.newEmail ? '(Pending new email displayed)' : ''
+                    }`}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
+                    value={form.newEmail || form.email || ''}
+                    error={errors.find((err) => err.field === 'email')}
+                    wrapperClass="text-[13px]"
+                  />
+                  <div className="ml-0 mt-3 sm:mt-0 sm:ml-4">
+                    <Input
+                      // disabled={!form.password}
+                      name="currentPassword"
+                      type="password"
+                      label="Current Password"
+                      placeholder="Current Password"
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          currentPassword: e.target.value,
+                        })
+                      }
+                      value={form.currentPassword}
+                      error={errors.find(
+                        (err) => err.field === 'currentPassword'
+                      )}
+                      wrapperClass="text-[13px] mb-4"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col w-full">
+                  <div className="flex flex-col mb-2 md:flex-row">
+                    <p className="w-full mb-2 font-bold md:w-1/3 md:mb-0">
+                      Update Email
+                    </p>
+                    <p className="w-full md:w-2/3">{user.email}</p>
+                  </div>
+                </div>
+              )}
+              <div className="flex items-start justify-end mt-4 md:pl-4 md:mt-0">
+                {toEdit === 'emailAddress' && (
+                  <button
+                    className="flex items-center text-greenTheme hover:text-[#777777] mr-2"
+                    aria-label="Save"
+                    onClick={() => update()}
+                  >
+                    Save
+                  </button>
+                )}
+
+                {toEdit === 'emailAddress' && form.newEmail && (
+                  <button
+                    className="flex items-center text-greenTheme hover:text-[#777777] mr-2"
+                    aria-label="Save"
+                    onClick={() => {
+                      cancelPendingContactInfo = true
+                      update()
+                      cancelPendingContactInfo = false
+                    }}
+                  >
+                    Cancel Email Request
+                  </button>
+                )}
+
+                <button
+                  aria-label={
+                    toEdit && toEdit === 'emailAddress' ? 'Cancel' : 'Edit'
+                  }
+                  className="flex items-center text-greenTheme hover:text-[#777777]"
+                  onClick={() => toggleEdit('emailAddress')}
+                >
+                  {toEdit !== 'emailAddress' && <EditSvg className="mr-2" />}
+                  {toEdit && toEdit === 'emailAddress' ? 'Cancel' : 'Edit'}
+                </button>
+              </div>
+            </div>
+
+            {/* Update Mobile Number */}
+            <div
+              className={`flex flex-col sm:flex-row justify-between py-4 text-[13px] ${
+                toEdit !== '' && toEdit !== 'mobileNumber' ? 'hidden' : ''
+              }`}
+            >
+              {toEdit === 'mobileNumber' ? (
+                <div className="grid w-full grid-cols-1 sm:grid-cols-2 xl:w-1/2">
+                  {needsTwoFactorConfirmation ? (
+                    <Input
+                      name="code"
+                      type="text"
+                      placeholder="Enter 2FA Code (SMS)"
+                      label="2FA Code (SMS)"
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          code: e.target.value.replace(/[^0-9]/g, ''),
+                        })
+                      }
+                      value={form.code || ''}
+                      error={errors.find((err) => err.field === 'code')}
+                      wrapperClass="text-[13px]"
+                    />
+                  ) : (
+                    <>
+                      <Input
+                        name="mobileNumber"
+                        type="text"
+                        placeholder="Mobile Number"
+                        label={`Mobile Number ${
+                          form.newMobileNumber
+                            ? '(Pending new number displayed)'
+                            : ''
+                        }`}
+                        onChange={(e) =>
+                          setForm({ ...form, mobileNumber: e.target.value })
+                        }
+                        value={form.newMobileNumber || form.mobileNumber || ''}
+                        error={errors.find(
+                          (err) => err.field === 'mobileNumber'
+                        )}
+                        wrapperClass="text-[13px]"
+                      />
+                      <div className="ml-0 mt-3 sm:mt-0 sm:ml-4">
+                        <Input
+                          // disabled={!form.password}
+                          name="currentPassword"
+                          type="password"
+                          label="Current Password"
+                          placeholder="Current Password"
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              currentPassword: e.target.value,
+                            })
+                          }
+                          value={form.currentPassword}
+                          error={errors.find(
+                            (err) => err.field === 'currentPassword'
+                          )}
+                          wrapperClass="text-[13px] mb-4"
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-col w-full">
+                  <div className="flex flex-col mb-2 md:flex-row">
+                    <p className="w-full mb-2 font-bold md:w-1/3 md:mb-0">
+                      Update Mobile Number
+                    </p>
+                    <p className="w-full md:w-2/3">{user.mobileNumber}</p>
+                  </div>
+                </div>
+              )}
+              <div className="flex items-start justify-end mt-4 md:pl-4 md:mt-0">
+                {toEdit === 'mobileNumber' && (
+                  <button
+                    className="flex items-center text-greenTheme hover:text-[#777777] mr-2"
+                    aria-label="Save"
+                    onClick={() => update()}
+                  >
+                    Save
+                  </button>
+                )}
+
+                {toEdit === 'mobileNumber' && form.newMobileNumber && (
+                  <button
+                    className="flex items-center text-greenTheme hover:text-[#777777] mr-2"
+                    aria-label="Save"
+                    onClick={() => {
+                      cancelPendingContactInfo = true
+                      update()
+                      cancelPendingContactInfo = false
+                    }}
+                  >
+                    Cancel Mobile Number Request
+                  </button>
+                )}
+
+                <button
+                  aria-label={
+                    toEdit && toEdit === 'mobileNumber' ? 'Cancel' : 'Edit'
+                  }
+                  className="flex items-center text-greenTheme hover:text-[#777777]"
+                  onClick={() => toggleEdit('mobileNumber')}
+                >
+                  {toEdit !== 'mobileNumber' && <EditSvg className="mr-2" />}
+                  {toEdit && toEdit === 'mobileNumber' ? 'Cancel' : 'Edit'}
+                </button>
+              </div>
+            </div>
+
+
+
+            if (productsResponse) {
+
+              if (page === 1) {
+                setProducts(productsResponse.data)
+                setTotal(productsResponse.meta.total)
+              } else {
+                setProducts(() => [...products, ...productsResponse.data])
+              }
+              setCurrentPage(productsResponse.meta.currentPage)
+            }
+
+            [categoriesIsLoaded, brand, apiUrl, id, cid, categIds, productsResponse, page, products])

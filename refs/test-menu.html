@@ -1,0 +1,352 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable react/jsx-no-duplicate-props */
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { AiFillFileWord, AiFillHome, AiFillPropertySafety } from "react-icons/ai";
+import { BiShieldQuarter } from "react-icons/bi";
+import { FaClipboardList, FaMedal, FaPaperPlane, FaUsersCog } from "react-icons/fa";
+import { IoNewspaper } from "react-icons/io5";
+import { BsBoxArrowLeft, BsClipboardCheck } from "react-icons/bs";
+import { HiUserGroup, IconName } from "react-icons/hi";
+
+const Sidebarv2 = (props) => {
+   const router = useRouter();
+
+   const onClick = (index, item) => {
+      if (router.isReady) {
+         router.push(item.href);
+      }
+   };
+   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+   const Menu = [
+      {
+         label: "Home",
+         href: "/",
+         svgPath: (
+            <AiFillHome size={20} />
+         ),
+      },
+      {
+         label: "Work Bench",
+         href: "/work-bench",
+         svgPath: (
+            <BiShieldQuarter size={20} />
+         ),
+      },
+      {
+         label: "Claims Bench",
+         href: "/claims-bench",
+         svgPath: (
+            <FaClipboardList size={20} />
+         ),
+      },
+      {
+         label: "Customer Access",
+         href: "/customer-access",
+         svgPath: (
+            <HiUserGroup size={20} />
+         ),
+      },
+      {
+         label: "Compliance",
+         href: "/compliance",
+         svgPath: (
+            <BsClipboardCheck size={20} />
+         ),
+      },
+      {
+         label: "Document Library",
+         href: "/document-library",
+         svgPath: (
+            <AiFillFileWord size={20} />
+         ),
+      },
+      {
+         label: "Training & Education",
+         href: "/training-education",
+         svgPath: (
+            <FaMedal size={20} />
+         ),
+      },
+      {
+         label: "Newsroom",
+         href: "/newsroom",
+         svgPath: (
+            <IoNewspaper size={20} />
+         ),
+      },
+      {
+         label: "Contact Us",
+         href: "/contact-us",
+         svgPath: (
+            <FaPaperPlane size={20} />
+         ),
+      },
+      {
+         label: "Broker Access",
+         href: "/broker-access",
+         svgPath: (
+            <FaUsersCog size={20} />
+         ),
+      },
+   ];
+
+   const [inactive, setInactive] = useState(false)
+
+   useEffect(() => {
+      props.onCollapse(inactive)
+   }, [inactive])
+
+   return (
+      <>
+         <div className={`side-menu content-shadow ${inactive ? "inactive" : "" }`}>
+            <div className="top-section">
+               <div className="logo">
+                  <img src="/img/head-logo.png" alt="" />
+               </div>
+               <div 
+                  className="toggle-menu-btn"
+                  onClick={() => {
+                     setInactive(!inactive)
+                  }}
+               >
+                  {inactive ? ( <MdChevronRight size={24} className="transform "/> ) : ( <MdChevronLeft size={24} className="transform"/> )}
+               </div>
+            </div>
+            <div className="mt-7 main-menu">
+               {Menu.map((item, index) => (
+                  <nav key={index}>
+                     <a
+                        className={`cursor-pointer montserrat-regular flex items-center mt-1 py-3 px-5 menu-item ${
+                           router.pathname === item.href
+                              ? "bg-contenta-blue text-white rounded-lg font-montserratBold transition duration-300 ease-in-out"
+                              : "hover:bg-gray-200 rounded-lg text-contenta-gray font-montserratBold transition duration-300 ease-in-out"
+                        }`}
+                        onClick={() => onClick(index, item)}
+                     >
+                        {item.svgPath}
+
+                        <span className="ml-8 text-sm ">{item.label}</span>
+                     </a>
+                  </nav>
+               ))}
+               <div 
+                  className="py-2 px-5 cursor-pointer text-sm hover:bg-gray-200 transition duration-300 ease-in-out font-montserratBold text-contenta-pinky-red"
+                  onClick={
+                     (e) => {
+                        e.preventDefault();
+                        logout();
+                     }
+                  } 
+               >
+                  <div className="flex menu-logout">
+                        
+                        <BsBoxArrowLeft size={20} />
+                        <span className="ml-3">Log out</span>
+                  </div>
+               </div>
+            </div>
+            <div className="ml-10">
+               <div className="flex justify-end toggle-menu rounded-md">
+                  <button className="toggle-icon bg-contenta-blue transform -rotate-45 text-white p-1 rounded" onClick={() => setInactive(!inactive)}>
+                     {inactive ? ( <MdChevronRight size={24} className="transform rotate-45"/> ) : ( <MdChevronLeft size={24} className="transform rotate-45"/> )}
+                  </button>
+               </div>
+            </div>
+         </div>
+         {/* <aside id="sidebar" className="bg-white content-shadow text-gray-100 md:w-72 w-3/4 space-y-6 pt-3 px-0 relative inset-y-0 left-0 transform md:relative md:translate-x-0 transition duration-200 ease-in-out  md:flex md:flex-col md:justify-between overflow-y-auto">
+               <div className="w-full border-2 border-red-900">
+                  <a href="#" className="block text-black py-2 w-14 flex justify-end px-4 border-2 transition duration-200 hover:bg-gray-700 hover:text-white toggle-icon" onClick={() => setInactive(!inactive)}>
+                     {inactive ? ( <MdChevronRight size={24} className="transform "/> ) : ( <MdChevronLeft size={24} className="transform"/> )}
+                  </a>
+               </div>
+            <div className="flex flex-col space-y-6" data-dev-hint="optional div for having an extra footer navigation">
+               <div className="flex items-center justify-center">
+                  <div className="logo">
+                     <img src="/img/head-logo.png" alt="" />
+                  </div>
+               </div>
+               <nav data-dev-hint="main navigation">
+                  {Menu.map((item, index) => (
+                     <nav key={index} className="px-5">
+                        <a
+                           className={`cursor-pointer montserrat-regular flex items-center mt-1 py-3 px-5 ${router.pathname === item.href
+                                 ? "bg-contenta-blue text-white rounded-lg font-montserratBold transition duration-300 ease-in-out"
+                                 : "hover:bg-gray-200 rounded-lg text-contenta-gray font-montserratBold transition duration-300 ease-in-out"
+                              }`}
+                           onClick={() => onClick(index, item)}
+                        >
+                           {item.svgPath}
+
+                           <span className="mx-3 text-sm ">{item.label}</span>
+                        </a>
+                     </nav>
+                  ))}
+                  <div
+                     className="py-2 cursor-pointer text-sm hover:bg-gray-200 transition duration-300 ease-in-out font-montserratBold text-contenta-pinky-red"
+                     onClick={
+                        (e) => {
+                           e.preventDefault();
+                           logout();
+                        }
+                     }
+                  >
+                     <div className="flex px-10">
+                        <div>
+                           <BsBoxArrowLeft size={20} />
+                        </div>
+                        <div className="mx-3">
+                           Log out
+                        </div>
+                     </div>
+                  </div>
+               </nav>
+            </div>
+         </aside> */}
+         {/* <div className={`side-menu ${inactive ? "inactive" : "" }`}>
+            <div className="flex items-center justify-center mt-3">
+               <div className="logo">
+                  <img src="/img/head-logo.png" alt="" />
+               </div>
+            </div>
+
+            <div className="mt-7">
+               {Menu.map((item, index) => (
+                  <nav key={index}>
+                     <a
+                        className={`cursor-pointer montserrat-regular flex items-center mt-1 py-3 px-5 ${
+                           router.pathname === item.href
+                              ? "bg-contenta-blue text-white rounded-lg font-montserratBold transition duration-300 ease-in-out"
+                              : "hover:bg-gray-200 rounded-lg text-contenta-gray font-montserratBold transition duration-300 ease-in-out"
+                        }`}
+                        onClick={() => onClick(index, item)}
+                     >
+                        {item.svgPath}
+
+                        <span className="mx-3 text-sm ">{item.label}</span>
+                     </a>
+                  </nav>
+               ))}
+               <div 
+                  className="py-2 px-5 cursor-pointer text-sm hover:bg-gray-200 transition duration-300 ease-in-out font-montserratBold text-contenta-pinky-red"
+                  onClick={
+                     (e) => {
+                        e.preventDefault();
+                        logout();
+                     }
+                  } 
+               >
+                  <div className="flex">
+                     <div>
+                        <BsBoxArrowLeft size={20} />
+                     </div>
+                     <div className="mx-3">
+                        Log out
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div className="ml-10">
+               <div className="flex justify-end toggle-menu rounded-md">
+                  <button className="toggle-icon bg-contenta-blue transform -rotate-45 text-white p-1 rounded" onClick={() => setInactive(!inactive)}>
+                     {inactive ? ( <MdChevronRight size={24} className="transform rotate-45"/> ) : ( <MdChevronLeft size={24} className="transform rotate-45"/> )}
+                  </button>
+               </div>
+            </div>
+         </div> */}
+      </>
+   );
+};
+
+export default Sidebarv2;
+
+CSSS
+.side-menu {
+  position: fixed;
+  background-color: #ffffff !important;
+  height: 100%;
+  width: 300px;
+  box-sizing: border-box;
+  padding: 30px 20px;
+  transition: width .2s ease-in;
+}
+
+.side-menu.inactive {
+  width: 80px;
+}
+
+.side-menu .top-section {
+  position: relative;
+}
+
+.side-menu .logo{
+  width: 100px;
+  height: 40px;
+  overflow: hidden;
+  display: inline-block;
+  transition: .2s ease-in;
+}
+
+.side-menu.inactive .logo{
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.side-menu .top-section .logo img{
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.side-menu .top-section .toggle-menu-btn {
+  color: #ffffff;
+  font-size: 24px;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%) ;
+  background: red;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.side-menu.inactive .top-section .toggle-menu-btn {
+  right: -50px;
+}
+
+.side-menu .main-menu .menu-item {
+  color: #333;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.container {
+  margin-left: 300px;
+  transition: margin-left .2s ease-in;
+}
+
+.container.inactive {
+  margin-left: 80px;
+}
+
+.side-menu .main-menu .menu-item span,
+.side-menu .main-menu .menu-logout div {
+  position: absolute;
+  display: inline-block;
+  line-height: 40px;
+  opacity: 1;
+  transition: opacity .2s ease-in;
+}
+
+.side-menu.inactive .main-menu .menu-item span,
+.side-menu.inactive .main-menu .menu-logout span {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
